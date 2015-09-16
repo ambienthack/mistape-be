@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mistape\n"
-"POT-Creation-Date: 2015-08-14 16:24+0200\n"
-"PO-Revision-Date: 2015-08-14 16:24+0200\n"
+"POT-Creation-Date: 2015-08-26 12:23+0200\n"
+"PO-Revision-Date: 2015-08-26 12:23+0200\n"
 "Last-Translator: decollete <hello@deco.agency>\n"
 "Language-Team: decollete <hello@deco.agency>\n"
 "Language: ru_RU\n"
@@ -19,75 +19,39 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: mistape.php:98
-msgid "Administrator"
-msgstr "Администратор"
-
-#: mistape.php:99
-msgid "Editor"
-msgstr "Редактор"
-
-#: mistape.php:100
-msgid "Specify other"
-msgstr "Указать свой адрес"
-
-#: mistape.php:106
-msgid "Text"
-msgstr "Текст"
-
-#: mistape.php:107
-msgid "Image"
-msgstr "Картинка"
-
-#: mistape.php:112
-msgid ""
-"If you have found a spelling error, please, notify us by selecting that text "
-"and pressing <em>Ctrl+Enter</em>."
-msgstr ""
-"Если вы нашли ошибку, пожалуйста, выделите фрагмент текста и нажмите <em>Ctrl"
-"+Enter</em>."
-
-#: mistape.php:114
-msgid "Thanks!"
-msgstr "Спасибо!"
-
-#: mistape.php:115
-msgid "Our editors are notified."
-msgstr "Теперь редакторы в курсе."
-
-#: mistape.php:116
-msgid "Close"
-msgstr "Закрыть"
-
-#: mistape.php:176
+#: admin/admin.php:46
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: mistape.php:177
+#: admin/admin.php:47
 msgid "Help"
 msgstr "Справка"
 
-#: mistape.php:208
+#: admin/admin.php:78
 msgid "Email recipient"
 msgstr "Получатель уведомлений"
 
-#: mistape.php:209
+#: admin/admin.php:79
 msgid "Post types"
 msgstr "Типы записей"
 
-#: mistape.php:210 mistape.php:557
+#: admin/admin.php:80 admin/admin.php:384
 msgid "Shortcodes"
 msgstr "Шорткоды"
 
-#: mistape.php:211
+#: admin/admin.php:81
 msgid "Caption format"
 msgstr "Формат надписи"
 
-#: mistape.php:263
+#: admin/admin.php:133
 msgid "-- no editors found --"
 msgstr "-- редакторы не найдены --"
 
-#: mistape.php:288
+#: admin/admin.php:141
+msgid "separate multiple recipients with commas"
+msgstr "можно задать несколько получателей, разделив их запятой"
+
+#: admin/admin.php:159
 msgid ""
 "\"Press Ctrl+Enter&hellip;\" captions will be displayed at the bottom of "
 "selected post types."
@@ -95,42 +59,47 @@ msgstr ""
 "Надпись \"Нажмите Ctrl+Enter&hellip;\" будет отображаться в конце записей "
 "выбранных типов"
 
-#: mistape.php:298
+#: admin/admin.php:169
 msgid "Register <code>[mistape]</code> shortcode."
-msgstr "Зарегистрировать шорткод <code>[spell-notifier]</code>."
+msgstr "Зарегистрировать шорткод <code>[mistape]</code>."
 
-#: mistape.php:299
+#: admin/admin.php:170
 msgid "Enable if manual caption insertion via shortcodes is needed."
 msgstr "При помощи шорткодов надпись можно размещать выборочно."
 
-#: mistape.php:300
+#: admin/admin.php:171
 msgid "Usage examples are in Help section."
 msgstr "Примеры использования — в разделе \"Справка\"."
 
-#: mistape.php:318
+#: admin/admin.php:189
 msgid "Enter the full image URL starting with http://"
 msgstr "Укажите полный адрес картинки, начиная с http://"
 
-#: mistape.php:353
+#: admin/admin.php:230
+#, php-format
+msgid "ERROR: You entered invalid email address: %s"
+msgstr "ОШИБКА: указан некорректный email-адрес: %s"
+
+#: admin/admin.php:242
 msgid "ERROR: You didn't select valid email recipient."
 msgstr "ОШИБКА: не указан корректный email-адрес получателя уведомлений."
 
-#: mistape.php:375
+#: admin/admin.php:264
 msgid "ERROR: You didn't enter caption image URL."
 msgstr "ОШИБКА: не указан адрес изображения."
 
-#: mistape.php:412
+#: admin/admin.php:294
 msgid "Settings"
 msgstr "Настройки"
 
-#: mistape.php:486
+#: admin/admin.php:330
 msgid ""
 "<strong>Mistape</strong> settings notice will be dismissed after saving "
 "changes."
 msgstr ""
 "Уведомление <strong>Mistape</strong> будет снято после сохранения настроек."
 
-#: mistape.php:489
+#: admin/admin.php:333
 #, php-format
 msgid ""
 "<strong>Mistape</strong> must now be <a href=\"%s\">configured</a> before "
@@ -138,127 +107,167 @@ msgid ""
 msgstr ""
 "Плагин <strong>Mistape</strong> нуждается в  <a href=\"%s\">настройке</a>."
 
-#: mistape.php:558
+#: admin/admin.php:385
 msgid "Optional shortcode parameters are:"
 msgstr "Дополнительные параметры:"
 
-#: mistape.php:560
+#: admin/admin.php:387
 msgid "can be 'text' or 'image'"
 msgstr "может быть \"text\" или \"image\""
 
-#: mistape.php:561
+#: admin/admin.php:388
 msgid "override default css class"
 msgstr "заменяет стандартный CSS-класс"
 
-#: mistape.php:562
+#: admin/admin.php:389
 msgid "override caption text"
 msgstr "заменяет текст надписи"
 
-#: mistape.php:563
+#: admin/admin.php:390
 msgid "override image URL"
 msgstr "заменяет ссылку на изображение"
 
-#: mistape.php:565
+#: admin/admin.php:392
 msgid "When no parameters specified, general configuration is used."
 msgstr "Если параметры не указаны, используется основная конфигурация."
 
-#: mistape.php:566
+#: admin/admin.php:393
 msgid "If image url is specified, format parameter can be omitted."
 msgstr ""
 "Если ссылка на изображение указана, параметр \"format\" можно опустить."
 
-#: mistape.php:567
+#: admin/admin.php:394
 msgid "Shortcode usage example:"
 msgstr "Пример использования шорткода:"
 
-#: mistape.php:571
+#: admin/admin.php:398
 msgid "PHP code example:"
 msgstr "Пример вставки с помощью PHP-кода:"
 
-#: mistape.php:578
+#: admin/admin.php:405
 msgid "Hooks"
 msgstr "Фильтры и действия"
 
-#: mistape.php:580
+#: admin/admin.php:407
 msgid "Actions:"
 msgstr "Действия:"
 
-#: mistape.php:583 mistape.php:589 mistape.php:593 mistape.php:597
-#: mistape.php:601 mistape.php:605 mistape.php:609 mistape.php:613
-#: mistape.php:617
+#: admin/admin.php:410 admin/admin.php:416 admin/admin.php:420
+#: admin/admin.php:424 admin/admin.php:428 admin/admin.php:432
+#: admin/admin.php:436 admin/admin.php:440 admin/admin.php:444
 msgid "Description:"
 msgstr "Описание:"
 
-#: mistape.php:583
+#: admin/admin.php:410
 msgid ""
 "executes after Ctrl+Enter pressed and report validated, before sending email."
 msgstr ""
 "выполняется после валидации отчета пользователя, перед отправкой письма."
 
-#: mistape.php:584 mistape.php:590 mistape.php:594 mistape.php:598
-#: mistape.php:602 mistape.php:606 mistape.php:610 mistape.php:614
-#: mistape.php:618
+#: admin/admin.php:411 admin/admin.php:417 admin/admin.php:421
+#: admin/admin.php:425 admin/admin.php:429 admin/admin.php:433
+#: admin/admin.php:437 admin/admin.php:441 admin/admin.php:445
 msgid "Parameters:"
 msgstr "Параметры:"
 
-#: mistape.php:586
+#: admin/admin.php:413
 msgid "Filters:"
 msgstr "Фильтры:"
 
-#: mistape.php:589
+#: admin/admin.php:416
 msgid "allows to modify caption text globally."
 msgstr "позволяет изменить стандартный текст надписи."
 
-#: mistape.php:593
+#: admin/admin.php:420
 msgid "allows to modify the caption HTML before output."
 msgstr "позволяет изменить HTML-код надписи перед выводом."
 
-#: mistape.php:597
+#: admin/admin.php:424
 msgid "allows to modify modal dialog strings."
 msgstr "позволяет изменить текстовые элементы модального окна."
 
-#: mistape.php:601
+#: admin/admin.php:428
 msgid "allows to modify the modal dialog HTML before output."
 msgstr "позволяет изменить HTML-код модального окна перед выводом."
 
-#: mistape.php:605
+#: admin/admin.php:432
 msgid "allows to change email recipient."
 msgstr "позволяет изменить получателя письма."
 
-#: mistape.php:609
+#: admin/admin.php:436
 msgid "allows to change email subject."
 msgstr "позволяет изменить тему письма."
 
-#: mistape.php:613
+#: admin/admin.php:440
 msgid "allows to modify email message to send."
 msgstr "позволяет изменять содержимое письма перед отправкой."
 
-#: mistape.php:617
+#: admin/admin.php:444
 msgid "allows to modify global options array during initialization."
 msgstr ""
 "позволяет модифицировать массив общих параметров во время инициализации."
 
-#: mistape.php:716
+#: admin/ajax.php:56
 msgid "Spelling error reported"
 msgstr "Получено сообщение об опечатке"
 
-#: mistape.php:719
+#: admin/ajax.php:59
 msgid "Reported from page:"
 msgstr "Отправлено со страницы:"
 
-#: mistape.php:720
+#: admin/ajax.php:60
 msgctxt "[Email] Reported from page: unknown"
 msgid "unknown"
 msgstr "страница не определена"
 
-#: mistape.php:725
+#: admin/ajax.php:65
 msgid "Post edit URL:"
 msgstr "Редактировать запись:"
 
-#: mistape.php:730
+#: admin/ajax.php:70
 msgid "Reported by:"
 msgstr "Сообщено пользователем:"
 
-#: mistape.php:733
+#: admin/ajax.php:73
 msgid "Reported text"
 msgstr "Выделенный текст"
+
+#: mistape.php:97
+msgid "Administrator"
+msgstr "Администратор"
+
+#: mistape.php:98
+msgid "Editor"
+msgstr "Редактор"
+
+#: mistape.php:99
+msgid "Specify other"
+msgstr "Указать свой адрес"
+
+#: mistape.php:103
+msgid "Text"
+msgstr "Текст"
+
+#: mistape.php:104
+msgid "Image"
+msgstr "Картинка"
+
+#: mistape.php:109
+msgid ""
+"If you have found a spelling error, please, notify us by selecting that text "
+"and pressing <em>Ctrl+Enter</em>."
+msgstr ""
+"Если вы нашли ошибку, пожалуйста, выделите фрагмент текста и нажмите <em>Ctrl"
+"+Enter</em>."
+
+#: mistape.php:111
+msgid "Thanks!"
+msgstr "Спасибо!"
+
+#: mistape.php:112
+msgid "Our editors are notified."
+msgstr "Теперь редакторы в курсе."
+
+#: mistape.php:113
+msgid "Close"
+msgstr "Закрыть"

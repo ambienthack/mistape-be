@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.2.4
-Stable tag: 1.0.2
+Tested up to: 4.3.0
+Stable tag: 1.0.3
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -22,6 +22,9 @@ Besides text, caption also can be set as image defined by URL.
 
 Mistape is full of hooks enabling you to modify its behavior the way you like.
 
+
+Help us with the translation to your language, and we will feature you here :)
+
 == Installation ==
 1. Look up "Mistape" and and install it from plugins section of your site's admin area. Alternatively, download zip from WordPress.org Plugin Directory and extract its contents to wp-content/plugins directory.
 2. Activate and follow the settings link in the notice you will see at the top. Tick desired checkboxes, save, and that's it!
@@ -35,6 +38,13 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.0.3
+* custom caption text setting
+* ability to specify multiple email recipients
+* added an option to display a Mistape logo in caption (enabled by default)
+* shortcode fixes
+* performance improvements
+
 = 1.0.2 =
 * fixed Russian translation.
 * email template improvements.
