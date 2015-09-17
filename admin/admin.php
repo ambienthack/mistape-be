@@ -308,7 +308,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			$input['caption_text_mode'] = isset( $input['caption_text_mode'] ) && in_array( $input['caption_text_mode'], array_keys( $this->caption_text_modes ) ) ? $input['caption_text_mode'] : $this->defaults['caption_text_mode'];
 			$input['custom_caption_text'] = $input['caption_text_mode'] == 'custom' && $input['custom_caption_text'] !== $this->default_caption_text ? wp_kses_post( $input['custom_caption_text'] ) : '';
 
-			$input['show_logo_in_caption'] = $input['show_logo_in_caption'] == 'no' ? 'no' : 'yes';
+			$input['show_logo_in_caption'] = $input['show_logo_in_caption'] === '1' ? 'yes' : 'no';
 
 			$input['first_run'] = 'no';
 

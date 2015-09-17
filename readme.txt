@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.3.0
-Stable tag: 1.0.4
+Tested up to: 4.3.1
+Stable tag: 1.0.5
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -38,6 +38,9 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.0.5
+* fixed hide logo option saving
+
 = 1.0.4
 * updated Russian translation
 
@@ -66,5 +69,6 @@ Yes, hooks are available for that.
 Currently no, as this is a bit more complex feature, and plugin is light and robust.
 Though, it may be implemented if there is demand.
 
-= There is no support of my language. How to change the text users see? =
-See help section in admin Mistape page, there are filters for the strings.
+= There is no support for my language. How to change the text users see? =
+"Press Ctrl+Enter" caption can be customized since version 1.0.3. The rest of strings can be translated using hooks.
+For strings filters list see help section in Mistape admin page.
