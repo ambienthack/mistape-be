@@ -67,7 +67,7 @@ abstract class Abstract_Deco_Mistape {
 	);
 	protected $version			     = '1.0.5';
 	protected $plugin_path		     = __FILE__;
-	protected $plugin_url		     = 'https://wordpress.org/plugins/mistape/';
+	protected $plugin_url		     = 'http://mistape.com';
 	protected $recipient_email	     = null;
 	protected $email_recipient_types = array();
 	protected $caption_formats	     = array();
