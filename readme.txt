@@ -64,7 +64,7 @@ All settings are stored in a single database entry and get wiped on plugin unins
 == Frequently Asked Questions ==
 = I've successfully received a few emails and then Mistape stopped working. Why? =
 Mistape implements spam-protection checks. A visitor cannot submit more than five reports in 5-minute time frame (per IP address). All subsequent reports are ignored until timeout.
-So if you Mistape seems to fail sending emails, and you want to test it once more, use a different internet connection or ask your friend to report something.
+So if Mistape seems to fail sending emails, and you want to test it once more, use a different internet connection, ask your friend to report something, or just wait a few minutes.
 
 = Can I customize text and style of the caption? =
 Yes, hooks are available for that.
