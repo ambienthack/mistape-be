@@ -4,6 +4,10 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 
 	function __construct() {
 
+		if ( ! $this->verify_useragent() ) {
+			return;
+		}
+
 		parent::__construct();
 
 		// actions
@@ -86,7 +90,8 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 */
 	public function append_caption_to_content( $content ) {
 		$output = '';
-		if ( is_single() && in_array( get_post_type(), $this->options['post_types'] ) ) {
+
+		if ( is_singular() && in_array( get_post_type(), $this->options['post_types'] ) ) {
 
 			$raw_post_content = get_the_content();
 
@@ -130,7 +135,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			<div class="dialog__overlay"></div>
 			<div class="dialog__content">
 				<h2>' . $strings['title'] . '</h2>
-				<h3>' . $strings['message'] . '</h2>
+				<h3>' . $strings['message'] . '</h3>
 				<div><a class="action" data-dialog-close>' . $strings['close'] . '</a></div>
 			</div>
 		</div>';
@@ -144,5 +149,30 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	public static function uninstall_cleanup() {
 		delete_option('mistape_options');
 		delete_option('mistape_version');
+	}
+
+	/**
+	 * exit early if user agent is unlikely to behave reasonable
+	 *
+	 * @return bool
+	 */
+	public static function verify_useragent() {
+		if ( wp_is_mobile() ) {
+			return false;
+		}
+
+		// save some resources avoiding regex
+		if ( false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE' ) ) {
+			preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+			if ( count( $matches ) < 2 ){
+				preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+			}
+
+			if ( count($matches) > 1 && $matches[1] < 11 ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

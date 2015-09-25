@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
 Tested up to: 4.3.1
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -38,6 +38,11 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.0.6
+* skip mobile browsers and Internet Explorer < 11
+* fixed enabled post types option behavior
+* fixed dialog HTML markup
+
 = 1.0.5
 * fixed hide logo option saving
 
@@ -65,6 +70,9 @@ All settings are stored in a single database entry and get wiped on plugin unins
 = I've successfully received a few emails and then Mistape stopped working. Why? =
 Mistape implements spam-protection checks. A visitor cannot submit more than five reports in 5-minute time frame (per IP address). All subsequent reports are ignored until timeout.
 So if Mistape seems to fail sending emails, and you want to test it once more, use a different internet connection, ask your friend to report something, or just wait a few minutes.
+
+= Mistape doesn't seem to work on old Internet Explorer versions. Is that true? =
+Yes, since version 1.0.6 Mistape doesn't render itself if visitor's device is detected as a mobile device or IE < 11.
 
 = Can I customize text and style of the caption? =
 Yes, hooks are available for that.
