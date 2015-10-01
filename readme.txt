@@ -38,21 +38,21 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
-= 1.0.7
-* changed post type check logic to minimize caption's chance to appear in post excerpts.
+= 1.0.7 =
+* changed post type check logic to minimize caption's chance to appear in post excerpts
 
-= 1.0.6
+= 1.0.6 =
 * skip mobile browsers and Internet Explorer < 11
 * fixed enabled post types option behavior
 * fixed dialog HTML markup
 
-= 1.0.5
+= 1.0.5 =
 * fixed hide logo option saving
 
-= 1.0.4
+= 1.0.4 =
 * updated Russian translation
 
-= 1.0.3
+= 1.0.3 =
 * custom caption text setting
 * ability to specify multiple email recipients
 * added an option to display a Mistape logo in caption (enabled by default)
