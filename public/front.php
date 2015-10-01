@@ -91,7 +91,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	public function append_caption_to_content( $content ) {
 		$output = '';
 
-		if ( is_singular() && in_array( get_post_type(), $this->options['post_types'] ) ) {
+		if ( ( is_single() || is_page() ) && in_array( get_post_type(), $this->options['post_types'] ) ) {
 
 			$raw_post_content = get_the_content();
 
