@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
 Tested up to: 4.3.1
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -38,6 +38,10 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.0.8 =
+* don't output scripts and styles when no caption displayed
+* various fixes
+
 = 1.0.7 =
 * changed post type check logic to minimize caption's chance to appear in post excerpts
 

@@ -4,7 +4,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 
 	function __construct() {
 
-		if ( ! $this->verify_useragent() ) {
+		if ( ! $this->is_appropriate_useragent() ) {
 			return;
 		}
 
@@ -14,13 +14,13 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		add_action( 'wp_footer', 		  array( $this, 'insert_dialog' ), 1000 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_load_scripts_styles' ) );
 
-		if ( $this->options['register_shortcode'] == 'yes' ) {
-			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
-		}
-
 		// filters
 		add_filter( 'the_content', array( $this, 'append_caption_to_content' ), 1 );
 
+		// shortcode
+		if ( $this->options['register_shortcode'] == 'yes' ) {
+			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
+		}
 	}
 
 	/**
@@ -56,6 +56,11 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 * Load scripts and styles - frontend
 	 */
 	public function front_load_scripts_styles() {
+
+		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] != 'yes' ) {
+			return;
+		}
+
 		wp_enqueue_script( 'mistape-front', plugins_url( 'js/front.js', __FILE__ ), array( 'jquery' ), $this->version, true );
 
 		$nonce = wp_create_nonce( 'mistape_report' );
@@ -89,30 +94,31 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 * @return string
 	 */
 	public function append_caption_to_content( $content ) {
+
+		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] != 'yes' ) {
+			return $content;
+		}
+
 		$output = '';
 
-		if ( ( is_single() || is_page() ) && in_array( get_post_type(), $this->options['post_types'] ) ) {
+		$raw_post_content = get_the_content();
 
-			$raw_post_content = get_the_content();
-
-			// check if we really deal with post content
-			if ( $content !== $raw_post_content ) {
-				return $content;
-			}
-
-			$format = $this->options['caption_format'];
-
-			if ( $format == 'text' ) {
-				$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<p class="mistape-link-wrap"><a href="' . $this->plugin_url . '" class="mistape-link"></a></p>' : '';
-				$output = '<div class="mistape_caption">' . $logo . '<p>';
-				$output .= $this->caption_text . '</p></div>';
-			} elseif ( $format == 'image' ) {
-				$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . $this->caption_text . '"></div>';
-			}
-
-			$output = apply_filters( 'mistape_caption_output', $output);
-
+		// check if we really deal with post content
+		if ( $content !== $raw_post_content ) {
+			return $content;
 		}
+
+		$format = $this->options['caption_format'];
+
+		if ( $format == 'text' ) {
+			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<p class="mistape-link-wrap"><a href="' . $this->plugin_url . '" class="mistape-link"></a></p>' : '';
+			$output = '<div class="mistape_caption">' . $logo . '<p>';
+			$output .= $this->caption_text . '</p></div>';
+		} elseif ( $format == 'image' ) {
+			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . $this->caption_text . '"></div>';
+		}
+
+		$output = apply_filters( 'mistape_caption_output', $output);
 
 		return $content . $output;
 	}
@@ -121,6 +127,10 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 * Mistape dialog output
 	 */
 	public function insert_dialog() {
+
+		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] != 'yes' ) {
+			return;
+		}
 
 		// get dialog args
 		$strings = apply_filters( 'mistape_dialog_args', array(
@@ -156,7 +166,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 *
 	 * @return bool
 	 */
-	public static function verify_useragent() {
+	public static function is_appropriate_useragent() {
 		if ( wp_is_mobile() ) {
 			return false;
 		}
@@ -174,5 +184,16 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		}
 
 		return true;
+	}
+
+	public function is_appropriate_post() {
+		// a bit inefficient logic is necessary for some illogical themes and plugins
+		if ( ( is_single() && in_array( get_post_type(), $this->options['post_types'] ) )
+		     || ( is_page() && in_array( 'page', $this->options['post_types'] ) ) )
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
