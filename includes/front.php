@@ -106,9 +106,9 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		$format = $this->options['caption_format'];
 
 		if ( $format == 'text' ) {
-			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<p class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></p>' : '';
-			$output = '<div class="mistape_caption">' . $logo . '<p>';
-			$output .= $this->caption_text . '</p></div>';
+			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></span>' : '';
+			// linebreak is necessary
+			$output = "\n" . '<div class="mistape_caption"><p>' . $logo . $this->caption_text . '</p></div>';
 		} elseif ( $format == 'image' ) {
 			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . $this->caption_text . '"></div>';
 		}

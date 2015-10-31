@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.1.0
+Version: 1.1.1
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License
@@ -67,7 +67,7 @@ abstract class Abstract_Deco_Mistape {
 		'show_logo_in_caption' => 'yes',
 		'first_run'			   => 'yes'
 	);
-	protected $version			     = '1.1.0';
+	protected $version			     = '1.1.1';
 	protected $plugin_path		     = __FILE__;
 	protected $plugin_url		     = 'http://mistape.com';
 	protected $recipient_email	     = null;
@@ -101,7 +101,7 @@ abstract class Abstract_Deco_Mistape {
 		$this->default_caption_text = __( 'If you have found a spelling error, please, notify us by selecting that text and pressing <em>Ctrl+Enter</em>.', 'mistape' );
 		$this->caption_text = apply_filters( 'mistape_caption_text',
 			$this->options['caption_text_mode'] == 'custom' && isset( $this->options['custom_caption_text'] ) ? $this->options['custom_caption_text'] : $this->default_caption_text
-		) . '</p>';
+		);
 	}
 
 	/**
