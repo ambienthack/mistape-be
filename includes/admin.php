@@ -9,18 +9,59 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 		parent::__construct();
 
-		// strings
-		$this->post_types = $this->get_enabled_post_types();
-
-		// actions
-		add_action( 'admin_init',				array( $this, 'register_settings' ) );
+		// admin-wide actions
 		add_action( 'admin_menu', 				array( $this, 'admin_menu_options' ) );
 		add_action( 'admin_notices', 			array( $this, 'plugin_activated_notice' ) );
-		add_action( 'after_setup_theme',		array( $this, 'load_defaults' ) );
-		add_action( 'admin_enqueue_scripts',	array( $this, 'admin_load_scripts_styles' ) );
+		add_action( 'after_setup_theme',        array( $this, 'init' ) );
+		add_action( 'admin_init',			    array( $this, 'register_settings' ) );
+
+		// Mistape page-specific actions
+		if ( isset( $_GET['page'] ) && $_GET['page'] == 'mistape' ) {
+			add_action( 'admin_enqueue_scripts',          array( $this, 'admin_load_scripts_styles' ) );
+			add_action( 'in_admin_footer',	              array( $this, 'insert_dialog' ) );
+		}
 
 		// filters
 		add_filter( 'plugin_action_links', 		array( $this, 'plugins_page_settings_link' ), 10, 2 );
+	}
+
+	/**
+	 * Load plugin defaults
+	 */
+	public function init() {
+		$this->post_types = $this->get_post_types_list();
+		$this->email_recipient_types = array(
+			'admin'		=> __( 'Administrator', 'mistape' ),
+			'editor' 	=> __( 'Editor', 'mistape' ),
+			'other' 	=> __( 'Specify other', 'mistape' )
+		);
+
+		$this->caption_formats = array(
+			'text'	=> __( 'Text', 'mistape' ),
+			'image' => __( 'Image', 'mistape' )
+		);
+
+		$this->caption_text_modes = array(
+			'default' => array(
+				'name' => __( 'Default', 'mistape' ),
+				'description' => __( 'automatically translates to supported languages', 'mistape' )
+			),
+			'custom' => array(
+				'name' => __( 'Custom text', 'mistape' ),
+				'description' => ''
+			)
+		);
+
+		$this->default_caption_text = __( 'If you have found a spelling error, please, notify us by selecting that text and pressing <em>Ctrl+Enter</em>.', 'mistape' );
+
+		$this->caption_text = apply_filters( 'mistape_caption_text',
+			$this->options['caption_text_mode'] == 'custom' && isset( $this->options['custom_caption_text'] ) ? $this->options['custom_caption_text'] : $this->default_caption_text
+		) . '</p>';
+		$this->dialog_modes = array(
+			'notify'  => __('Just notify of successful submission'),
+			'confirm' => __('Show preview of reported text and ask confirmation'),
+			'comment' => __('Preview and comment field'),
+		);
 	}
 
 	/**
@@ -81,6 +122,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		add_settings_field( 'mistape_caption_format', 		__( 'Caption format', 'mistape' ), 	    array( $this, 'field_caption_format' ), 		'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_caption_text_mode', 	__( 'Caption text mode', 'mistape' ), 	array( $this, 'field_caption_text_mode' ), 		'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_show_logo_in_caption', __( 'Mistape Logo', 'mistape' ), 	    array( $this, 'field_show_logo_in_caption' ), 	'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_dialog_mode',      	__( 'Dialog mode', 'mistape' ),     	array( $this, 'field_dialog_mode' ), 	        'mistape_options', 'mistape_configuration' );
 	}
 
 	/**
@@ -98,7 +140,10 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 		foreach ( $this->email_recipient_types as $value => $label ) {
 			echo '
-			<label><input id="mistape_email_recipient_type-' . $value . '" type="radio" name="mistape_options[email_recipient][type]" value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['email_recipient']['type'], false ) . ' />' . esc_html( $label ) . '</label><br />';
+				<label><input id="mistape_email_recipient_type-' . $value . '" type="radio"
+				  name="mistape_options[email_recipient][type]" value="' . esc_attr( $value ) . '" ' .
+				  checked( $value, $this->options['email_recipient']['type'], false ) . ' />' . esc_html( $label ) . '
+				</label><br>';
 		}
 
 		echo '
@@ -120,28 +165,28 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		echo '
 			<div id="mistape_email_recipient_list-editor"' . ($this->options['email_recipient']['type'] == 'editor' ? '' : 'style="display: none;"' ) . '>';
 
-		echo'
-			<select name="mistape_options[email_recipient][id][editor]">';
 
 		$editors = $this->get_user_list_by_role( 'editor' );
 		if ( !empty( $editors ) ) {
+			echo '<select name="mistape_options[email_recipient][id][editor]">';
 			foreach ( $editors as $user ) {
 				echo '
 				<option value="' . $user->ID . '" ' . selected( $user->ID, $this->options['email_recipient']['id'], false ) . '>' . esc_html( $user->user_nicename . ' (' . $user->user_email . ')' ) . '</option>';
 			}
+			echo '</select>';
 		}
 		else {
-			echo '
-			<option value="empty" ' . selected( 'empty', $this->options['email_recipient']['id'], false ) . '>' . __( '-- no editors found --', 'mistape' ) . '</option>';
+			echo '<select><option value="">' . __( '-- no editors found --', 'mistape' ) . '</option></select>';
 		}
 
 		echo '
-			</select>
 			</div>
 			<div id="mistape_email_recipient_list-other" ' . ($this->options['email_recipient']['type'] == 'other' ? '' : 'style="display: none;"' ) . '>
 				<input type="text" class="regular-text" name="mistape_options[email_recipient][email]" value="' . esc_attr( $this->options['email_recipient']['email'] ) . '" />
 				<p class="description">' . __('separate multiple recipients with commas', 'mistape') . '</p>
 			</div>
+			<br>
+			<label><input id="mistape_email_recipient-post_author_first" type="checkbox" name="mistape_options[email_recipient][post_author_first]" value="1" ' . checked( 'yes', $this->options['email_recipient']['post_author_first'], false ) . '/>' . __( 'If post ID is determined, notify post author instead', 'mistape' ) . '</label>
 		</fieldset>';
 	}
 
@@ -183,7 +228,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 		foreach ( $this->caption_formats as $value => $label ) {
 			echo '
-			<label><input id="mistape_caption_format-' . $value . '" type="radio" name="mistape_options[caption_format]" value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_format'], false ) . ' />' . esc_html( $label ) . '</label><br />';
+			<label><input id="mistape_caption_format-' . $value . '" type="radio" name="mistape_options[caption_format]" value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_format'], false ) . ' />' . esc_html( $label ) . '</label><br>';
 		}
 
 		echo '
@@ -205,25 +250,43 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			echo '<label><input id="mistape_caption_text_mode-' . $value . '" type="radio" name="mistape_options[caption_text_mode]" ' .
 				'value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_text_mode'], false ) . ' />' . $label['name'];
 			echo empty( $label['description'] ) ? ':' : ' <span class="description">(' . $label['description'] . ')</span>';
-			echo  '</label><br />';
+			echo  '</label><br>';
 		}
 
 		$textarea_contents = !empty( $this->options['custom_caption_text'] ) ? $this->options['custom_caption_text'] : $this->default_caption_text;
 		$textarea_state = $this->options['caption_text_mode'] == 'default' ? ' disabled="disabled"' : '';
 
 		echo '<textarea id="mistape_custom_caption_text" name="mistape_options[custom_caption_text]" cols="70" rows="4"
-			data-default="' . esc_attr( $this->default_caption_text ) . '"' . $textarea_state . ' />' . esc_textarea( $textarea_contents ) . '</textarea><br />
+			data-default="' . esc_attr( $this->default_caption_text ) . '"' . $textarea_state . ' />' . esc_textarea( $textarea_contents ) . '</textarea><br>
 		</fieldset>';
 	}
 
 	/**
-	 * Shortcode option
+	 * Show Mistape logo in caption
 	 */
 	public function field_show_logo_in_caption() {
 		echo '
 		<fieldset>
 			<label><input id="mistape_show_logo_in_captione" type="checkbox" name="mistape_options[show_logo_in_caption]" value="1" ' . checked( 'yes', $this->options['show_logo_in_caption'], false ) . '/>' . __( 'Caption with Mistape logo', 'mistape' ) . '</label>
 		</fieldset>';
+	}
+
+	/**
+	 * Dialog mode: ask for a comment or fire notification straight off
+	 */
+	public function field_dialog_mode() {
+		echo '
+		<fieldset>';
+
+		foreach ( $this->dialog_modes as $value => $label ) {
+			echo '
+			<label><input class="dialog_mode_choice" id="mistape_caption_format-' . $value .
+				'" type="radio" name="mistape_options[dialog_mode]" value="' . esc_attr( $value ) . '" ' .
+				checked( $value, $this->options['dialog_mode'], false ) . ' />' . esc_html( $label ) .
+			'</label><br>';
+		}
+		echo '<button class="button" id="preview-dialog-btn">' . __('Preview dialog', 'mistape' ) . '</button>';
+		echo '<span id="preview-dialog-spinner" iclass="spinner"></span>';
 	}
 
 	/**
@@ -237,10 +300,11 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		if ( ! current_user_can( 'manage_options' ) )
 			return $input;
 
-		if ( isset( $_POST['save_mistape_options'] ) ) {
+		if ( isset( $_POST['option_page'] ) && $_POST['option_page'] == 'mistape_options' ) {
 
 			// mail recipient
 			$input['email_recipient']['type'] = sanitize_text_field( isset( $input['email_recipient']['type'] ) && in_array( $input['email_recipient']['type'], array_keys( $this->email_recipient_types ) ) ? $input['email_recipient']['type'] : $this->defaults['email_recipient']['type'] );
+			$input['email_recipient']['post_author_first'] = $input['email_recipient']['post_author_first'] === '1' ? 'yes' : 'no';
 
 			if ( $input['email_recipient']['type'] == 'admin' && isset( $input['email_recipient']['id']['admin'] ) && ( user_can( $input['email_recipient']['id']['admin'], 'administrator' ) ) ) {
 				$input['email_recipient']['id'] = $input['email_recipient']['id']['admin'];
@@ -249,6 +313,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 				$input['email_recipient']['id'] = $input['email_recipient']['id']['editor'];
 			}
 			elseif ( $input['email_recipient']['type'] == 'other' && isset( $input['email_recipient']['email'] ) ) {
+				$input['email_recipient']['id'] = '0';
 				$emails = explode( ',', str_replace( array(', ', ' '), ',', $input['email_recipient']['email'] ));
 				$invalid_emails = array();
 				foreach ( $emails as $key => &$email ) {
@@ -268,7 +333,6 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 				}
 
 				$input['email_recipient']['email'] = trim( implode( ',', $emails ), "," );
-				$input['email_recipient']['id'] = 0;
 			}
 			else {
 				add_settings_error(
@@ -277,6 +341,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 					__( 'ERROR: You didn\'t select valid email recipient.' , 'mistape' ),
 					'error'
 				);
+				$input['email_recipient']['id'] = 1;
 				$input['email_recipient'] = $this->options['email_recipient'];
 			}
 
@@ -354,8 +419,21 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		if ( $page !== 'settings_page_mistape' )
 			return;
 
-		wp_enqueue_script(
-			'mistape-admin', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), $this->version
+		// dialog style
+		wp_enqueue_style( 'mistape-front', plugins_url( 'assets/css/mistape-front.css', $this->plugin_path ), array(), $this->version );
+
+		// dialogfx
+		wp_enqueue_script( 'modernizr', plugins_url( 'assets/js/modernizr.custom.js', $this->plugin_path ), array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'mistape-dialog-classie', plugins_url( 'assets/js/classie.js', $this->plugin_path ), array( 'modernizr' ), $this->version, true );
+		wp_enqueue_script( 'mistape-dialog-dialogfx', plugins_url( 'assets/js/dialogFx.js', $this->plugin_path ), array( 'mistape-dialog-classie' ), $this->version, true );
+
+		// admin page script
+		wp_enqueue_script( 'mistape-admin', plugins_url( 'assets/js/admin.js', $this->plugin_path ), array( 'mistape-dialog-dialogfx' ), $this->version, true );
+		wp_localize_script(
+			'mistape-admin', 'mistape_args', array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'mistape_update_dialog' ),
+			)
 		);
 	}
 
@@ -402,7 +480,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	/**
 	 * Return an array of registered post types with their labels
 	 */
-	public function get_enabled_post_types() {
+	public function get_post_types_list() {
 		$post_types = get_post_types(
 			array( 'public' => true ),
 			'objects'
@@ -425,12 +503,12 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			<h3><?php _e( 'Shortcodes' , 'mistape' ) ?></h3>
 			<h4><?php _e( 'Optional shortcode parameters are:' , 'mistape' ) ?></h4>
 			<ul>
-				<li><code>format</code> — <?php _e( "can be 'text' or 'image'" , 'mistape' ) ?></li>
-				<li><code>class</code> — <?php _e( 'override default css class' , 'mistape' ) ?></li>
-				<li><code>text</code> — <?php _e( 'override caption text' , 'mistape' ) ?></li>
-				<li><code>image</code> — <?php _e( 'override image URL' , 'mistape' ) ?></li>
+				<li><code>'format', </code> — <?php _e( "can be 'text' or 'image'" , 'mistape' ) ?></li>
+				<li><code>'class', </code> — <?php _e( 'override default css class' , 'mistape' ) ?></li>
+				<li><code>'text', </code> — <?php _e( 'override caption text' , 'mistape' ) ?></li>
+				<li><code>'image', </code> — <?php _e( 'override image URL' , 'mistape' ) ?></li>
 			</ul>
-			<p><?php _e( 'When no parameters specified, general configuration is used.' , 'mistape' ) ?><br />
+			<p><?php _e( 'When no parameters specified, general configuration is used.' , 'mistape' ) ?><br>
 				<?php _e( 'If image url is specified, format parameter can be omitted.' , 'mistape' ) ?></p>
 			<h4><?php _e( 'Shortcode usage example:' , 'mistape' ) ?></h4>
 			<ul>
@@ -447,45 +525,92 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 			<h4><?php _e( 'Actions:' , 'mistape' ) ?></h4>
 
-			<h4><code>mistape_process_report</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'executes after Ctrl+Enter pressed and report validated, before sending email.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $reported_text, str $context | str</p>
+			<div class="mistape-hook-block"><code>'mistape_process_report', <span class="mistape-var-str">$reported_text</span>, <span class="mistape-var-str">$context</span></code>
+			<p class="description"><?php _e( 'Executed after Ctrl+Enter pressed and report validated, before sending email.' , 'mistape' ) ?></p></li>
 
 			<h4><?php _e( 'Filters:' , 'mistape' ) ?></h4>
+			
+			<ul>
 
-			<h4><code>mistape_caption_text</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify caption text globally.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $text </p>
-
-			<h4><code>mistape_caption_output</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify the caption HTML before output.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $html</p>
-
-			<h4><code>mistape_dialog_args</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify modal dialog strings.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> array $args </p>
-
-			<h4><code>mistape_dialog_output</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify the modal dialog HTML before output.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $html </p>
-
-			<h4><code>mistape_mail_recipient</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to change email recipient.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $recipient</p>
-
-			<h4><code>mistape_mail_subject</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to change email subject.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $subject</p>
-
-			<h4><code>mistape_mail_message</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify email message to send.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> str $message</p>
-
-			<h4><code>mistape_options</code></h4>
-			<p class="description"><?php _e( 'Description:' , 'mistape' ) ?> <?php _e( 'allows to modify global options array during initialization.' , 'mistape' ) ?></p>
-			<p class="description"><?php _e( 'Parameters:' , 'mistape' ) ?> $options | arr</p>
+				<li class="mistape-hook-block">
+					<code>'mistape_caption_text', <span class="mistape-var-str">$text</span></code>
+					<p class="description"><?php _e( 'Allows to modify caption text globally (preferred over HTML filter).' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_caption_output', <span class="mistape-var-str">$html</span>, <span class="mistape-var-arr">$options</span></code></code>
+					<p class="description"><?php _e( 'Allows to modify the caption HTML before output.' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_dialog_args', <span class="mistape-var-arr">$args</span></code>
+					<p class="description"><?php _e( 'Allows to modify modal dialog strings (preferred over HTML filter).' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_dialog_output', <span class="mistape-var-str">$html</span>, <span class="mistape-var-arr">$options</span></code></code>
+					<p class="description"><?php _e( 'Allows to modify the modal dialog HTML before output.' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_recipient', <span class="mistape-var-str">$recipient</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to change email recipient.' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_subject', <span class="mistape-var-str">$subject</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to change email subject.' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_message', <span class="mistape-var-str">$message</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to modify email message to send.' , 'mistape' ) ?></p>
+				</li>
+	
+				<li class="mistape-hook-block">
+					<code>'mistape_options', <span class="mistape-var-arr">$options</span></code>
+					<p class="description"><?php _e( 'Allows to modify global options array during initialization.' , 'mistape' ) ?></p>
+				</li>
+			
+			</ul>
 
 		</div>
+		<style>
+			[class^="mistape-var"] {
+				color: #9876AA;
+				padding: 2px;
+				font-style: normal;
+			}
+			[class^="mistape-var-"]:before {
+				font-style: italic;
+				color: #aaa;
+			}
+			.mistape-var-arr:before {
+				content: "arr ";
+			}
+			.mistape-var-obj:before {
+				content: "obj ";
+			}
+			.mistape-var-str:before {
+				content: "str ";
+			}
+			.mistape-hook-block {
+				margin-bottom: 20px;
+			}
+			.mistape-hook-block > p.description {
+				margin-left: 6px;
+			}
+			#mistape-configuration .spinner {
+				float: none;
+			}
+		</style>
 		<?php
+	}
+
+	public function insert_dialog() {
+		$args = array(
+			'reported_text_preview' => 'Lorem <span class="mistape_mistake_highlight">upsum</span> dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+		);
+		echo $this->get_dialog_html( $args );
 	}
 }

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
 Tested up to: 4.3.1
-Stable tag: 1.0.8
+Stable tag: 1.1.0
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -38,6 +38,16 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.1.0 =
+* added dialog modes: notification, confirmation, confirm and comment (confirmation is default now)
+* added option to override email recipient to post author if post ID is determined
+* significantly improved determination of selection context
+* improved email contents
+* now user gets error message if submission fails
+* improved specificity of css styles to avoid conflicts with themes
+* disabled execution if visitor's browser is IE until selection extraction logic is implemented for it
+* various fixes
+
 = 1.0.8 =
 * don't output scripts and styles when no caption displayed
 * various fixes

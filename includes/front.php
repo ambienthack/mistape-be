@@ -10,7 +10,12 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 
 		parent::__construct();
 
+		if ( $this->options['first_run'] == 'yes' ) {
+			return;
+		}
+
 		// actions
+//		add_action( 'after_setup_theme',  array( $this, 'init' ) );
 		add_action( 'wp_footer', 		  array( $this, 'insert_dialog' ), 1000 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_load_scripts_styles' ) );
 
@@ -61,30 +66,20 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			return;
 		}
 
-		wp_enqueue_script( 'mistape-front', plugins_url( 'js/front.js', __FILE__ ), array( 'jquery' ), $this->version, true );
+		// style
+		wp_enqueue_style( 'mistape-front', plugins_url( 'assets/css/mistape-front.css', $this->plugin_path ), array(), $this->version );
 
-		$nonce = wp_create_nonce( 'mistape_report' );
+		// modernizer
+		wp_enqueue_script( 'modernizr', plugins_url( 'assets/js/modernizr.custom.js', $this->plugin_path ), array( 'jquery' ), $this->version, true );
+
+		// frontend script (combined)
+		wp_enqueue_script( 'mistape-front', plugins_url( 'assets/js/mistape-front.js', $this->plugin_path ), array( 'jquery', 'modernizr' ), $this->version, true );
 		wp_localize_script(
-			'mistape-front', 'mistapeArgs', array(
-				'ajaxurl'		=> admin_url( 'admin-ajax.php' ),
-				'strings' 		=> array(
-					'message'		=> $this->caption_text,
-					'success'		=> $this->success_text,
-					'close'			=> $this->close_text,
-				),
-				'nonce' => $nonce,
+			'mistape-front', 'mistape_args', array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'mistape_report' ),
 			)
 		);
-
-		wp_enqueue_style( 'mistape-front', plugins_url( 'css/front.css', __FILE__ ), array(), $this->version );
-
-		// modal
-		wp_enqueue_script( 'mistape-front-modal-modernizr', plugins_url( 'js/modal/modernizr.custom.js', __FILE__ ), array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( 'mistape-front-modal-classie', plugins_url( 'js/modal/classie.js', __FILE__ ), array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( 'mistape-front-modal-dialogfx', plugins_url( 'js/modal/dialogFx.js', __FILE__ ), array( 'jquery' ), $this->version, true );
-
-		wp_enqueue_style( 'mistape-front-modal-dialog', plugins_url( 'css/modal/dialog.css', __FILE__ ), array(), $this->version );
-		wp_enqueue_style( 'mistape-front-modal-sandra', plugins_url( 'css/modal/dialog-sandra.css', __FILE__ ), array(), $this->version );
 	}
 
 	/**
@@ -111,14 +106,14 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		$format = $this->options['caption_format'];
 
 		if ( $format == 'text' ) {
-			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<p class="mistape-link-wrap"><a href="' . $this->plugin_url . '" class="mistape-link"></a></p>' : '';
+			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<p class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></p>' : '';
 			$output = '<div class="mistape_caption">' . $logo . '<p>';
 			$output .= $this->caption_text . '</p></div>';
 		} elseif ( $format == 'image' ) {
 			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . $this->caption_text . '"></div>';
 		}
 
-		$output = apply_filters( 'mistape_caption_output', $output);
+		$output = apply_filters( 'mistape_caption_output', $output, $this->options);
 
 		return $content . $output;
 	}
@@ -132,25 +127,10 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			return;
 		}
 
-		// get dialog args
-		$strings = apply_filters( 'mistape_dialog_args', array(
-			'title'		=> $this->dialog_title,
-			'message'	=> $this->dialog_message,
-			'close'		=> $this->close_text,
-		) );
-
 		// dialog output
-		$output = '
-		<div id="mistape_dialog" class="dialog">
-			<div class="dialog__overlay"></div>
-			<div class="dialog__content">
-				<h2>' . $strings['title'] . '</h2>
-				<h3>' . $strings['message'] . '</h3>
-				<div><a class="action" data-dialog-close>' . $strings['close'] . '</a></div>
-			</div>
-		</div>';
+		$output = $this->get_dialog_html();
 
-		echo apply_filters( 'mistape_dialog_output', $output );
+		echo apply_filters( 'mistape_dialog_output', $output, $this->options );
 	}
 
 	/**
@@ -171,18 +151,13 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			return false;
 		}
 
-		// save some resources avoiding regex
-		if ( false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE' ) ) {
-			preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
-			if ( count( $matches ) < 2 ){
-				preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
-			}
-
-			if ( count($matches) > 1 && $matches[1] < 11 ) {
-				return false;
-			}
+		// check for IE, save some resources avoiding regex
+		if ( false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE ' )
+			|| false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Trident/')
+			|| false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Edge/')
+		) {
+			return false;
 		}
-
 		return true;
 	}
 

@@ -8,7 +8,7 @@
  * Copyright 2014, Codrops
  * http://www.codrops.com
  */
-;( function( window ) {
+( function( window ) {
 	
 	'use strict';
 
@@ -44,7 +44,7 @@
 		this.el = el;
 		this.options = extend( {}, this.options );
 		extend( this.options, options );
-		this.ctrlClose = this.el.querySelector( '[data-dialog-close]' );
+		this.ctrlClose = this.el.querySelectorAll( '[data-dialog-close]' );
 		this.isOpen = false;
 		this._initEvents();
 	}
@@ -53,13 +53,17 @@
 		// callbacks
 		onOpenDialog : function() { return false; },
 		onCloseDialog : function() { return false; }
-	}
+	};
 
 	DialogFx.prototype._initEvents = function() {
 		var self = this;
 
 		// close action
-		this.ctrlClose.addEventListener( 'click', this.toggle.bind(this) );
+		for ( var el in this.ctrlClose ) {
+			if( this.ctrlClose.hasOwnProperty( el ) ) {
+				this.ctrlClose[el].addEventListener('click', this.toggle.bind(this));
+			}
+		}
 
 		// esc key closes dialog
 		document.addEventListener( 'keydown', function( ev ) {
@@ -70,14 +74,14 @@
 		} );
 
 		this.el.querySelector( '.dialog__overlay' ).addEventListener( 'click', this.toggle.bind(this) );
-	}
+	};
 
 	DialogFx.prototype.toggle = function() {
 		var self = this;
 		if( this.isOpen ) {
 			classie.remove( this.el, 'dialog--open' );
 			classie.add( self.el, 'dialog--close' );
-			
+
 			onEndAnimation( this.el.querySelector( '.dialog__content' ), function() {
 				classie.remove( self.el, 'dialog--close' );
 			} );
