@@ -42,7 +42,7 @@ All settings are stored in a single database entry and get wiped on plugin unins
 * added an indent in front of Mistape caption to separate it from previous content. This fixed embedded objects not being processed by WordPress if they were in the end of the post content with Mistape caption enabled.
 
 = 1.1.0 =
-* added dialog modes: notification, confirmation, confirm and comment (confirmation is default now)
+* added dialog modes: 1) notification, 2) confirmation, 3) confirmation with comment field (second option is the default)
 * added option to override email recipient to post author if post ID is determined
 * significantly improved determination of selection context
 * improved email contents
@@ -92,7 +92,7 @@ Mistape implements spam-protection checks. A visitor cannot submit more than fiv
 So if Mistape seems to fail sending emails, and you want to test it once more, use a different internet connection, ask your friend to report something, or just wait a few minutes.
 
 = Mistape doesn't seem to work on old Internet Explorer versions. Is that true? =
-Yes, since version 1.0.6 Mistape doesn't render itself if visitor's device is detected as a mobile device or IE < 11.
+Yes, since version 1.0.6 Mistape doesn't render itself if visitor's device is detected as a mobile device, and since 1.1.0 it ignores Internet Explorer (IE support may be added later).
 
 = Can I customize text and style of the caption? =
 Yes, hooks are available for that.
@@ -102,5 +102,5 @@ Currently no, as this is a bit more complex feature, and plugin is light and rob
 Though, it may be implemented if there is demand.
 
 = There is no support for my language. How to change the text users see? =
-"Press Ctrl+Enter" caption can be customized since version 1.0.3. The rest of strings can be translated using hooks.
-For strings filters list see help section in Mistape admin page.
+"Press Ctrl+Enter" caption can be customized in setings since version 1.0.3. The rest of strings can be translated using hooks.
+For filters list see help section in Mistape admin page.

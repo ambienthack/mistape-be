@@ -50,6 +50,7 @@
 
 #mistape_dialog {
 	position: fixed;
+	z-index: 2147483647;
 	display: none;
 	-webkit-align-items: center;
 	align-items: center;
@@ -60,7 +61,6 @@
 
 #mistape_dialog .dialog__overlay {
 	position: absolute;
-	z-index: 1000000;
 	background: rgba(55, 58, 71, 0.9);
 	opacity: 0;
 	-webkit-transition: opacity 0.3s;
@@ -76,7 +76,6 @@
 	padding: 3em;
 	text-align: center;
 	position: relative;
-	z-index: 1000001;
 	opacity: 0;
 	transition: height 0.3s ease;
 	font-size: 14px;

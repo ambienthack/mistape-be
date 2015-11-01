@@ -54,15 +54,7 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 			$trans_5min = is_numeric( $trans_5min ) ? (int) $trans_5min : 0;
 			$trans_30min = is_numeric( $trans_30min ) ? (int) $trans_30min : 0;
 
-			if ( empty( self::$selection ) ) {
-				wp_send_json_error( $this->get_dialog_html( array(
-					'wrap'    => false,
-					'mode'    => 'notify',
-					'title'   => __( 'Report not sent', 'mistape' ),
-					'message' => __( "A problem occurred while trying to deliver your report. That's all we know.", 'mistape' ),
-				) ) );
-			}
-			else if ( $trans_5min > 5 || $trans_30min > 30 ) {
+			if ( $trans_5min > 5 || $trans_30min > 30 ) {
 				wp_send_json_error( $this->get_dialog_html( array(
 					'wrap'    => false,
 					'mode'    => 'notify',

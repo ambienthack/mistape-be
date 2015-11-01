@@ -44,7 +44,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		$this->caption_text_modes = array(
 			'default' => array(
 				'name' => __( 'Default', 'mistape' ),
-				'description' => __( 'automatically translates to supported languages', 'mistape' )
+				'description' => __( 'automatically translated to supported languages', 'mistape' )
 			),
 			'custom' => array(
 				'name' => __( 'Custom text', 'mistape' ),
@@ -575,7 +575,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			</ul>
 
 		</div>
-		<style>
+		<style scoped>
 			[class^="mistape-var"] {
 				color: #9876AA;
 				padding: 2px;
