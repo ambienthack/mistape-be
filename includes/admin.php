@@ -58,9 +58,9 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			$this->options['caption_text_mode'] == 'custom' && isset( $this->options['custom_caption_text'] ) ? $this->options['custom_caption_text'] : $this->default_caption_text
 		) . '</p>';
 		$this->dialog_modes = array(
-			'notify'  => __('Just notify of successful submission'),
-			'confirm' => __('Show preview of reported text and ask confirmation'),
-			'comment' => __('Preview and comment field'),
+			'notify'  => __('Just notify of successful submission', 'mistape'),
+			'confirm' => __('Show preview of reported text and ask confirmation', 'mistape'),
+			'comment' => __('Preview and comment field', 'mistape'),
 		);
 	}
 

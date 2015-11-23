@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.3.1
-Stable tag: 1.1.1
+Tested up to: 4.4
+Stable tag: 1.1.2
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -22,6 +22,8 @@ Besides text, caption also can be set as image defined by URL.
 
 Mistape is full of hooks enabling you to modify its behavior the way you like.
 
+NOTE: Mistape doesn't appear for Internet Explorer, Edge and mobile browsers users.
+
 
 Help us with the translation to your language, and we will feature you here :)
 
@@ -38,6 +40,12 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.1.2 =
+* set maximum z-index for dialog to evade see-through effect on some themes
+* fix errors on multisite installation
+* password-protected posts don't get "Ctrl+Enter" caption appended anymore
+* some HTML layout fixes
+
 = 1.1.1 =
 * added an indent in front of Mistape caption to separate it from previous content. This fixed embedded objects not being processed by WordPress if they were in the end of the post content with Mistape caption enabled.
 
@@ -91,16 +99,16 @@ All settings are stored in a single database entry and get wiped on plugin unins
 Mistape implements spam-protection checks. A visitor cannot submit more than five reports in 5-minute time frame (per IP address). All subsequent reports are ignored until timeout.
 So if Mistape seems to fail sending emails, and you want to test it once more, use a different internet connection, ask your friend to report something, or just wait a few minutes.
 
-= Mistape doesn't seem to work on old Internet Explorer versions. Is that true? =
-Yes, since version 1.0.6 Mistape doesn't render itself if visitor's device is detected as a mobile device, and since 1.1.0 it ignores Internet Explorer (IE support may be added later).
+= Mistape doesn't seem to work on Internet Explorer and Microsoft Edge browser. Why ? =
+Yes, since version 1.0.6 Mistape doesn't render itself if visitor's device is detected as a mobile device, and since 1.1.0 it ignores Internet Explorer and Edge completely (IE support might be added later).
 
 = Can I customize text and style of the caption? =
 Yes, hooks are available for that.
 
 = Can I customize the appearance of confirmation dialog? =
 Currently no, as this is a bit more complex feature, and plugin is light and robust.
-Though, it may be implemented if there is demand.
+Though, it may be implemented if there is demand. CSS styling is possible, of course.
 
 = There is no support for my language. How to change the text users see? =
-"Press Ctrl+Enter" caption can be customized in setings since version 1.0.3. The rest of strings can be translated using hooks.
-For filters list see help section in Mistape admin page.
+"Press Ctrl+Enter" caption can be customized in settings since version 1.0.3. The rest of strings can be translated using hooks.
+We are open for contributions. If you send us a translation file (there are only about 80 strings to translate), we will give you credit in plugin description :).

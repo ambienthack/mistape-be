@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mistape\n"
-"POT-Creation-Date: 2015-10-26 15:07+0200\n"
-"PO-Revision-Date: 2015-10-26 15:08+0200\n"
+"POT-Creation-Date: 2015-11-07 19:18+0200\n"
+"PO-Revision-Date: 2015-11-07 19:19+0200\n"
 "Last-Translator: Bohdan Maximenko <b.maximenko@gmail.com>\n"
 "Language-Team: decollete <hello@deco.agency>\n"
 "Language: ru_RU\n"
@@ -44,7 +44,7 @@ msgid "Default"
 msgstr "Текст по умолчанию"
 
 #: includes/admin.php:47
-msgid "automatically translates to supported languages"
+msgid "automatically translated to supported languages"
 msgstr "автоматически переводится на поддерживаемые языки"
 
 #: includes/admin.php:50
@@ -62,7 +62,7 @@ msgstr ""
 #: includes/admin.php:61
 msgid "Just notify of successful submission"
 msgstr ""
-"Сразу отправлять и показывать диалог \"Спасбо\" независимо от результата."
+"Сразу отправлять и показывать диалог \"Спасибо\" независимо от результата"
 
 #: includes/admin.php:62
 msgid "Show preview of reported text and ask confirmation"
@@ -272,57 +272,57 @@ msgid "Allows to modify global options array during initialization."
 msgstr ""
 "Позволяет модифицировать массив общих параметров во время инициализации."
 
-#: includes/ajax.php:70 includes/ajax.php:137 includes/ajax.php:146
+#: includes/ajax.php:61 includes/ajax.php:147 includes/ajax.php:157
 msgid "Report not sent"
 msgstr "Отчет не отправлен"
 
-#: includes/ajax.php:71
-msgid ""
-"A problem occurred while trying to deliver your report. That's all we know."
-msgstr "При попытке отправить отчет произошла ошибка. Это все, что мы знаем."
+#: includes/ajax.php:62
+msgid "Spam protection: too many reports from your IP address."
+msgstr "Защита от спама: получено слишком много отчетов с вашего IP адреса."
 
-#: includes/ajax.php:84
+#: includes/ajax.php:95
 msgid "Spelling error reported"
 msgstr "Получено сообщение об опечатке"
 
-#: includes/ajax.php:87
+#: includes/ajax.php:98
 msgid "Reported from page:"
 msgstr "Отправлено со страницы:"
 
-#: includes/ajax.php:88
+#: includes/ajax.php:99
 msgctxt "[Email] Reported from page: unknown"
 msgid "unknown"
 msgstr "страница не определена"
 
-#: includes/ajax.php:99
+#: includes/ajax.php:110
 msgid "Post edit URL:"
 msgstr "Редактировать запись:"
 
-#: includes/ajax.php:105
+#: includes/ajax.php:116
 msgid "Reported by:"
 msgstr "Сообщено пользователем:"
 
-#: includes/ajax.php:108
+#: includes/ajax.php:119
 msgid "Reported text"
 msgstr "Выделенный текст"
 
-#: includes/ajax.php:112
+#: includes/ajax.php:123
 msgid "Comment:"
 msgstr "Комментарий:"
 
-#: includes/ajax.php:128 mistape.php:151
+#: includes/ajax.php:139 mistape.php:151
 msgid "Thanks!"
 msgstr "Спасибо!"
 
-#: includes/ajax.php:129 mistape.php:152
+#: includes/ajax.php:140 mistape.php:152
 msgid "Our editors are notified."
 msgstr "Теперь редакторы в курсе."
 
-#: includes/ajax.php:138
-msgid "Spam protection: too many reports from your IP address."
-msgstr "Защита от спама: получено слишком много отчетов с вашего IP адреса."
+#: includes/ajax.php:148
+msgid ""
+"A problem occurred while trying to deliver your report. That's all we know."
+msgstr "При попытке отправить отчет произошла ошибка. Это все, что мы знаем."
 
-#: includes/ajax.php:147
+#: includes/ajax.php:158
 msgid "Security error. Please refresh the page and try again."
 msgstr ""
 "Возникла ошибка при проверки безопасности. Пожалуйста, обновите страницу и "

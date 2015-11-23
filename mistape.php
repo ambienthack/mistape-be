@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.1.1
+Version: 1.1.2
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License
@@ -67,7 +67,7 @@ abstract class Abstract_Deco_Mistape {
 		'show_logo_in_caption' => 'yes',
 		'first_run'			   => 'yes'
 	);
-	protected $version			     = '1.1.1';
+	protected $version			     = '1.1.2';
 	protected $plugin_path		     = __FILE__;
 	protected $plugin_url		     = 'http://mistape.com';
 	protected $recipient_email	     = null;
