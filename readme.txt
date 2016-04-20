@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.4
-Stable tag: 1.1.2
+Tested up to: 4.5
+Stable tag: 1.1.3
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -40,6 +40,15 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.1.3 =
+* remove unnecessary token check; fixes "A problem occurred while trying to deliver your report. That's all we know" issue with caching plugins enabled
+* fix custom post types support
+* multisite: add option for new blogs to inherit main site settings (shown only on multisite installations)
+* add an option to disable Mistape caption at the bottom of post
+* add hook to allow custom front end output logic (for example, disable Mistape for specific pages/categories/tags or other conditions)
+* javascript: remove Classie library
+* various internal code improvements
+
 = 1.1.2 =
 * set maximum z-index for dialog to evade see-through effect on some themes
 * fix errors on multisite installation

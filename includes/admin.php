@@ -5,6 +5,8 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	/**
 	 * Constructor
 	 */
+	private $initialized;
+
 	public function __construct() {
 
 		parent::__construct();
@@ -12,13 +14,17 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		// admin-wide actions
 		add_action( 'admin_menu', 				array( $this, 'admin_menu_options' ) );
 		add_action( 'admin_notices', 			array( $this, 'plugin_activated_notice' ) );
-		add_action( 'after_setup_theme',        array( $this, 'init' ) );
 		add_action( 'admin_init',			    array( $this, 'register_settings' ) );
+
+		// if multisite inheritance is enabled, add corresponding action
+		if ( is_multisite() && $this->options['multisite_inheritance'] === 'yes' ) {
+			add_action( 'wpmu_new_blog', array( $this, 'activation' ) );
+		}
 
 		// Mistape page-specific actions
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'mistape' ) {
-			add_action( 'admin_enqueue_scripts',          array( $this, 'admin_load_scripts_styles' ) );
-			add_action( 'in_admin_footer',	              array( $this, 'insert_dialog' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts_styles' ) );
+			add_action( 'in_admin_footer',	     array( $this, 'insert_dialog' ) );
 		}
 
 		// filters
@@ -29,6 +35,10 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	 * Load plugin defaults
 	 */
 	public function init() {
+		if ( $this->initialized ) {
+			return;
+		}
+
 		$this->post_types = $this->get_post_types_list();
 		$this->email_recipient_types = array(
 			'admin'		=> __( 'Administrator', 'mistape' ),
@@ -38,7 +48,8 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 		$this->caption_formats = array(
 			'text'	=> __( 'Text', 'mistape' ),
-			'image' => __( 'Image', 'mistape' )
+			'image' => __( 'Image', 'mistape' ),
+			'disabled' => __( 'Do not show caption at the bottom of post', 'mistape' )
 		);
 
 		$this->caption_text_modes = array(
@@ -62,6 +73,8 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			'confirm' => __('Show preview of reported text and ask confirmation', 'mistape'),
 			'comment' => __('Preview and comment field', 'mistape'),
 		);
+
+		$this->initialized = true;
 	}
 
 	/**
@@ -77,6 +90,8 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	 * Options page output
 	 */
 	public function print_options_page() {
+		$this->init();
+
 		$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'configuration';
 
 		?>
@@ -96,8 +111,15 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 				?>
 					<p class="submit">
 						<?php submit_button( '', 'primary', 'save_mistape_options', false ); ?>
+						<span class="description alignright">
+							<?php printf(
+								__( 'Please <a href="%s" target="_blank">rate</a> our plugin', 'mistape' ),
+								'https://wordpress.org/support/view/plugin-reviews/mistape#postform'
+							); ?>
+						</span>
 					</p>
 				</form>
+
 			</div>
 			<?php
 				printf( '<div id="mistape-help" class="mistape-tab-contents" %s>', $active_tab == 'help' ? '' : 'style="display: none;" ' );
@@ -116,13 +138,17 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 		register_setting( 'mistape_options', 'mistape_options', array( $this, 'validate_options' ) );
 
 		add_settings_section( 'mistape_configuration', '', array( $this, 'section_configuration' ), 'mistape_options' );
-		add_settings_field( 'mistape_email_recipient', 		__( 'Email recipient', 'mistape' ), 	array( $this, 'field_email_recipient' ), 		'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_post_types', 			__( 'Post types', 'mistape' ), 		    array( $this, 'field_post_types' ), 			'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_register_shortcode', 	__( 'Shortcodes', 'mistape' ), 		    array( $this, 'field_register_shortcode' ), 	'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_caption_format', 		__( 'Caption format', 'mistape' ), 	    array( $this, 'field_caption_format' ), 		'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_caption_text_mode', 	__( 'Caption text mode', 'mistape' ), 	array( $this, 'field_caption_text_mode' ), 		'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_show_logo_in_caption', __( 'Mistape Logo', 'mistape' ), 	    array( $this, 'field_show_logo_in_caption' ), 	'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_dialog_mode',      	__( 'Dialog mode', 'mistape' ),     	array( $this, 'field_dialog_mode' ), 	        'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_email_recipient', 		 __( 'Email recipient', 'mistape' ), 	    array( $this, 'field_email_recipient' ), 		'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_post_types', 			 __( 'Post types', 'mistape' ), 		    array( $this, 'field_post_types' ), 			'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_register_shortcode', 	 __( 'Shortcodes', 'mistape' ), 		    array( $this, 'field_register_shortcode' ), 	'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_caption_format', 		 __( 'Caption format', 'mistape' ), 	    array( $this, 'field_caption_format' ), 		'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_caption_text_mode', 	 __( 'Caption text mode', 'mistape' ), 	    array( $this, 'field_caption_text_mode' ), 		'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_show_logo_in_caption',  __( 'Mistape Logo', 'mistape' ), 	        array( $this, 'field_show_logo_in_caption' ), 	'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_dialog_mode',      	 __( 'Dialog mode', 'mistape' ),     	    array( $this, 'field_dialog_mode' ), 	        'mistape_options', 'mistape_configuration' );
+
+		if ( is_multisite() && is_main_site() ) {
+			add_settings_field( 'mistape_multisite_inheritance', __( 'Multisite inheritance', 'mistape' ),  array( $this, 'field_multisite_inheritance' ), 	'mistape_options', 'mistape_configuration' );
+		}
 	}
 
 	/**
@@ -286,7 +312,19 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			'</label><br>';
 		}
 		echo '<button class="button" id="preview-dialog-btn">' . __('Preview dialog', 'mistape' ) . '</button>';
-		echo '<span id="preview-dialog-spinner" iclass="spinner"></span>';
+		echo '<span id="preview-dialog-spinner" class="spinner"></span>';
+	}
+
+	/**
+	 * Multisite inheritance: copy settings from main site to newly created blogs
+	 */
+	public function field_multisite_inheritance() {
+		echo '
+		<fieldset>
+			<label><input id="mistape_multisite_inheritance" type="checkbox" name="mistape_options[multisite_inheritance]" value="1" ' .
+		        checked( 'yes', $this->options['multisite_inheritance'], false ) . '/>' . __( 'Copy settings from main site when new blog is created', 'mistape' ) . '
+	        </label>
+		</fieldset>';
 	}
 
 	/**
@@ -296,6 +334,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	* @return mixed
     */
 	public function validate_options( $input ) {
+		$this->init();
 
 		if ( ! current_user_can( 'manage_options' ) )
 			return $input;
@@ -341,7 +380,7 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 					__( 'ERROR: You didn\'t select valid email recipient.' , 'mistape' ),
 					'error'
 				);
-				$input['email_recipient']['id'] = 1;
+				$input['email_recipient']['id'] = '1';
 				$input['email_recipient'] = $this->options['email_recipient'];
 			}
 
@@ -375,6 +414,8 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 			$input['show_logo_in_caption'] = $input['show_logo_in_caption'] === '1' ? 'yes' : 'no';
 
+			$input['multisite_inheritance'] = $input['multisite_inheritance'] === '1' ? 'yes' : 'no';
+
 			$input['first_run'] = 'no';
 
 		}
@@ -403,11 +444,26 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 	}
 
 	/**
-	 * Activate the plugin
+	 * Add initial options
+	 *
+	 * @param null $blog_id
 	 */
-	public function activation() {
-		add_option( 'mistape_options', $this->defaults, '', 'no' );
+	public function activation( $blog_id = null ) {
+		$blog_id = (int) $blog_id;
+
+		if ( empty( $blog_id ) )
+			$blog_id = get_current_blog_id();
+
+		if ( get_current_blog_id() == $blog_id ) {
+			add_option( 'mistape_options', $this->options, '', 'yes' );
+			add_option( 'mistape_version', $this->version, '', 'no' );
+			return;
+		}
+
+		switch_to_blog( $blog_id );
+		add_option( 'mistape_options', $this->options, '', 'yes' );
 		add_option( 'mistape_version', $this->version, '', 'no' );
+		restore_current_blog();
 	}
 
 	/**
@@ -424,15 +480,13 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 
 		// dialogfx
 		wp_enqueue_script( 'modernizr', plugins_url( 'assets/js/modernizr.custom.js', $this->plugin_path ), array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( 'mistape-dialog-classie', plugins_url( 'assets/js/classie.js', $this->plugin_path ), array( 'modernizr' ), $this->version, true );
-		wp_enqueue_script( 'mistape-dialog-dialogfx', plugins_url( 'assets/js/dialogFx.js', $this->plugin_path ), array( 'mistape-dialog-classie' ), $this->version, true );
+		wp_enqueue_script( 'mistape-dialog-dialogfx', plugins_url( 'assets/js/dialogFx.js', $this->plugin_path ), array(), $this->version, true );
 
 		// admin page script
 		wp_enqueue_script( 'mistape-admin', plugins_url( 'assets/js/admin.js', $this->plugin_path ), array( 'mistape-dialog-dialogfx' ), $this->version, true );
 		wp_localize_script(
 			'mistape-admin', 'mistape_args', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'mistape_update_dialog' ),
 			)
 		);
 	}
@@ -529,49 +583,54 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			<p class="description"><?php _e( 'Executed after Ctrl+Enter pressed and report validated, before sending email.' , 'mistape' ) ?></p></li>
 
 			<h4><?php _e( 'Filters:' , 'mistape' ) ?></h4>
-			
+
 			<ul>
 
 				<li class="mistape-hook-block">
 					<code>'mistape_caption_text', <span class="mistape-var-str">$text</span></code>
 					<p class="description"><?php _e( 'Allows to modify caption text globally (preferred over HTML filter).' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_caption_output', <span class="mistape-var-str">$html</span>, <span class="mistape-var-arr">$options</span></code></code>
 					<p class="description"><?php _e( 'Allows to modify the caption HTML before output.' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_dialog_args', <span class="mistape-var-arr">$args</span></code>
 					<p class="description"><?php _e( 'Allows to modify modal dialog strings (preferred over HTML filter).' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_dialog_output', <span class="mistape-var-str">$html</span>, <span class="mistape-var-arr">$options</span></code></code>
 					<p class="description"><?php _e( 'Allows to modify the modal dialog HTML before output.' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_mail_recipient', <span class="mistape-var-str">$recipient</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
 					<p class="description"><?php _e( 'Allows to change email recipient.' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_mail_subject', <span class="mistape-var-str">$subject</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
 					<p class="description"><?php _e( 'Allows to change email subject.' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_mail_message', <span class="mistape-var-str">$message</span>, <span class="mistape-var-str">$referrer</span>, <span class="mistape-var-obj">$user</span></code>
 					<p class="description"><?php _e( 'Allows to modify email message to send.' , 'mistape' ) ?></p>
 				</li>
-	
+
 				<li class="mistape-hook-block">
 					<code>'mistape_options', <span class="mistape-var-arr">$options</span></code>
 					<p class="description"><?php _e( 'Allows to modify global options array during initialization.' , 'mistape' ) ?></p>
 				</li>
-			
+
+				<li class="mistape-hook-block">
+					<code>'mistape_is_appropriate_post', <span class="mistape-var-bool">$result</span></code>
+					<p class="description"><?php _e( 'Allows to add custom logic for whether to output Mistape to front end or not.' , 'mistape' ) ?></p>
+				</li>
+
 			</ul>
 
 		</div>
@@ -587,6 +646,9 @@ class Deco_Mistape_Admin extends Abstract_Deco_Mistape {
 			}
 			.mistape-var-arr:before {
 				content: "arr ";
+			}
+			.mistape-var-bool:before {
+				content: "bool ";
 			}
 			.mistape-var-obj:before {
 				content: "obj ";

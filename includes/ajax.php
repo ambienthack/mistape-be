@@ -7,7 +7,6 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 	private static $context;
 	private static $replace_context;
 	private static $comment;
-	private static $nonce;
 
 	/**
 	 * Constructor
@@ -30,7 +29,6 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 		self::$context = isset( $_POST['context'] ) ? sanitize_text_field( $_POST['context'] ) : '';
 		self::$replace_context = isset( $_POST['replace_context'] ) ? sanitize_text_field( $_POST['replace_context'] ) : '';
 		self::$comment = isset( $_POST['comment'] ) ? sanitize_text_field( $_POST['comment'] ) : '';
-		self::$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : '';
 	}
 
 	/**
@@ -45,7 +43,7 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 	 */
 	public function ajax_process_report() {
 
-		if ( self::$selection && self::$nonce && wp_verify_nonce( self::$nonce, "mistape_report") ) {
+		if ( self::$selection ) {
 			// check transients for repeated reports from IP
 			$trans_name_short = 'mistape_short_ip_' . $_SERVER['REMOTE_ADDR'];
 			$trans_name_long = 'mistape_long_ip_' . $_SERVER['REMOTE_ADDR'];
@@ -161,10 +159,7 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 
 	public function ajax_update_admin_dialog() {
 
-		if ( isset( $_POST['nonce'] )
-		     && !empty( $_POST['mode'] )
-		     && wp_verify_nonce( $_POST['nonce'], "mistape_update_dialog")
-		) {
+		if ( !empty( $_POST['mode'] ) ) {
 			$args = array(
 				'mode' => $_POST['mode'],
 				'reported_text_preview' => 'Lorem <span class="mistape_mistake_highlight">upsum</span> dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'

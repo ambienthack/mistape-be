@@ -91,7 +91,6 @@
 					data: {
 						action: 'mistape_preview_dialog',
 						mode: mode,
-						nonce: mistape_args.nonce
 					},
 					success: function (response) {
 						if (response.success === true) {

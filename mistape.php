@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.1.2
+Version: 1.1.3
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License
@@ -19,22 +19,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 // exit if accessed directly
-if ( ! defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
 // load ajax-related class
-if ( defined('DOING_AJAX') && DOING_AJAX ) {
+if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 	require_once( __DIR__ . '/includes/ajax.php' );
 	$Mistape_Ajax = new Deco_Mistape_Ajax();
-}
-// conditionally load admin-related class
+} // conditionally load admin-related class
 elseif ( is_admin() ) {
 	require_once( __DIR__ . '/includes/admin.php' );
 	$Mistape_Admin = new Deco_Mistape_Admin();
 	register_activation_hook( __FILE__, array( $Mistape_Admin, 'activation' ) );
 	register_uninstall_hook( __FILE__, array( 'Abstract_Deco_Mistape', 'uninstall_cleanup' ) );
-}
-else {
+} else {
 	// or frontend class
 	require_once( __DIR__ . '/includes/front.php' );
 	$mistape = new Deco_Mistape();
@@ -51,35 +50,36 @@ abstract class Abstract_Deco_Mistape {
 	 * @var $defaults
 	 */
 	protected $defaults = array(
-		'email_recipient'		 => array(
-			'type' => 'admin',
-			'id' => '1',
-			'email' => '',
+		'email_recipient'       => array(
+			'type'              => 'admin',
+			'id'                => '1',
+			'email'             => '',
 			'post_author_first' => 'yes'
 		),
-		'post_types' 		   => array(),
-		'register_shortcode'   => false,
-		'caption_format'	   => 'text',
-		'caption_text_mode'	   => 'default',
-		'custom_caption_text'  => '',
-		'dialog_mode'          => 'confirm',
-		'caption_image_url'	   => '',
-		'show_logo_in_caption' => 'yes',
-		'first_run'			   => 'yes'
+		'post_types'            => array(),
+		'register_shortcode'    => 'no',
+		'caption_format'        => 'text',
+		'caption_text_mode'     => 'default',
+		'custom_caption_text'   => '',
+		'dialog_mode'           => 'confirm',
+		'caption_image_url'     => '',
+		'show_logo_in_caption'  => 'yes',
+		'first_run'             => 'yes',
+		'multisite_inheritance' => 'no'
 	);
-	protected $version			     = '1.1.2';
-	protected $plugin_path		     = __FILE__;
-	protected $plugin_url		     = 'http://mistape.com';
-	protected $recipient_email	     = null;
+	protected $version = '1.1.3';
+	protected $plugin_path = __FILE__;
+	protected $plugin_url = 'http://mistape.com';
+	protected $recipient_email = null;
 	protected $email_recipient_types = array();
-	protected $caption_formats	     = array();
-	protected $dialog_modes	         = array();
-	protected $post_types		     = array();
-	protected $options 			     = array();
-	protected $default_caption_text  = null;
-	protected $caption_text		     = null;
-	protected $caption_text_modes    = null;
-	protected $success_text		     = null;
+	protected $caption_formats = array();
+	protected $dialog_modes = array();
+	protected $post_types = array();
+	protected $options = array();
+	protected $default_caption_text = null;
+	protected $caption_text = null;
+	protected $caption_text_modes = null;
+	protected $success_text = null;
 
 	/**
 	 * Constructor
@@ -87,11 +87,13 @@ abstract class Abstract_Deco_Mistape {
 	public function __construct() {
 
 		// settings
-		$this->options = apply_filters( 'mistape_options', wp_parse_args( (array) get_option( 'mistape_options', $this->defaults ) ), $this->defaults );
+		$options       = get_option( 'mistape_options', $this->defaults );
+		$options       = is_array( $options ) ? $options : array();
+		$this->options = apply_filters( 'mistape_options', array_merge( $this->defaults, $options ) );
 
 		// actions
-		add_action( 'plugins_loaded', 			array( $this, 'load_textdomain' ) );
-		add_action( 'after_setup_theme',		array( $this, 'load_defaults' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+		add_action( 'after_setup_theme', array( $this, 'load_defaults' ) );
 	}
 
 	/**
@@ -99,7 +101,7 @@ abstract class Abstract_Deco_Mistape {
 	 */
 	public function load_defaults() {
 		$this->default_caption_text = __( 'If you have found a spelling error, please, notify us by selecting that text and pressing <em>Ctrl+Enter</em>.', 'mistape' );
-		$this->caption_text = apply_filters( 'mistape_caption_text',
+		$this->caption_text         = apply_filters( 'mistape_caption_text',
 			$this->options['caption_text_mode'] == 'custom' && isset( $this->options['custom_caption_text'] ) ? $this->options['custom_caption_text'] : $this->default_caption_text
 		);
 	}
@@ -124,11 +126,9 @@ abstract class Abstract_Deco_Mistape {
 	public function get_recipient_email() {
 		if ( $this->options['email_recipient']['type'] == 'other' && $this->options['email_recipient']['email'] ) {
 			$email = $this->options['email_recipient']['email'];
-		}
-		elseif ( $this->options['email_recipient']['type'] != 'other' && $this->options['email_recipient']['id'] ) {
+		} elseif ( $this->options['email_recipient']['type'] != 'other' && $this->options['email_recipient']['id'] ) {
 			$email = get_the_author_meta( 'user_email', $this->options['email_recipient']['id'] );
-		}
-		else {
+		} else {
 			$email = get_bloginfo( 'admin_email' );
 		}
 
@@ -144,23 +144,23 @@ abstract class Abstract_Deco_Mistape {
 	 */
 	public function get_dialog_html( $args = array() ) {
 
-		$mode = isset( $args['mode'] ) ? $args['mode'] : $this->options['dialog_mode'];
+		$mode     = isset( $args['mode'] ) ? $args['mode'] : $this->options['dialog_mode'];
 		$defaults = array(
-			'wrap'   => true,
+			'wrap'    => true,
 			'mode'    => $mode,
-			'title'	  => __( 'Thanks!', 'mistape' ),
+			'title'   => __( 'Thanks!', 'mistape' ),
 			'message' => __( 'Our editors are notified.', 'mistape' ),
-			'close'	  => __( 'Close', 'mistape' ),
+			'close'   => __( 'Close', 'mistape' ),
 		);
 
 		if ( $mode != 'notify' ) {
-			$defaults['reported_text'] = '';
-			$defaults['context'] = '';
-			$defaults['title'] = __( 'Spelling error report', 'mistape' );
-			$defaults['message'] = __( 'The following text will be sent to our editors:', 'mistape' );
+			$defaults['reported_text']         = '';
+			$defaults['context']               = '';
+			$defaults['title']                 = __( 'Spelling error report', 'mistape' );
+			$defaults['message']               = __( 'The following text will be sent to our editors:', 'mistape' );
 			$defaults['reported_text_preview'] = '';
-			$defaults['cancel'] = __( 'Cancel', 'mistape' );
-			$defaults['send'] = __( 'Send', 'mistape' );
+			$defaults['cancel']                = __( 'Cancel', 'mistape' );
+			$defaults['send']                  = __( 'Send', 'mistape' );
 		}
 
 		$args = apply_filters( 'mistape_dialog_args', wp_parse_args( $args, $defaults ) );
@@ -180,11 +180,10 @@ abstract class Abstract_Deco_Mistape {
 				    <a class="mistape_action" data-dialog-close role="button">' . $args['close'] . '</a>
 				 </div>
 			 </div>';
-		}
-		else {
+		} else {
 			$output .=
 				'<div id="mistape_confirm_dialog" class="mistape_dialog_screen">' .
-					'<h2>' . $args['title'] . '</h2>
+				'<h2>' . $args['title'] . '</h2>
 					 <div class="mistape_dialog_block">' . '
 						<h3>' . $args['message'] . '</h3>' . '
 						<div id="mistape_reported_text">' . $args['reported_text_preview'] . '</div>

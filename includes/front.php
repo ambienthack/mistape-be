@@ -2,6 +2,8 @@
 
 class Deco_Mistape extends Abstract_Deco_Mistape {
 
+	private $is_appropriate_post;
+
 	function __construct() {
 
 		if ( ! static::is_appropriate_useragent() ) {
@@ -15,7 +17,6 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		}
 
 		// actions
-//		add_action( 'after_setup_theme',  array( $this, 'init' ) );
 		add_action( 'wp_footer', array( $this, 'insert_dialog' ), 1000 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_load_scripts_styles' ) );
 
@@ -32,19 +33,20 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 * Handle shortcode
 	 *
 	 * @param $atts
+	 *
 	 * @return string
 	 */
 	public function render_shortcode( $atts ) {
 
 		$atts = shortcode_atts(
-				array(
-						'format' => $this->options['caption_format'],
-						'class'  => 'mistape_caption',
-						'image'  => '',
-						'text'   => $this->caption_text,
-				),
-				$atts,
-				'mistape'
+			array(
+				'format' => $this->options['caption_format'],
+				'class'  => 'mistape_caption',
+				'image'  => '',
+				'text'   => $this->caption_text,
+			),
+			$atts,
+			'mistape'
 		);
 
 		if ( $atts['format'] == 'image' && ! empty( $this->options['caption_image_url'] ) || $atts['format'] != 'text' && ! empty( $atts['image'] ) ) {
@@ -73,12 +75,14 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		wp_enqueue_script( 'modernizr', plugins_url( 'assets/js/modernizr.custom.js', $this->plugin_path ), array( 'jquery' ), $this->version, true );
 
 		// frontend script (combined)
-		wp_enqueue_script( 'mistape-front', plugins_url( 'assets/js/mistape-front.js', $this->plugin_path ), array( 'jquery', 'modernizr' ), $this->version, true );
+		wp_enqueue_script( 'mistape-front', plugins_url( 'assets/js/mistape-front.js', $this->plugin_path ), array(
+			'jquery',
+			'modernizr'
+		), $this->version, true );
 		wp_localize_script(
-				'mistape-front', 'mistape_args', array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-						'nonce'   => wp_create_nonce( 'mistape_report' ),
-				)
+			'mistape-front', 'mistape_args', array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			)
 		);
 	}
 
@@ -86,9 +90,13 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 	 * Add Mistape caption to post content
 	 *
 	 * @param $content
+	 *
 	 * @return string
 	 */
 	public function append_caption_to_content( $content ) {
+		if ( ( $format = $this->options['caption_format'] ) == 'disabled' ) {
+			return $content;
+		}
 
 		if ( ! $this->is_appropriate_post() ) {
 			return $content;
@@ -102,8 +110,6 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		if ( $content !== $raw_post_content ) {
 			return $content;
 		}
-
-		$format = $this->options['caption_format'];
 
 		if ( $format == 'text' ) {
 			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></span>' : '';
@@ -164,18 +170,20 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 
 	public function is_appropriate_post() {
 
-		// a bit inefficient logic is necessary for some illogical themes and plugins
-		if ( ( is_single() && in_array( get_post_type(), $this->options['post_types'] ) )
-		     || ( is_page() && in_array( 'page', $this->options['post_types'] ) )
-		) {
-			if ( post_password_required() ) {
-				return false;
+		if ( is_null( $this->is_appropriate_post ) ) {
+			$result = false;
+
+			// a bit inefficient logic is necessary for some illogical themes and plugins
+			if ( ( ( is_single() && in_array( get_post_type(), $this->options['post_types'] ) )
+			       || ( is_page() && in_array( 'page', $this->options['post_types'] ) ) ) && ! post_password_required()
+			) {
+				$result = true;
 			}
 
-			return true;
+			$this->is_appropriate_post = apply_filters( 'mistape_is_appropriate_post', $result );
 		}
 
-		return false;
+		return $this->is_appropriate_post;
 	}
 
 
