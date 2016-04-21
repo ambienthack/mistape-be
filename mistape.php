@@ -124,12 +124,19 @@ abstract class Abstract_Deco_Mistape {
 	 * Get recipient email
 	 */
 	public function get_recipient_email() {
-		if ( $this->options['email_recipient']['type'] == 'other' && $this->options['email_recipient']['email'] ) {
-			$email = $this->options['email_recipient']['email'];
-		} elseif ( $this->options['email_recipient']['type'] != 'other' && $this->options['email_recipient']['id'] ) {
-			$email = get_the_author_meta( 'user_email', $this->options['email_recipient']['id'] );
-		} else {
-			$email = get_bloginfo( 'admin_email' );
+		if ( $this->options['email_recipient']['post_author_first'] == 'yes' && $post_id = url_to_postid( $_SERVER['HTTP_REFERER'] ) ) {
+			$post = get_post( $post_id );
+			$author_id = $post->post_author;
+			$email = get_the_author_meta( 'user_email', $author_id );
+		}
+		else {
+			if ( $this->options['email_recipient']['type'] == 'other' && $this->options['email_recipient']['email'] ) {
+				$email = $this->options['email_recipient']['email'];
+			} elseif ( $this->options['email_recipient']['type'] != 'other' && $this->options['email_recipient']['id'] ) {
+				$email = get_the_author_meta( 'user_email', $this->options['email_recipient']['id'] );
+			} else {
+				$email = get_bloginfo( 'admin_email' );
+			}
 		}
 
 		return $email;

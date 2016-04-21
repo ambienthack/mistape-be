@@ -15,13 +15,18 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 
 		parent::__construct();
 
-		// actions
-		add_action( 'after_setup_theme',                    array( $this, 'init' ) );
 		// frontend
 		add_action( 'wp_ajax_mistape_report_error',         array( $this, 'ajax_process_report' ) );
 		add_action( 'wp_ajax_nopriv_mistape_report_error',  array( $this, 'ajax_process_report' ) );
 		// admin preview
 		add_action( 'wp_ajax_mistape_preview_dialog',       array( $this, 'ajax_update_admin_dialog' ) );
+	}
+
+	/**
+	 * Load plugin defaults
+	 */
+	public function init() {
+		$this->recipient_email = $this->get_recipient_email();
 
 		// sanitize $_POST
 		self::$selection = isset( $_POST['selection'] ) ? sanitize_text_field( $_POST['selection'] ) : '';
@@ -32,132 +37,127 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 	}
 
 	/**
-	 * Load plugin defaults
-	 */
-	public function init() {
-		$this->recipient_email = $this->get_recipient_email();
-	}
-
-	/**
 	 * Handle AJAX reports
 	 */
 	public function ajax_process_report() {
+		$this->init();
 
-		if ( self::$selection ) {
-			// check transients for repeated reports from IP
-			$trans_name_short = 'mistape_short_ip_' . $_SERVER['REMOTE_ADDR'];
-			$trans_name_long = 'mistape_long_ip_' . $_SERVER['REMOTE_ADDR'];
-			$trans_5min = get_transient( $trans_name_short );
-			$trans_30min = get_transient( $trans_name_long );
-			$trans_5min = is_numeric( $trans_5min ) ? (int) $trans_5min : 0;
-			$trans_30min = is_numeric( $trans_30min ) ? (int) $trans_30min : 0;
+		if ( ! self::$selection ) {
+			wp_send_json_error( $this->get_dialog_html( array(
+				'wrap' => false,
+				'mode' => 'notify',
+				'title'	  => __( 'Report not sent', 'mistape' ),
+				'message' => __( 'No text selected.', 'mistape' ),
+			) ) );
+		}
 
-			if ( $trans_5min > 5 || $trans_30min > 30 ) {
+		// check transients for repeated reports from IP
+		$trans_name_short = 'mistape_short_ip_' . $_SERVER['REMOTE_ADDR'];
+		$trans_name_long = 'mistape_long_ip_' . $_SERVER['REMOTE_ADDR'];
+		$trans_5min = get_transient( $trans_name_short );
+		$trans_30min = get_transient( $trans_name_long );
+		$trans_5min = is_numeric( $trans_5min ) ? (int) $trans_5min : 0;
+		$trans_30min = is_numeric( $trans_30min ) ? (int) $trans_30min : 0;
+
+		if ( $trans_5min > 5 || $trans_30min > 30 ) {
+			wp_send_json_error( $this->get_dialog_html( array(
+				'wrap'    => false,
+				'mode'    => 'notify',
+				'title'   => __( 'Report not sent', 'mistape' ),
+				'message' => __( 'Spam protection: too many reports from your IP address.', 'mistape' ),
+			) ) );
+		}
+		else {
+			$trans_5min++;
+			$trans_30min++;
+
+			set_transient( $trans_name_short, $trans_5min, 300 );
+			set_transient( $trans_name_long,  $trans_30min, 1800 );
+
+			if ( self::$context && self::$replace_context && self::$word
+			     && false !== strpos( self::$word, self::$selection )
+			     && false !== strpos( self::$replace_context, self::$word )
+			) {
+
+				$text_inner = str_replace( $this::$selection, '<strong style="color: #C94E50;">' . self::$selection . '</strong>', self::$word );
+				$text_outer = str_replace( self::$replace_context, '<span style="background-color: #EFEFEF;">' . $text_inner . '</span>', self::$word );
+				$reported_text = str_replace( self::$replace_context, $text_outer, self::$context );
+			}
+			elseif ( isset( self::$context, self::$word ) && false !== strpos( self::$context, self::$word ) ) {
+				$reported_text = str_replace( self::$word, '<strong style="color: #C94E50; background-color: #EFEFEF;">' . self::$word . '</strong>', self::$context );
+			}
+			else {
+				$reported_text = self::$selection;
+			}
+
+			do_action( 'mistape_process_report', $reported_text, $_POST['context'] );
+
+			$url = wp_get_referer();
+			$post_id = url_to_postid( $url );
+			$user = wp_get_current_user();
+
+			$to = $this->recipient_email;
+			$subject = __( 'Spelling error reported' , 'mistape' );
+
+			// referrer
+			$message = '<p>' . __( 'Reported from page:' , 'mistape' ) . ' ';
+			$message .= !empty( $url ) ? '<a href="' . $url . '">' . urldecode( $url ) . '</a>' : _x( 'unknown' , '[Email] Reported from page: unknown', 'mistape' );
+			$message .= "</p>\n";
+
+			// post edit link
+			if( $post_id ) {
+				if ( $this->options['email_recipient']['post_author_first'] == 'yes' ) {
+					$post_author_id = get_post_field( 'post_author', $post_id );
+					// override default email recipient with post author's one
+					$to = get_the_author_meta( 'user_email', $post_author_id );
+				}
+				if ( $edit_post_link = $this->get_edit_post_link( $post_id, 'raw' ) ) {
+					$message .= '<p>' . __( 'Post edit URL:', 'mistape' ) . ' <a href="' . $edit_post_link . '">' . $edit_post_link . "</a></p>\n";
+				}
+			}
+
+			// reported by
+			if( $user->ID ) {
+				$message .= '<p>' . __( 'Reported by:' , 'mistape' ) . ' ' . $user->display_name. ' (<a href="mailto:' . $user->data->user_email . '">' . $user->data->user_email . "</a>)</p>\n";
+			}
+			// reported text
+			$message .= '<h3>' . __( 'Reported text' , 'mistape' ) . ":</h3>\n";
+			$message .= '<div style="padding: 8px; border: 1px solid #eee; font-size: 18px; line-height: 26px"><code>' . $reported_text . "</code></div>\n";
+
+			if ( self::$comment ) {
+				$message .= '<h3>' . __( 'Comment:', 'mistape' ) . "</h3>\n";
+				$message .= '<div style="padding: 8px; border: 1px solid #eee; font-size: 14px; line-height: 20px">' . self::$comment . "</div>\n";
+			}
+
+			$headers = array('Content-Type: text/html; charset=UTF-8');
+
+			$to = apply_filters( 'mistape_mail_recipient', $to, $url, $user );
+			$subject = apply_filters( 'mistape_mail_subject', $subject, $url, $user );
+			$message = apply_filters( 'mistape_mail_message', $message, $url, $user );
+
+			$result = wp_mail( $to, $subject, $message, $headers );
+
+			if ( $result ) {
+				wp_send_json_success( $this->get_dialog_html( array(
+					'wrap' => false,
+					'mode' => 'notify',
+					'title'	  => __( 'Thanks!', 'mistape' ),
+					'message' => __( 'Our editors are notified.', 'mistape' ),
+				) ) );
+			}
+			else {
 				wp_send_json_error( $this->get_dialog_html( array(
 					'wrap'    => false,
 					'mode'    => 'notify',
 					'title'   => __( 'Report not sent', 'mistape' ),
-					'message' => __( 'Spam protection: too many reports from your IP address.', 'mistape' ),
+					'message' => __( "Email service returned an error while trying to deliver your report.", 'mistape' ),
 				) ) );
 			}
-			else {
-				$trans_5min++;
-				$trans_30min++;
-
-				set_transient( $trans_name_short, $trans_5min, 300 );
-				set_transient( $trans_name_long,  $trans_30min, 1800 );
-
-				if ( self::$context && self::$replace_context && self::$word
-				     && false !== strpos( self::$word, self::$selection )
-				     && false !== strpos( self::$replace_context, self::$word )
-				) {
-
-					$text_inner = str_replace( $this::$selection, '<strong style="color: #C94E50;">' . self::$selection . '</strong>', self::$word );
-					$text_outer = str_replace( self::$replace_context, '<span style="background-color: #EFEFEF;">' . $text_inner . '</span>', self::$word );
-					$reported_text = str_replace( self::$replace_context, $text_outer, self::$context );
-				}
-				elseif ( isset( self::$context, self::$word ) && false !== strpos( self::$context, self::$word ) ) {
-					$reported_text = str_replace( self::$word, '<strong style="color: #C94E50; background-color: #EFEFEF;">' . self::$word . '</strong>', self::$context );
-				}
-				else {
-					$reported_text = self::$selection;
-				}
-
-				do_action( 'mistape_process_report', $reported_text, $_POST['context'] );
-
-				$url = wp_get_referer();
-				$post_id = url_to_postid( $url );
-				$user = wp_get_current_user();
-
-				$to = $this->recipient_email;
-				$subject = __( 'Spelling error reported' , 'mistape' );
-
-				// referrer
-				$message = '<p>' . __( 'Reported from page:' , 'mistape' ) . ' ';
-				$message .= !empty( $url ) ? '<a href="' . $url . '">' . urldecode( $url ) . '</a>' : _x( 'unknown' , '[Email] Reported from page: unknown', 'mistape' );
-				$message .= "</p>\n";
-
-				// post edit link
-				if( $post_id ) {
-					if ( $this->options['email_recipient']['post_author_first'] == 'yes' ) {
-						$post_author_id = get_post_field( 'post_author', $post_id );
-						// override default email recipient with post author's one
-						$to = get_the_author_meta( 'user_email', $post_author_id );
-					}
-					if ( $edit_post_link = $this->get_edit_post_link( $post_id, 'raw' ) ) {
-						$message .= '<p>' . __( 'Post edit URL:', 'mistape' ) . ' <a href="' . $edit_post_link . '">' . $edit_post_link . "</a></p>\n";
-					}
-				}
-
-				// reported by
-				if( $user->ID ) {
-					$message .= '<p>' . __( 'Reported by:' , 'mistape' ) . ' ' . $user->display_name. ' (<a href="mailto:' . $user->data->user_email . '">' . $user->data->user_email . "</a>)</p>\n";
-				}
-				// reported text
-				$message .= '<h3>' . __( 'Reported text' , 'mistape' ) . ":</h3>\n";
-				$message .= '<div style="padding: 8px; border: 1px solid #eee; font-size: 18px; line-height: 26px"><code>' . $reported_text . "</code></div>\n";
-
-				if ( self::$comment ) {
-					$message .= '<h3>' . __( 'Comment:', 'mistape' ) . "</h3>\n";
-					$message .= '<div style="padding: 8px; border: 1px solid #eee; font-size: 14px; line-height: 20px">' . self::$comment . "</div>\n";
-				}
-
-				$headers = array('Content-Type: text/html; charset=UTF-8');
-
-				$to = apply_filters( 'mistape_mail_recipient', $to, $url, $user );
-				$subject = apply_filters( 'mistape_mail_subject', $subject, $url, $user );
-				$message = apply_filters( 'mistape_mail_message', $message, $url, $user );
-
-				$result = wp_mail( $to, $subject, $message, $headers );
-
-				if ( $result ) {
-					wp_send_json_success( $this->get_dialog_html( array(
-						'wrap' => false,
-						'mode' => 'notify',
-						'title'	  => __( 'Thanks!', 'mistape' ),
-						'message' => __( 'Our editors are notified.', 'mistape' ),
-					) ) );
-				}
-				else {
-					wp_send_json_error( $this->get_dialog_html( array(
-						'wrap'    => false,
-						'mode'    => 'notify',
-						'title'   => __( 'Report not sent', 'mistape' ),
-						'message' => __( "A problem occurred while trying to deliver your report. That's all we know.", 'mistape' ),
-					) ) );
-				}
-			}
 		}
-
-		wp_send_json_error( $this->get_dialog_html( array(
-			'wrap' => false,
-			'mode' => 'notify',
-			'title'	  => __( 'Report not sent', 'mistape' ),
-			'message' => __( 'Security error. Please refresh the page and try again.', 'mistape' ),
-		) ) );
 	}
 
 	public function ajax_update_admin_dialog() {
+		$this->init();
 
 		if ( !empty( $_POST['mode'] ) ) {
 			$args = array(
