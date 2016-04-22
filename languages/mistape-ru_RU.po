@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mistape\n"
 "POT-Creation-Date: 2016-04-20 15:11+0300\n"
-"PO-Revision-Date: 2016-04-20 15:12+0300\n"
+"PO-Revision-Date: 2016-04-21 17:47+0300\n"
 "Last-Translator: Bohdan Maximenko <b.maximenko@gmail.com>\n"
 "Language-Team: decollete <hello@deco.agency>\n"
 "Language: ru_RU\n"
@@ -87,7 +87,7 @@ msgstr "Справка"
 #: includes/admin.php:116
 #, php-format
 msgid "Please <a href=\"%s\" target=\"_blank\">rate</a> our plugin"
-msgstr "Пожалуйста, <a href=\"%s\" target=\"_blank\">оцените </a>наш плагин"
+msgstr "Пожалуйста, <a href=\"%s\" target=\"_blank\">оцените</a>наш плагин"
 
 #: includes/admin.php:141
 msgid "Email recipient"

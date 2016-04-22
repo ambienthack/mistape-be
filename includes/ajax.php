@@ -7,6 +7,16 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 	private static $context;
 	private static $replace_context;
 	private static $comment;
+	private static $supported_actions = array(
+		'mistape_report_error',
+		'mistape_preview_dialog'
+	);
+
+	public static function maybe_instantiate() {
+		if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], self::$supported_actions ) ) {
+			new self;
+		}
+	}
 
 	/**
 	 * Constructor
@@ -157,8 +167,6 @@ class Deco_Mistape_Ajax extends Abstract_Deco_Mistape {
 	}
 
 	public function ajax_update_admin_dialog() {
-		$this->init();
-
 		if ( !empty( $_POST['mode'] ) ) {
 			$args = array(
 				'mode' => $_POST['mode'],

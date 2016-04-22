@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.1.3
+Version: 1.1.4
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // load ajax-related class
 if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 	require_once( __DIR__ . '/includes/ajax.php' );
-	$Mistape_Ajax = new Deco_Mistape_Ajax();
+	Deco_Mistape_Ajax::maybe_instantiate();
 } // conditionally load admin-related class
 elseif ( is_admin() ) {
 	require_once( __DIR__ . '/includes/admin.php' );
@@ -67,7 +67,7 @@ abstract class Abstract_Deco_Mistape {
 		'first_run'             => 'yes',
 		'multisite_inheritance' => 'no'
 	);
-	protected $version = '1.1.3';
+	protected $version = '1.1.4';
 	protected $plugin_path = __FILE__;
 	protected $plugin_url = 'http://mistape.com';
 	protected $recipient_email = null;
