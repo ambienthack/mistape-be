@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.5
-Stable tag: 1.1.4
+Tested up to: 4.5.3
+Stable tag: 1.2.0
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -40,6 +40,14 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.2.0
+* new dialog box design (send action is now animated).
+* introduce database table for saving reports. Used for checking for duplicates — you will not get multiple reports about the same error anymore.
+* Introduce support for addons.
+* (for developers) arguments for "mistape_process_report" action were changed.
+* fixed textdomain plugin initialization.
+* lots of improvements under the hood.
+
 = 1.1.4 =
 * fix "if post ID is determined, notify post author instead" feature functionality
 * optimize AJAX calls handling

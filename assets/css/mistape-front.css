@@ -68,12 +68,52 @@
 	-webkit-backface-visibility: hidden;
 }
 
+#mistape_dialog .dialog__content .dialog-wrap {
+	perspective: 800px;
+	transition: transform 0.5s;
+}
+#mistape_dialog .dialog__content .dialog-wrap .dialog-wrap-top {
+	padding: 30px 30px 0;
+	background: #fff;
+	transform-origin: 50% 100%;
+	transition: transform 0.5s;
+	position: relative;
+	z-index: 1;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+#mistape_dialog .dialog__content .dialog-wrap .dialog-wrap-top::after{
+	content: '';
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: #fff;
+	top: 0;
+	left: 0;
+	transform: rotateX( 180deg );
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+#mistape_dialog .dialog__content .dialog-wrap .dialog-wrap-bottom .comment {
+	margin-top: 0;
+}
+#mistape_dialog .dialog__content .dialog-wrap .dialog-wrap-bottom {
+	padding: 31px 30px 45px;
+	background: #fff;
+	transition: background 0.4s;
+	transform: translate3d(0,0,0) translateZ(0);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	margin-top: -1px;
+}
+
 #mistape_dialog .dialog__content {
 	width: 50%;
 	max-width: 560px;
 	min-width: 290px;
-	background: #fff;
-	padding: 3em;
 	text-align: center;
 	position: relative;
 	opacity: 0;
@@ -92,35 +132,62 @@
 }
 
 #mistape_reported_text {
-	padding: 10px;
-	border: 1px solid #eee;
+	padding: 5px 10px;
+	position: relative;
+	z-index: 0;
+	font-weight: normal;
+}
+#mistape_reported_text::before {
+	content: '';
+	width: 15px;
+	height: 15px;
+	border-top: solid 2px #E42029;
+	border-left: solid 2px #E42029;
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	left: 0;
+}
+#mistape_reported_text::after {
+	content: '';
+	width: 15px;
+	height: 15px;
+	border-bottom: solid 2px #E42029;
+	border-right: solid 2px #E42029;
+	position: absolute;
+	z-index: -1;
+	bottom: 0;
+	right: 0;
 }
 
 #mistape_reported_text .mistape_mistake_outer {
-	background-color: #EFEFEF;
+	background-color: #F5F5F5;
 	color: #111;
+	font-weight: normal;
+	padding: 0 3px;
 }
 
 #mistape_reported_text .mistape_mistake_inner {
-	color: #C94E50;
+	color: #E42029;
+	font-weight: normal;
 }
 
 textarea#mistape_comment {
 	width: 100%;
 	resize: none;
 	font-size: 14px;
-	padding: 3px 6px;
+	padding: 4px 6px;
 	line-height: 1.4;
 	box-sizing: border-box;
-	background: #f7f7f7;
 	border: 1px solid #ddd;
 	border-radius: 0;
-	color: #686868;
+	color: #8E8E8E;
+	transition: border 0.3s, color 0.3s, background 0.4s;
 }
 
 textarea#mistape_comment:focus {
 	background-color: #fff;
-	border-color: #c94e50;
+	border-color: #949494;
 	color: #1a1a1a;
 	outline: 0;
 }
@@ -128,7 +195,6 @@ textarea#mistape_comment:focus {
 #mistape_dialog .mistape_dialog_block {
 	margin-top: 20px;
 }
-
 #mistape_dialog .pos-relative {
 	position: relative;
 }
@@ -147,16 +213,18 @@ textarea#mistape_comment:focus {
 
 #mistape_dialog .mistape_action{
 	display: inline-block;
-	min-width: 50px;
 	cursor: pointer;
 	padding: 11px 25px;
 	margin: 0 5px;
 	font-weight: 600;
 	border: none;
 	color: #fff;
-	background: #c94e50;
+	background: #E42029;
 	text-decoration: none;
 	user-select: none;
+	text-transform: uppercase;
+	font-size: 13px;
+	min-width: 150px;
 }
 
 #mistape_dialog .mistape_action:hover{
@@ -167,15 +235,36 @@ textarea#mistape_comment:focus {
 #mistape_dialog h2 {
 	margin: 0;
 	font-weight: 400;
-	font-size: 2em;
-	padding: 0 0 1em;
+	font-size: 22px;
+	padding: 0 0 20px;
+	position: relative;
+}
+
+#mistape_dialog h2::before {
+	content: '';
+	height: 1px;
+	width: 60px;
+	position: absolute;
+	bottom: 0;
+	left: calc(50% - 30px);
+	background: #E42029;
 }
 
 #mistape_dialog h3 {
 	margin: 0;
-	font-weight: 400;
-	font-size: 1em;
+	font-weight: 300;
+	font-size: 14px;
+	text-transform: none;
 	padding: 0 0 1em;
+	color: #BFBFBF;
+}
+
+#mistape_success_dialog .dialog-wrap{
+	background: #fff;
+	padding: 30px;
+}
+#mistape_success_dialog .dialog-wrap h3{
+	margin-top: 20px;
 }
 
 /* Sandra animation effect */
@@ -209,12 +298,12 @@ textarea#mistape_comment:focus {
 
 @-webkit-keyframes anim-close {
 	0% { opacity: 1; }
-	100% { opacity: 0; -webkit-transform: scale3d(0.9, 0.9, 1); }
+	100% { opacity: 0;  }
 }
 
 @keyframes anim-close {
 	0% { opacity: 1; }
-	100% { opacity: 0; -webkit-transform: scale3d(0.9, 0.9, 1); transform: scale3d(0.9, 0.9, 1); }
+	100% { opacity: 0;  }
 }
 
 @-moz-keyframes spin {
@@ -230,4 +319,150 @@ textarea#mistape_comment:focus {
 @keyframes spin {
 	from {transform:rotate(0deg);}
 	to {transform:rotate(360deg);}
+}
+
+
+
+
+
+/*Mistape Letter*/
+
+.mistape-letter{
+	width: 640px;
+	height: 400px;
+	top: calc(50% - 200px);
+	position: absolute;
+}
+
+.mistape-letter-front{
+	width: 304px;
+	height: 190px;
+	background: url(../img//letter-front.svg) no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+	bottom: 0;
+	z-index: 4;
+	left: calc(50% - 152px);
+	transform: scale(0.145);
+	transform-origin: 50% 100%;
+	opacity: 0;
+	transition: transform 0.4s, opacity 0.15s;
+}
+
+.mistape-letter-back{
+	width: 304px;
+	height: 190px;
+	background: url(../img/letter-back.svg) no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+	z-index: 2;
+	bottom: 0;
+	left: calc(50% - 152px);
+	transition: transform 0.4s, opacity 0.15s;
+	transform: scale(0.145);
+	transform-origin: 50% 100%;
+	opacity: 0;
+}
+.mistape-letter-back > .mistape-letter-back-top{
+	width: 304px;
+	height: 95px;
+	background: url(../img/letter-t2.svg) no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+	z-index: 2;
+	bottom: 100%;
+	left: calc(50% - 152px);
+	transition: transform 0.4s;
+	transform-origin: 50% 100%;
+	transform: rotateX(-180deg);
+}
+.mistape-letter-top{
+	width: 304px;
+	height: 95px;
+	background: url(../img/letter-t2.svg) no-repeat;
+	background-size: 100% 100%;
+	position: absolute;
+	z-index: 2;
+	bottom: 0;
+	opacity: 0;
+	left: calc(50% - 152px);
+	transition: transform 0.3s;
+	transform-origin: 50% 100%;
+	transform: rotateX(0deg);
+
+}
+.mistape-letter-top.close {
+	transform: rotateX(-180deg);
+}
+#mistape_dialog .dialog__content .dialog-wrap{
+	z-index: 3;
+	position: relative;
+}
+
+#mistape_dialog .dialog__content.show-letter .mistape-letter-back,
+#mistape_dialog .dialog__content.show-letter .mistape-letter-front{
+	transform: scale(1) translateY(15%);
+	opacity: 1;
+}
+#mistape_dialog .dialog__content.show-letter .mistape-letter-back > .mistape-letter-back-top{
+	transform: rotateX(0deg);
+}
+#mistape_dialog .dialog__content.show-letter .dialog-wrap .dialog-wrap-top{
+	transform: rotateX(-180deg);
+}
+#mistape_dialog .dialog__content.show-letter .dialog-wrap .dialog-wrap-bottom{
+	background: #c1c1c1;
+}
+#mistape_dialog .dialog__content.show-letter .dialog-wrap .dialog-wrap-bottom textarea{
+	background: #c1c1c1;
+}
+#mistape_dialog .dialog__content.show-letter .dialog-wrap{
+	transform: translateY(-150%);
+}
+#mistape_dialog .dialog__content.show-letter.with-comment .dialog-wrap{
+	transform: translateY(-50%);
+}
+#mistape_dialog .mistape_action[data-action="send"]{
+	position: relative;
+	z-index: 8;
+}
+#mistape_dialog .dialog__content.show-letter .mistape_action[data-action="send"]{
+	transition-delay: 0.3s;
+	transition: visibility 0.1s, opacity 0.1s;
+	visibility: hidden!important;
+	opacity: 0!important;
+}
+
+
+@keyframes send-letter1 {
+	0% { transform: translateX(0) translateY(15%); }
+	20% { transform: translateX(-60%) translateY(15%); }
+	100% { transform: translateX(100vw) translateY(15%); }
+}
+
+@-moz-keyframes send-letter1 {
+	0% { transform: translateX(0) translateY(15%); }
+	20% { transform: translateX(-60%) translateY(15%); }
+	100% { transform: translateX(100vw) translateY(15%); }
+}
+@-webkit-keyframes send-letter1 {
+	0% { transform: translateX(0) translateY(15%); }
+	20% { transform: translateX(-60%) translateY(15%); }
+	100% { transform: translateX(100vw) translateY(15%); }
+}
+
+@keyframes send-letter2 {
+	0% { transform: translateX(0) rotateX(-180deg); }
+	20% { transform: translateX(-60%) rotateX(-180deg); }
+	100% { transform: translateX(100vw) rotateX(-180deg); }
+}
+@-moz-keyframes send-letter2 {
+	0% { transform: translateX(0) rotateX(-180deg); }
+	20% { transform: translateX(-60%) rotateX(-180deg); }
+	100% { transform: translateX(100vw) rotateX(-180deg); }
+}
+@-webkit-keyframes send-letter2 {
+	0% { transform: translateX(0) rotateX(-180deg); }
+	20% { transform: translateX(-60%) rotateX(-180deg); }
+	100% { transform: translateX(100vw) rotateX(-180deg); }
 }

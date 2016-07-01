@@ -55,7 +55,7 @@
 			$('#preview-dialog-btn').on('click', function(e){
 				e.preventDefault(e);
 				var mode = $('.dialog_mode_choice:checked').val();
-				Deco_Mistape_Admin.showDialog(mode);
+				Deco_Mistape_Admin.previewDialog(mode);
 			});
 
 			// Tab switching without reload
@@ -71,15 +71,12 @@
 			});
 		},
 
-		// dialog object
-		dialog: new DialogFx(document.getElementById('mistape_dialog')),
-
-		showDialog: function(mode) {
+		previewDialog: function(mode) {
 			var currentMode = $('#mistape_dialog').data('mode');
 			// request updated dialog if mode was changed
 			if ( mode == currentMode ) {
 				$('#mistape_dialog').css('display', 'flex');
-				Deco_Mistape_Admin.dialog.toggle();
+				decoMistape.dlg.toggle();
 			}
 			else {
 
@@ -87,17 +84,16 @@
 				$.ajax({
 					type: 'post',
 					dataType: 'json',
-					url: mistape_args.ajaxurl,
+					url: decoMistape.ajaxurl,
 					data: {
 						action: 'mistape_preview_dialog',
-						mode: mode,
+						mode: mode
 					},
 					success: function (response) {
 						if (response.success === true) {
-							$('#mistape_dialog').replaceWith(response.data);
-							$('#mistape_dialog').css('display', 'flex');
-							Deco_Mistape_Admin.dialog = new DialogFx(document.getElementById('mistape_dialog'));
-							Deco_Mistape_Admin.dialog.toggle();
+							$('#mistape_dialog').replaceWith(response.data).css('display', 'flex');
+							decoMistape.initDialogFx();
+							decoMistape.dlg.toggle();
 						}
 					},
 					complete: function() {

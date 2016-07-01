@@ -1,7 +1,8 @@
 <?php
 
-class Deco_Mistape extends Abstract_Deco_Mistape {
+class Deco_Mistape extends Deco_Mistape_Abstract {
 
+	private static $instance;
 	private $is_appropriate_post;
 
 	function __construct() {
@@ -16,6 +17,9 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			return;
 		}
 
+		// Load textdomain
+		$this->load_textdomain();
+
 		// actions
 		add_action( 'wp_footer', array( $this, 'insert_dialog' ), 1000 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_load_scripts_styles' ) );
@@ -27,6 +31,14 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		if ( $this->options['register_shortcode'] == 'yes' ) {
 			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
 		}
+	}
+
+	public static function get_instance() {
+		if (null === static::$instance) {
+			static::$instance = new static;
+		}
+
+		return static::$instance;
 	}
 
 	/**
@@ -43,7 +55,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 				'format' => $this->options['caption_format'],
 				'class'  => 'mistape_caption',
 				'image'  => '',
-				'text'   => $this->caption_text,
+				'text'   => $this->get_caption_text(),
 			),
 			$atts,
 			'mistape'
@@ -68,22 +80,7 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 			return;
 		}
 
-		// style
-		wp_enqueue_style( 'mistape-front', plugins_url( 'assets/css/mistape-front.css', $this->plugin_path ), array(), $this->version );
-
-		// modernizer
-		wp_enqueue_script( 'modernizr', plugins_url( 'assets/js/modernizr.custom.js', $this->plugin_path ), array( 'jquery' ), $this->version, true );
-
-		// frontend script (combined)
-		wp_enqueue_script( 'mistape-front', plugins_url( 'assets/js/mistape-front.js', $this->plugin_path ), array(
-			'jquery',
-			'modernizr'
-		), $this->version, true );
-		wp_localize_script(
-			'mistape-front', 'mistape_args', array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			)
-		);
+		$this->enqueue_dialog_assets();
 	}
 
 	/**
@@ -114,9 +111,9 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		if ( $format == 'text' ) {
 			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></span>' : '';
 			// linebreak is necessary
-			$output = "\n" . '<div class="mistape_caption"><p>' . $logo . $this->caption_text . '</p></div>';
+			$output = "\n" . '<div class="mistape_caption"><p>' . $logo . $this->get_caption_text() . '</p></div>';
 		} elseif ( $format == 'image' ) {
-			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . $this->caption_text . '"></div>';
+			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $this->get_caption_text() ) . '"></div>';
 		}
 
 		$output = apply_filters( 'mistape_caption_output', $output, $this->options );
@@ -137,14 +134,6 @@ class Deco_Mistape extends Abstract_Deco_Mistape {
 		$output = $this->get_dialog_html();
 
 		echo apply_filters( 'mistape_dialog_output', $output, $this->options );
-	}
-
-	/**
-	 * Delete settings on plugin uninstall
-	 */
-	public static function uninstall_cleanup() {
-		delete_option( 'mistape_options' );
-		delete_option( 'mistape_version' );
 	}
 
 	/**
