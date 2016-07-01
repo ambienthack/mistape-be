@@ -34,9 +34,9 @@ Help us with the translation to your language, and we will feature you here :)
 All settings are stored in a single database entry and get wiped on plugin uninstall, so you can be sure your WP installation won't be clogged if you decide you don't want Mistape anymore (and we're sure you won't :) ).
 
 == Screenshots ==
-1. Configuration.
-2. Help.
-3. How it works.
+1. How it works.
+2. Configuration.
+3. Help.
 4. Mail notification.
 
 == Changelog ==
