@@ -2,263 +2,266 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mistape\n"
 "POT-Creation-Date: 2016-09-23 16:46+0200\n"
-"PO-Revision-Date: 2016-09-23 17:30+0200\n"
+"PO-Revision-Date: 2016-09-23 17:32+0200\n"
 "Last-Translator: deco.agency <hello@deco.agency>\n"
-"Language-Team: deco.agency <hello@deco.agency>\n"
-"Language: uk_UA\n"
+"Language-Team: Antonio Andrade <antonio@imovel.es>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: mistape.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: src/class-deco-mistape-abstract.php:93
 msgid ""
 "If you have found a spelling error, please, notify us by selecting that text "
 "and pressing <em>Ctrl+Enter</em>."
 msgstr ""
-"Якщо ви знайшли помилку, будь ласка, виділіть фрагмент тексту та натисніть "
-"<em>Ctrl+Enter</em>. "
+"Se você encontrou um erro de ortografia, notifique-nos por favor, "
+"selecionando o texto e pressionar <em>Ctrl + Enter</em>."
 
 #: src/class-deco-mistape-abstract.php:124 src/class-deco-mistape-ajax.php:93
 #: src/class-deco-mistape-ajax.php:106
 msgid "Thanks!"
-msgstr "Дякую!"
+msgstr "Obrigado!"
 
 #: src/class-deco-mistape-abstract.php:125 src/class-deco-mistape-ajax.php:107
 msgid "Our editors are notified."
-msgstr "Тепер редактори знають."
+msgstr "Nossos editores são notificados."
 
 #: src/class-deco-mistape-abstract.php:126
 msgid "Close"
-msgstr "Закрити"
+msgstr "Fechar"
 
 #: src/class-deco-mistape-abstract.php:130
 msgid "Spelling error report"
-msgstr "Повідомити про помилку"
+msgstr "Relatório de erros de ortografia"
 
 #: src/class-deco-mistape-abstract.php:131
 msgid "The following text will be sent to our editors:"
-msgstr "Текст, який буде надіслано нашим редакторам:"
+msgstr "O texto a seguir será enviado para nossos editores:"
 
 #: src/class-deco-mistape-abstract.php:133
 msgid "Cancel"
-msgstr "Скасувати"
+msgstr "Cancelar"
 
 #: src/class-deco-mistape-abstract.php:134
 msgid "Send"
-msgstr "Надіслати"
+msgstr "Enviar"
 
 #: src/class-deco-mistape-abstract.php:138
 msgid "Your comment (optional)"
-msgstr "Ваш коментар (необов'язково)"
+msgstr "Seu comentário (opcional)"
 
 #: src/class-deco-mistape-admin.php:70
 msgid "Administrator"
-msgstr "Адміністратор"
+msgstr "Administrador"
 
 #: src/class-deco-mistape-admin.php:71
 msgid "Editor"
-msgstr "Редактор"
+msgstr "Editor"
 
 #: src/class-deco-mistape-admin.php:72
 msgid "Specify other"
-msgstr "Вказати свою адресу"
+msgstr "Outras Informacões"
 
 #: src/class-deco-mistape-admin.php:76
 msgid "Text"
-msgstr "Текст"
+msgstr "Texto"
 
 #: src/class-deco-mistape-admin.php:77
 msgid "Image"
-msgstr "Зображення"
+msgstr "Image"
 
 #: src/class-deco-mistape-admin.php:78
 msgid "Do not show caption at the bottom of post"
-msgstr "Не показувати напис у кінці запису"
+msgstr "Não mostrar legenda na parte inferior do poste"
 
 #: src/class-deco-mistape-admin.php:83
 msgid "Default"
-msgstr "Текст за замовчуванням"
+msgstr "Padrão"
 
 #: src/class-deco-mistape-admin.php:84
 msgid "automatically translated to supported languages"
-msgstr "автоматично перекладається на мови шо підтримуються"
+msgstr "automaticamente traduzidos para os idiomas suportados"
 
 #: src/class-deco-mistape-admin.php:87
 msgid "Custom text"
-msgstr "Редагуємий текст"
+msgstr "Personalizadas"
 
 #: src/class-deco-mistape-admin.php:93
 msgid "Just notify of successful submission"
-msgstr ""
-"Одразу відправляти та показувати діалог \"Дякую\" незалежно від результату "
+msgstr "Apenas notificar de submissão bem sucedida"
 
 #: src/class-deco-mistape-admin.php:94
 msgid "Show preview of reported text and ask confirmation"
-msgstr "Попередній перегляд текста шо буде відправлено з попередженням"
+msgstr "Mostrar visualização do texto do relatório e pedir confirmação"
 
 #: src/class-deco-mistape-admin.php:95
 msgid "Preview and comment field"
-msgstr "Попередній перегляд поля для коментаря"
+msgstr "Previa e campo de comentário"
 
 #: src/class-deco-mistape-admin.php:133
 msgid "Configuration"
-msgstr "Конфігурація"
+msgstr "Configuração"
 
 #: src/class-deco-mistape-admin.php:136
 msgid "Help"
-msgstr "Довідка"
+msgstr "Texto de ajuda"
 
 #: src/class-deco-mistape-admin.php:150
 #, php-format
 msgctxt "%s = rate"
 msgid "Please %s our plugin"
-msgstr "Будь ласка, %s наш плаґін"
+msgstr "O seguinte plugin foi ativado com sucesso: %s."
 
 #: src/class-deco-mistape-admin.php:152
 msgctxt "please rate our plugin"
 msgid "rate"
-msgstr "оцініть"
+msgstr "avaliar"
 
 #: src/class-deco-mistape-admin.php:159
 #, php-format
 msgctxt "deco.agency's products"
 msgid "%s's products"
-msgstr "Продукти %s"
+msgstr "%s's produtos"
 
 #: src/class-deco-mistape-admin.php:192
 msgid "Statistics"
-msgstr "Статистика"
+msgstr "estatística"
 
 #: src/class-deco-mistape-admin.php:197
 msgid "Reports received up to date:"
-msgstr "Всього зареєстровано звітів:"
+msgstr "Relatórios recebidos até à data:"
 
 #: src/class-deco-mistape-admin.php:232
 msgid "Email recipient"
-msgstr "Отримувач сповіщень "
+msgstr "destinatário E-mail"
 
 #: src/class-deco-mistape-admin.php:234
 msgid "Post types"
-msgstr "Типи записів"
+msgstr "tipos de pós"
 
 #: src/class-deco-mistape-admin.php:236 src/class-deco-mistape-admin.php:785
 msgid "Shortcodes"
-msgstr "Шорткоди"
+msgstr "Shortcodes"
 
 #: src/class-deco-mistape-admin.php:238
 msgid "Caption format"
-msgstr "Формат системного напису"
+msgstr "formato de legenda"
 
 #: src/class-deco-mistape-admin.php:240
 msgid "Caption text mode"
-msgstr "Текст системного напису"
+msgstr "modo de texto da legenda"
 
 #: src/class-deco-mistape-admin.php:242
 msgid "Icon before the caption text"
-msgstr "Іконка біля тексу під записом"
+msgstr "Ícone antes do texto da legenda"
 
 #: src/class-deco-mistape-admin.php:244
 msgid "Color scheme"
-msgstr "Кольрова схема "
+msgstr "Esquema de cores"
 
 #: src/class-deco-mistape-admin.php:246
 msgid "Dialog mode"
-msgstr "Режим діалогу"
+msgstr "modo de diálogo"
 
 #: src/class-deco-mistape-admin.php:250
 msgid "Multisite inheritance"
-msgstr "Наслідування параметрів"
+msgstr "herança multisite"
 
 #: src/class-deco-mistape-admin.php:308
 msgctxt "select option, shown when no users with editor role are present"
 msgid "no editors found"
-msgstr "редакторів не знайдено"
+msgstr "há editores encontrados"
 
 #: src/class-deco-mistape-admin.php:315
 msgid "separate multiple recipients with commas"
-msgstr ""
-"є можливість додати декілька отримувачів, разділивши їх адреси через кому"
+msgstr "vários destinatários separados por vírgulas"
 
 #: src/class-deco-mistape-admin.php:320
 msgid "If post ID is determined, notify post author instead"
-msgstr "Якщо ID посту не визначено, відправляти листа автору"
+msgstr "Se pós ID é determinado, notifique pós autor vez"
 
 #: src/class-deco-mistape-admin.php:339
 msgid ""
 "\"Press Ctrl+Enter&hellip;\" captions will be displayed at the bottom of "
 "selected post types."
 msgstr ""
-"Напис \"Нажмите Ctrl+Enter&hellip;\" буде відображатися наприкінці записів "
-"обраних типів"
+"\\ \"Pressione Ctrl + Enter & hellip; \" legendas será exibida na parte "
+"inferior da tipos de pós selecionados."
 
 #: src/class-deco-mistape-admin.php:351
 msgid "Register <code>[mistape]</code> shortcode."
-msgstr "Зареєструвати шорткод <code>[mistape]</code>."
+msgstr "Register <code> [mistape] </ code> shortcode."
 
 #: src/class-deco-mistape-admin.php:353
 msgid "Enable if manual caption insertion via shortcodes is needed."
-msgstr "За допомогою шорткодів є можливість розміщувати напис вибірково. "
+msgstr ""
+"Habilite se é necessária a inserção de legenda do manual via códigos de "
+"acesso."
 
 #: src/class-deco-mistape-admin.php:354
 msgid "Usage examples are in Help section."
-msgstr "Приклади використання — в розділі \"Довідка\"."
+msgstr "exemplos de uso estão na seção de Ajuda."
 
 #: src/class-deco-mistape-admin.php:355
 msgid ""
 "When enabled, Mistape Ctrl+Enter listener works on all pages, not only on "
 "enabled post types."
 msgstr ""
-"Якщо увімкнено, поєднання клавіш Ctrl+Enter працює на всіх сторінках сайту — "
-"не тільки на відмічених вище типах записів"
+"Quando ativado, Mistape Ctrl + Enter ouvinte trabalha em todas as páginas, "
+"não só sobre os tipos de pós ativado."
 
 #: src/class-deco-mistape-admin.php:374
 msgid "Enter the full image URL starting with http://"
-msgstr "Вкажіть повну адресу зображення, починаючи з http://"
+msgstr "Digite o URL da imagem completa começando com http: //"
 
 #: src/class-deco-mistape-admin.php:466
 msgid "default color"
-msgstr "Колір за замовчуванням "
+msgstr "cor padrão"
 
 #: src/class-deco-mistape-admin.php:485
 msgid "Preview dialog"
-msgstr "Попередній перегляд"
+msgstr "Pré-Visualizar"
 
 #: src/class-deco-mistape-admin.php:497
 msgid "Copy settings from main site when new blog is created"
-msgstr "Наслідувати параметри головного сайту при додаванні сайтів у мережі"
+msgstr ""
+"Copie as configurações a partir do site principal quando novo blog é criado"
 
 #: src/class-deco-mistape-admin.php:547
 #, php-format
 msgid "ERROR: You entered invalid email address: %s"
-msgstr "ПОМИЛКА: вказано некоректну email-адресу: %s "
+msgstr "Você inseriu um endereço de e-mail inválido %s"
 
 #: src/class-deco-mistape-admin.php:558
 msgid "ERROR: You didn't select valid email recipient."
-msgstr "ПОМИЛКА: не вказано коректну email-адресу отримувача сповіщень. "
+msgstr "ERRO: Você não selecionou destinatário de e-mail válido."
 
 #: src/class-deco-mistape-admin.php:582
 msgid "ERROR: You didn't enter caption image URL."
-msgstr "ПОМИЛКА: не вказано ардесу зображення."
+msgstr "ERRO: Você não entrou legenda da imagem URL."
 
 #: src/class-deco-mistape-admin.php:624
 msgid "Settings"
-msgstr "Налаштування"
+msgstr "Configurações"
 
 #: src/class-deco-mistape-admin.php:729
 msgid ""
 "<strong>Mistape</strong> settings notice will be dismissed after saving "
 "changes."
 msgstr ""
-"Сповіщення <strong>Mistape</strong> буде знято після збереження налаштувань."
+"<Strong> Mistape </ strong> configurações de aviso será demitido depois de "
+"salvar as alterações."
 
 #: src/class-deco-mistape-admin.php:732
 #, php-format
@@ -266,165 +269,179 @@ msgid ""
 "<strong>Mistape</strong> must now be <a href=\"%s\">configured</a> before "
 "use."
 msgstr ""
-"Плагін <strong>Mistape</strong> потребує внесення <a href=\"%s"
-"\">налаштувань</a>. "
+"<strong> Mistape </ strong> deve ser agora <a href=\" %s \"> configurado </"
+"a> antes do uso."
 
 #: src/class-deco-mistape-admin.php:786
 msgid "Optional shortcode parameters are:"
-msgstr "Додаткові параметри:"
+msgstr "parâmetros shortcode opcionais são:"
 
 #: src/class-deco-mistape-admin.php:788
 msgid "can be 'text' or 'image'"
-msgstr "може бути \"text\" або \"image\""
+msgstr "pode ser 'texto' ou 'imagem'"
 
 #: src/class-deco-mistape-admin.php:789
 msgid "override default css class"
-msgstr "замінює стандартний CSS-клас"
+msgstr "override classe css padrão"
 
 #: src/class-deco-mistape-admin.php:790
 msgid "override caption text"
-msgstr "замінює текст підпису "
+msgstr "texto da legenda override"
 
 #: src/class-deco-mistape-admin.php:791
 msgid "override image URL"
-msgstr "замінює посилання на зображення"
+msgstr "override URL da imagem"
 
 #: src/class-deco-mistape-admin.php:793
 msgid "When no parameters specified, general configuration is used."
-msgstr "Якщо параметри не вказано, буде використано основну конфігурацію."
+msgstr "Quando nenhum parâmetro especificado, a configuração geral é usado."
 
 #: src/class-deco-mistape-admin.php:794
 msgid "If image url is specified, format parameter can be omitted."
-msgstr ""
-"Якщо вказано посилання на зображення, параметр \"format\" можна ігнорувати. "
+msgstr "Se url imagem é especificado, o parâmetro formato pode ser omitida."
 
 #: src/class-deco-mistape-admin.php:795
 msgid "Shortcode usage example:"
-msgstr "Приклад використання шорткоду:"
+msgstr "Shortcode exemplo de uso:"
 
 #: src/class-deco-mistape-admin.php:799
 msgid "PHP code example:"
-msgstr "Приклад вставки за допомогою PHP-коду:"
+msgstr "PHP exemplo de código:"
 
 #: src/class-deco-mistape-admin.php:807
 msgid "Hooks"
-msgstr "Фільтри та дії"
+msgstr "Hooks"
 
 #: src/class-deco-mistape-admin.php:813
 msgid "Allows to modify caption text globally (preferred over HTML filter)."
-msgstr "Дозволяє змінити стандартний текст підпису."
+msgstr ""
+"Permite modificar o texto da legenda globalmente (preferível ao filtro de "
+"HTML)."
 
 #: src/class-deco-mistape-admin.php:820
 msgid "Allows to modify the caption HTML before output."
-msgstr "Дозволяє змінити HTML-код підпису перед появою."
+msgstr "Permite modificar o HTML legenda antes da saída."
 
 #: src/class-deco-mistape-admin.php:826
 msgid "Allows to modify modal dialog strings (preferred over HTML filter)."
-msgstr "Дозволяє змінити текстові елементи модального вікна. "
+msgstr ""
+"Permite modificar cordas de diálogo modais (preferível ao filtro de HTML)."
 
 #: src/class-deco-mistape-admin.php:833
 msgid "Allows to modify the modal dialog HTML before output."
-msgstr "Дозволяє змінити HTML-код модального вікна перед появою."
+msgstr "Permite modificar o HTML de diálogo modal antes da saída."
 
 #: src/class-deco-mistape-admin.php:840
 msgid "Allows to override email sending logic."
-msgstr "Дозволяє заміщувати логіку відправлення листів."
+msgstr "Permite substituir e-mail enviando lógica."
 
 #: src/class-deco-mistape-admin.php:846
 msgid "Allows to change email recipient."
-msgstr "Дозволяє змінити отримувача листів. "
+msgstr "Permite a mudança de destinatário de e-mail."
 
 #: src/class-deco-mistape-admin.php:852
 msgid "Allows to change email subject."
-msgstr "Дозволяє змініти тему листа."
+msgstr "Permite a mudança de assunto do email."
 
 #: src/class-deco-mistape-admin.php:858
 msgid "Allows to modify email message to send."
-msgstr "Дозволяє змініти вміст листа перед відправленням. "
+msgstr "Permite modificar mensagem de e-mail para enviar."
 
 #: src/class-deco-mistape-admin.php:864
 msgid ""
 "Allows for custom reports handling. Refer to code for implementation details."
-msgstr "Дозволяє реєструвати сторонні обробники звітів."
+msgstr ""
+"Permite relatórios personalizados de manipulação. Consulte o código para os "
+"detalhes de implementação."
 
 #: src/class-deco-mistape-admin.php:870
 msgid "Allows to modify global options array during initialization."
-msgstr ""
-"Дозволяє модифікувати масив загальних параметрів під час ініціалізації."
+msgstr "Permite modificar variedade de opções globais durante a inicialização."
 
 #: src/class-deco-mistape-admin.php:876
 msgid ""
 "Allows to add custom logic for whether to output Mistape to front end or not."
 msgstr ""
-"Дозволяє модифікувати логіку, що визначає, чи відображати Mistape на "
-"сторінці."
+"Permite adicionar lógica personalizada para se para a saída Mistape a "
+"extremidade dianteira ou não."
 
 #: src/class-deco-mistape-admin.php:896
 msgid "Vote!"
-msgstr "Проголосувати!"
+msgstr "Voto!"
 
 #: src/class-deco-mistape-ajax.php:72 src/class-deco-mistape-ajax.php:80
 #: src/class-deco-mistape-ajax.php:111
 msgid "Report not sent"
-msgstr "Звіт не надіслано. "
+msgstr "Relatório não foi enviado"
 
 #: src/class-deco-mistape-ajax.php:73
 msgid "Spam protection: too many reports from your IP address."
-msgstr "Захист від спаму: отримано забагато повідомлень з вашої IP адреси."
+msgstr "Proteção contra spam: muitos relatórios a partir do seu endereço IP."
 
 #: src/class-deco-mistape-ajax.php:81
 msgid "No text selected."
-msgstr "Текст не виділено."
+msgstr "No texto selecionado."
 
 #: src/class-deco-mistape-ajax.php:94
 msgid ""
 "Our editors already got notified about this error. Thanks for your care."
 msgstr ""
-"Наших редакторів вже було повідомлено про цю одруківку. Дякуємо за турботу."
+"Nossos editores já foi notificado sobre este erro. Obrigado pelo seu cuidado."
 
 #: src/class-deco-mistape-ajax.php:112
 msgid "Email service returned an error while trying to deliver your report."
-msgstr "Поштовий сервіс повернув помилку під час спроби надіслати ваш звіт."
+msgstr "serviço de e-mail retornou um erro ao tentar entregar o seu relatório."
 
 #: src/class-deco-mistape-ajax.php:193
 msgid "Reported from page:"
-msgstr "Надіслано зі сторінки:"
+msgstr "Relatados de página:"
 
 #: src/class-deco-mistape-ajax.php:194
 msgctxt "[Email] Reported from page: unknown"
 msgid "unknown"
-msgstr "сторінку не визначено"
+msgstr "desconhecido"
 
 #: src/class-deco-mistape-ajax.php:200
 msgid "Post edit URL:"
-msgstr "Редагувати запис:"
+msgstr "Pós edição URL:"
 
 #: src/class-deco-mistape-ajax.php:206
 msgid "Reported by:"
-msgstr "Надіслано користувачем: "
+msgstr "Reportado por:"
 
 #: src/class-deco-mistape-ajax.php:209
 msgid "Reported text"
-msgstr "Було виділено текст: "
+msgstr "texto relataram"
 
 #: src/class-deco-mistape-ajax.php:213
 msgid "Comment:"
-msgstr "Коментар:"
+msgstr "Comente:"
 
 #: src/class-deco-mistape-ajax.php:224
 msgid "Spelling error reported"
-msgstr "Отримано повідомлення про помилку. "
+msgstr "erro de ortografia relataram"
 
 #~ msgid "Detailed mistake statistics is coming soon!"
-#~ msgstr ""
-#~ "Скоро стане доступна докладна статистика одруківок! Слідкуйте за "
-#~ "оновленнями."
+#~ msgstr "estatísticas detalhadas erro está chegando!"
 
 #~ msgid "Mistape Logo"
-#~ msgstr "Логотип Mistape"
+#~ msgstr "Logo Mistape"
 
 #~ msgid "Caption with Mistape logo"
-#~ msgstr "Відображати логотип Mistape у підписі"
+#~ msgstr "Legenda com logotipo Mistape"
 
-#~ msgid "Please <a href=\"%s\" target=\"_blank\">rate</a> our plugin"
-#~ msgstr "Будь ласка, <a href=\"%s\" target=\"_blank\">оцініть</a> наш плаґін"
+#~ msgid "Mistape"
+#~ msgstr "Mistape"
+
+#~ msgid ""
+#~ "Mistape allows visitors to effortlessly notify site staff about found "
+#~ "spelling errors."
+#~ msgstr ""
+#~ "Mistape permite que os visitantes para notificar sem esforço equipe do "
+#~ "site sobre erros ortográficos."
+
+#~ msgid "deco.agency"
+#~ msgstr "deco.agency"
+
+#~ msgid "https://deco.agency"
+#~ msgstr "https://deco.agency"

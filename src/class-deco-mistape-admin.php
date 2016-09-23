@@ -19,6 +19,10 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		add_action( 'admin_notices', array( $this, 'plugin_activated_notice' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
+		// Add the color picker css file
+		wp_enqueue_style( 'wp-color-picker' );
+
+
 		// if multisite inheritance is enabled, add corresponding action
 		if ( is_multisite() && $this->options['multisite_inheritance'] === 'yes' ) {
 			add_action( 'wpmu_new_blog', array( $this, 'activation' ) );
@@ -28,6 +32,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'mistape_settings' ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts_styles' ) );
 			add_action( 'admin_footer', array( $this, 'insert_dialog' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, 'mistape_paddle_payments_scripts' ), 10 );
 		}
 
 		// filters
@@ -37,6 +42,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		) {
 			add_filter( 'option_active_plugins', array( $this, 'deactivate_addons' ) );
 		}
+
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
 		register_uninstall_hook( __FILE__, array( 'Abstract_Deco_Mistape', 'uninstall_cleanup' ) );
 	}
@@ -109,13 +116,13 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		// show changelog only if less than one week passed since updating the plugin
 		$show_changelog = time() - (int) $this->options['plugin_updated_timestamp'] < WEEK_IN_SECONDS;
 
-		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'configuration';
-		$table_exists = !! $wpdb->get_var(
+		$active_tab    = isset( $_GET['tab'] ) ? $_GET['tab'] : 'configuration';
+		$table_exists  = ! ! $wpdb->get_var(
 			"SELECT COUNT(*) FROM information_schema.tables
 			WHERE table_schema = '" . DB_NAME . "'
 			AND table_name = '{$wpdb->prefix}mistape_reports' LIMIT 1"
 		);
-		$reports_count = $table_exists ? $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}mistape_reports") : null;
+		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}mistape_reports" ) : null;
 		?>
 		<div class="wrap">
 			<h2>Mistape</h2>
@@ -141,7 +148,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 					<span class="description alignright">
 						<?php printf(
 							_x( 'Please %s our plugin', '%s = rate', 'mistape' ),
-							'<a href="https://wordpress.org/support/view/plugin-reviews/mistape#postform" target="_blank">' .
+							'<a href="https://wordpress.org/support/view/plugin-reviews/mistape#postform" target="_blank" class="mistape-vote"><span class="dashicons dashicons-thumbs-up"></span>' .
 							_x( 'rate', 'please rate our plugin', 'mistape' ) . '</a>'
 						); ?>
 					</span>
@@ -164,123 +171,43 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 						</div>
 					</div>
 					<?php if ( $show_changelog ) { ?>
-					<div id="mistape_info" class="postbox deco-right-sidebar-widget">
-						<h3 class="hndle">
-							<span>New in Mistape 1.2.0</span>
-						</h3>
-						<div class="inside">
-							<ul>
-								<li>New dialog box design (send action is now animated)</li>
-								<li>Introduce database table for saving reports. Used for checking for duplicates—you will not get multiple reports about the same error anymore.</li>
-								<li>Introduce support for addons.</li>
-								<li>(for developers) arguments for "mistape_process_report" action were changed.</li>
-								<li>lots of improvements under the hood.</li>
-							</ul>
+						<div id="mistape_info" class="postbox deco-right-sidebar-widget">
+							<h3 class="hndle">
+								<span>New in Mistape 1.2.0</span>
+							</h3>
+							<div class="inside">
+								<ul>
+									<li>New dialog box design (send action is now animated)</li>
+									<li>Introduce database table for saving reports. Used for checking for duplicates—you will not get multiple reports about the same error anymore.</li>
+									<li>Introduce support for addons.</li>
+									<li>(for developers) arguments for "mistape_process_report" action were changed.</li>
+									<li>lots of improvements under the hood.</li>
+								</ul>
+							</div>
 						</div>
-					</div>
 					<?php }
 					if ( $reports_count ) { ?>
 						<div id="mistape_statistics" class="postbox deco-right-sidebar-widget">
 							<h3 class="hndle">
-								<span><?php _e('Statistics', 'mistape'); ?></span>
+								<span><?php _e( 'Statistics', 'mistape' ); ?></span>
 							</h3>
 							<div class="inside">
 								<p>
 									<?php
-									_e('Reports received up to date:', 'mistape' );
+									_e( 'Reports received up to date:', 'mistape' );
 									echo ' <strong>' . $reports_count . '</strong>';
 									?>
 								</p>
-								<p>
-									<?php _e( 'Detailed mistake statistics is coming soon!', 'mistape' ); ?>
+								<?php if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) { ?>
+									<p>
+										Detailed mistake statistics is available in Mistape PRO', 'mistape
+									</p>
+									<a href="#" class="paddle_button" data-allow-quantity="false" data-quantity="1" data-theme="light" data-product="508163">Buy PRO for just $15!</a>
+								<?php } ?>
 							</div>
 						</div>
 					<?php } ?>
 				</div>
-				<style scoped>
-					#mistape-configuration form{
-						position: relative;
-					}
-					#mistape-configuration form table{
-						width: calc(100% - 310px);
-					}
-					#mistape-sidebar{
-						position: absolute;
-						top: 22px;
-						right: 20px;
-					}
-					.deco-right-sidebar-widget{
-						min-width: 235px;
-						margin-bottom: 15px;
-						padding: 0 15px;
-						width: 150px;
-						/*top: 50px;*/
-					}
-					.deco-right-sidebar-widget .hndle{
-						cursor: auto!important;
-					}
-					.deco-right-sidebar-widget .decoagency{
-						font-size: 16px;
-						text-decoration: none;
-						font-weight: bold;
-					}
-					.deco_button{
-						padding: 4px;
-						display: block;
-						text-decoration: none;
-						border: none;
-					}
-					.deco_button span{
-						display: inline-block;
-						vertical-align: middle;
-						padding-bottom: 1px;
-					}
-					.deco_button span{
-						margin-right: 6px;
-						padding-left: 22px;
-					}
-					.deco_button.decomments {
-						background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAUCAMAAAC3SZ14AAAARVBMVEUAAADmuR7muR7muR7muR7muR7muR7muR7muR7muR7////57sfuz2XovSzsy1bz3I/v03Ppwjr89uT68tb04Z3x2IHrxkhmcNVUAAAACXRSTlMAwGCA8ODQsBB2dB4iAAAAc0lEQVQY043PWQrDMAxF0dQdnyY74/6XWqU1IZEJ5H7o44AE6hJCqUPTOUlpiDlQb5GEiLgfiCY1/ROPNnCmicmoVMpgJw8LKjFGJxWBVZp/t9axLWKZRaBFVLMCFx96tPR53/a9nA6lJ5COdI/i5BJplS/nsgso/cmmJQAAAABJRU5ErkJggg==')
-						no-repeat
-						left center;
-					}
-					.deco_button.debranding {
-						/*background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAUCAMAAABYi/ZGAAAAvVBMVEUAAAA8KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG48KG7///81IWk5JWwqE2AgCVkyHWdsXZJoWY9VRIE/LHE+K3AeB1j49/p/cqB7bp1MOXpEMHQ9KW8uGWQjDFwNAEvy8PXc2OXRzN2so8GkmruakLSXjLKIfKd0ZphwYZVQPn1INXdALXEYAVPy8fbs6vHj4OrAudC3r8mQhKyKfqhcTIaS87wZAAAAE3RSTlMAv63yF/joutTS0cmnlWtjVzgmBI/BHgAAAMtJREFUGNNtz9dywkAMBdC1E0J6Anu1u+64gE3vvfz/Z+GlDGBzH6SZM6ORxP555eU+Ff7HqrwYkxm6eRTQvGA0G8X0YD5lLuxUKvKv5rWkG8LJpmOrJZXf1EbWBkDsAB2ydyS0qQiHCM66a2Pfa1ikLRgiExh32t3VQAnRPNkI5GDS7lsDlxLBtcl4CWA6RAPJ9jLryVk/sudp2HPTSXjekR+zUErwYCGT6y3lf80nVje+jFu+zffcHvP7yd9eC1YtE/vgJWI/tbwcAZnyGufX95SfAAAAAElFTkSuQmCC')*/
-						background: url('data:image/png;base64,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/GMzLdsAADsiaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/Pgo8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzA2NyA3OS4xNTc3NDcsIDIwMTUvMDMvMzAtMjM6NDA6NDIgICAgICAgICI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpPC94bXA6Q3JlYXRvclRvb2w+CiAgICAgICAgIDx4bXA6Q3JlYXRlRGF0ZT4yMDE2LTA2LTMwVDE3OjQ4OjM4KzAzOjAwPC94bXA6Q3JlYXRlRGF0ZT4KICAgICAgICAgPHhtcDpNb2RpZnlEYXRlPjIwMTYtMDYtMzBUMTc6NDk6MzQrMDM6MDA8L3htcDpNb2RpZnlEYXRlPgogICAgICAgICA8eG1wOk1ldGFkYXRhRGF0ZT4yMDE2LTA2LTMwVDE3OjQ5OjM0KzAzOjAwPC94bXA6TWV0YWRhdGFEYXRlPgogICAgICAgICA8ZGM6Zm9ybWF0PmltYWdlL3BuZzwvZGM6Zm9ybWF0PgogICAgICAgICA8cGhvdG9zaG9wOkNvbG9yTW9kZT4zPC9waG90b3Nob3A6Q29sb3JNb2RlPgogICAgICAgICA8cGhvdG9zaG9wOklDQ1Byb2ZpbGU+c1JHQiBJRUM2MTk2Ni0yLjE8L3Bob3Rvc2hvcDpJQ0NQcm9maWxlPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOmNiN2VlZjY4LWZjNzAtNDgzYi1iMjNmLWRhMDUyMTQ0Yzc3ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOkRvY3VtZW50SUQ+YWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjQxNGZjNzU2LTdmNjAtMTE3OS05Y2IwLTlmOWNkMzM2ZDFhNTwveG1wTU06RG9jdW1lbnRJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmE2Yzc2MDE1LWU0N2EtNDFlOS05NWQ0LTJmNzg1YTM3ZjExMjwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0Omluc3RhbmNlSUQ+eG1wLmlpZDphNmM3NjAxNS1lNDdhLTQxZTktOTVkNC0yZjc4NWEzN2YxMTI8L3N0RXZ0Omluc3RhbmNlSUQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTYtMDYtMzBUMTc6NDg6MzgrMDM6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpzb2Z0d2FyZUFnZW50PkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpPC9zdEV2dDpzb2Z0d2FyZUFnZW50PgogICAgICAgICAgICAgICA8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaSByZGY6cGFyc2VUeXBlPSJSZXNvdXJjZSI+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDphY3Rpb24+Y29udmVydGVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpwYXJhbWV0ZXJzPmZyb20gYXBwbGljYXRpb24vdm5kLmFkb2JlLnBob3Rvc2hvcCB0byBpbWFnZS9wbmc8L3N0RXZ0OnBhcmFtZXRlcnM+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9IlJlc291cmNlIj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OmFjdGlvbj5zYXZlZDwvc3RFdnQ6YWN0aW9uPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6aW5zdGFuY2VJRD54bXAuaWlkOmNiN2VlZjY4LWZjNzAtNDgzYi1iMjNmLWRhMDUyMTQ0Yzc3ZTwvc3RFdnQ6aW5zdGFuY2VJRD4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OndoZW4+MjAxNi0wNi0zMFQxNzo0OTozNCswMzowMDwvc3RFdnQ6d2hlbj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OnNvZnR3YXJlQWdlbnQ+QWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+NzIwMDAwLzEwMDAwPC90aWZmOlhSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpZUmVzb2x1dGlvbj43MjAwMDAvMTAwMDA8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOlJlc29sdXRpb25Vbml0PjI8L3RpZmY6UmVzb2x1dGlvblVuaXQ+CiAgICAgICAgIDxleGlmOkNvbG9yU3BhY2U+MTwvZXhpZjpDb2xvclNwYWNlPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+MjA8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+MjA8L2V4aWY6UGl4ZWxZRGltZW5zaW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/PiTWf0EAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAAzBJREFUeNqMlVtoVUcUhr+ZfTs5iYraYBKbeNJUPBrx2kTTpBd7s+ahUTDxJa1IrS++NvZBEDkWvPShghQE7UOlUIqUvkRRq6R4Q7GgxZRqSbwkaEzSBDHWnLP3nj19yGxJTNT8MAysWetn1qy1/hF16QwTwAFCQAPfAD8b+wagBRCADQTPBtpMjNUm8BLwJbDR2AuBCFgJ7AWOv4zwfaAc+Ah426yYKMY2s/cCJcBt4Ex8KJ8hfBM4BDTycjQa35UT3fB1oBn4ID4QAnxfEQaKvKT7IuI15s1/BDriG/rADqA29vJ9xbwFxXzcsBitQevnEtaaWD9OuQBYaN4EgDBQPBz4j5p35tKSqcd2JCpUZIcDctkAPZ6913AU2EAVcGwkT/CzIYVFU5lXWcyUaQmGn/ioMEJaguVV5fi5kL+v30MIQXY4wPNsHNcq0ppjwHs20GbKX5/LhqQXFrPnuw0kCzyS+S5dtwZI5Dls393AshUplIpo/eUqh/b/zqatNVw+30nHjV4cxzoOtElgc1ypMFCsb65GSkHThwc4e+oGQgreqHmNd1fP54eD5/ittZ1Pt9SxpKqM5i21LFg0m8BXGI7NY/pQSsGUqXnc7ujnZnsP7de6qUjPwkvYRJFmzdrFhIHi5l89/Ns3xNq3vkVrSOa7Y9rmMLAOqNdao1RE0ezpvDpnBpVLStFaI8RIG2VafsXzbOZUFNJ9Z5DS1EwG+od4PJRDSnEJOGyVvbJqFfA1QKgiokjT0LSMxo3VpCtLGBx4zJGD51lanWL9Z9V80rQcaQn+/KOLn05spff+I65duYvr2nOBs6IunSkwI/Y9UBT4ivmLSihNzeRe1yBCCK5f7Wb6jHxW1FWQzYZcudBJqCKqasrp/KePvgePeixLfg6cE0ZtyoA7RkXIZUOUUljWSN97CQcVRuRyASBI5DlIKRh+4uO6NpYjNZoU0BUXxQUyZvRqvYQ9TjcsW5K0vTE2M5IX0Jw2HE+jOoCdgBo9fpPESWDX89TmIvAFcHQSREeN78UX6WGsaw+AWUZgtwH9o3Rxn2niI0DrZBX7pJlvbbIY/QV8NeoLGIf/BwD5vA9LCDvEWwAAAABJRU5ErkJggg==')
-						no-repeat
-						left center;
-					}
-					.deco_button.deadblocker {
-						background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAPFBMVEUAAABGqh5Gqh5Gqh5Gqh5Gqh5Gqh5Gqh7R6sej1Y////+MynOXz4HG5bn0+vLp9eTd79ZSryy636t0v1bwgAlwAAAAB3RSTlMA0MDwoBAwnUp3lgAAAHlJREFUGNNt0dsKwCAIANDcVbPVLv//r7NcGEwfRA4JpqHGCjC1AFgbNFt6uYh22+a9xbypmpmajWpmGiCoEXUVmoLWiP2tkGKigpJ4xBQxYk08IJ3Sjhkj/bDQ/QzItZ3z8bXrSBcfxJKSjuQO73/T1Mxbnb9k9xwvXLIH3Gnfdh0AAAAASUVORK5CYII=')
-						no-repeat
-						left center;
-					}
-					.deco-right-sidebar-widget .inside {
-						padding-left: 2px;
-					}
-					.deco-right-sidebar-widget ul {
-						list-style-type: disc;
-						padding-left: 15px;
-					}
-					#mistape_custom_caption_text{
-						width: 100%;
-						max-width: 600px;
-					}
-					@media screen and (max-width: 840px) {
-						#mistape-sidebar{
-							position: relative;
-							right: initial;
-							top: initial;
-							margin-top: 20px;
-						}
-						.deco-right-sidebar-widget{
-							width: calc(100% - 30px);
-						}
-						#mistape-configuration form table{
-							width: 100%;
-						}
-					}
-				</style>
 			</form>
 
 		</div>
@@ -312,8 +239,10 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			array( $this, 'field_caption_format' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_caption_text_mode', __( 'Caption text mode', 'mistape' ),
 			array( $this, 'field_caption_text_mode' ), 'mistape_options', 'mistape_configuration' );
-		add_settings_field( 'mistape_show_logo_in_caption', __( 'Mistape Logo', 'mistape' ),
+		add_settings_field( 'mistape_show_logo_in_caption', __( 'Icon before the caption text', 'mistape' ),
 			array( $this, 'field_show_logo_in_caption' ), 'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_color_scheme', __( 'Color scheme', 'mistape' ),
+			array( $this, 'field_show_color_scheme' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_dialog_mode', __( 'Dialog mode', 'mistape' ), array( $this, 'field_dialog_mode' ),
 			'mistape_options', 'mistape_configuration' );
 
@@ -475,12 +404,69 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 * Show Mistape logo in caption
 	 */
 	public function field_show_logo_in_caption() {
+		$custom_logo_icon = $this->options['show_logo_in_caption'];
+		$mistape_icons    = apply_filters( 'mistape_get_icon', array( 'icon_all' => true ) );
+
 		echo '
-		<fieldset>
-			<label><input id="mistape_show_logo_in_captione" type="checkbox" name="mistape_options[show_logo_in_caption]" value="1" ' . checked( 'yes',
-				$this->options['show_logo_in_caption'], false ) . '/>' . __( 'Caption with Mistape logo', 'mistape' ) . '</label>
+		<fieldset class="select-logo">
+			<label class="select-logo__item">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="1" ' . checked( 1, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+                    ' . $mistape_icons[1] . '
+			    </div>
+			</label>
+
+			<label class="select-logo__item">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="2" ' . checked( 2, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+                    ' . $mistape_icons[2] . '
+			    </div>
+			</label>
+
+			<label class="select-logo__item">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="3" ' . checked( 3, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+                    ' . $mistape_icons[3] . '
+			    </div>
+			</label>
+
+			<label class="select-logo__item">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="4" ' . checked( 4, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+                    ' . $mistape_icons[4] . '
+			    </div>
+			</label>
+
+			<label class="select-logo__item">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="5" ' . checked( 5, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+                    ' . $mistape_icons[5] . '
+			    </div>
+			</label>
+
+			<label class="select-logo__item select-logo__item--no-img">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="0" ' . checked( 0, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+			        no icon
+			    </div>
+			</label>
+
 		</fieldset>';
 	}
+
+	/**
+	 * Color scheme
+	 */
+	public function field_show_color_scheme() {
+		echo '
+		<fieldset>
+			<label>
+			    <input id="mistape_color_scheme" type="text" name="mistape_options[color_scheme]" value="' . $this->options['color_scheme'] . '" class="mistape_color_picker" />
+			</label>
+			<p class="description">' . __( 'default color', 'mistape' ) . ' #E42029</p>
+		</fieldset>';
+	}
+
 
 	/**
 	 * Dialog mode: ask for a comment or fire notification straight off
@@ -606,12 +592,12 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 				array_keys( $this->caption_text_modes ) ) ? $input['caption_text_mode'] : self::$defaults['caption_text_mode'];
 			$input['custom_caption_text'] = $input['caption_text_mode'] == 'custom' && $input['custom_caption_text'] !== $this->default_caption_text ? wp_kses_post( $input['custom_caption_text'] ) : '';
 
-			$input['show_logo_in_caption'] = $input['show_logo_in_caption'] === '1' ? 'yes' : 'no';
-
 			$input['multisite_inheritance'] = isset( $input['multisite_inheritance'] ) && $input['multisite_inheritance'] === '1' ? 'yes' : 'no';
 
 			$input['first_run'] = 'no';
 
+			//color scheme
+			$input['color_scheme'] = isset( $input['color_scheme'] ) ? $input['color_scheme'] : '#E42029';
 		}
 
 		return $input;
@@ -721,7 +707,14 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		$this->enqueue_dialog_assets();
 
 		// admin page script
-		wp_enqueue_script( 'mistape-admin', plugins_url( 'assets/js/admin.js', self::$plugin_path ), array( 'mistape-front' ), self::$version, true );
+		wp_enqueue_script( 'mistape-admin', plugins_url( 'assets/js/admin.js', self::$plugin_path ), array(
+			'mistape-front',
+			'wp-color-picker'
+		), self::$version, true );
+
+		// admin page style
+		wp_register_style( 'mistape_admin_style', plugins_url( 'assets/css/mistape-admin.css', self::$plugin_path ) );
+		wp_enqueue_style( 'mistape_admin_style' );
 	}
 
 	/**
@@ -842,7 +835,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 				</li>
 
 				<li class="mistape-hook-block">
-					<code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>, <span class="mistape-var-obj">$mistape_object</span></code>
+					<code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>,
+						<span class="mistape-var-obj">$mistape_object</span></code>
 					<p class="description"><?php _e( 'Allows to override email sending logic.', 'mistape' ) ?></p>
 				</li>
 
@@ -884,48 +878,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 				</li>
 
 			</ul>
-
 		</div>
-		<style scoped>
-			[class^="mistape-var"] {
-				color: #9876AA;
-				padding: 2px;
-				font-style: normal;
-			}
-
-			[class^="mistape-var-"]:before {
-				font-style: italic;
-				color: #aaa;
-			}
-
-			.mistape-var-arr:before {
-				content: "arr ";
-			}
-
-			.mistape-var-bool:before {
-				content: "bool ";
-			}
-
-			.mistape-var-obj:before {
-				content: "obj ";
-			}
-
-			.mistape-var-str:before {
-				content: "str ";
-			}
-
-			.mistape-hook-block {
-				margin-bottom: 20px;
-			}
-
-			.mistape-hook-block > p.description {
-				margin-left: 6px;
-			}
-
-			#mistape-configuration .spinner {
-				float: none;
-			}
-		</style>
 		<?php
 	}
 
@@ -935,4 +888,25 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		);
 		echo $this->get_dialog_html( $args );
 	}
+
+	public function plugin_row_meta( $links, $file ) {
+
+		if ( 'mistape/mistape.php' == $file ) {
+
+			$links[] = '<a href="https://wordpress.org/support/plugin/mistape/reviews/#postform" target="_blank" class="mistape-vote"><span class="dashicons dashicons-thumbs-up" style="margin-top: -3px;"></span> ' . __( 'Vote!', 'mistape' ) . '</a>';
+		}
+
+		return $links;
+	}
+
+	public function mistape_paddle_payments_scripts() {
+		// Paddle system payment
+//		if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) {
+		echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+		echo '<script async src="https://paddle.s3.amazonaws.com/checkout/checkout.js"></script>';
+
+//		}
+	}
+
+
 }

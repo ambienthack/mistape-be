@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.2.0
+Version: 1.3.0
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License

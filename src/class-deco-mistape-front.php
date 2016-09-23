@@ -31,10 +31,12 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		if ( $this->options['register_shortcode'] == 'yes' ) {
 			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
 		}
+
+		add_action( 'wp_print_styles', array( $this, 'custom_styles' ), 10 );
 	}
 
 	public static function get_instance() {
-		if (null === static::$instance) {
+		if ( null === static::$instance ) {
 			static::$instance = new static;
 		}
 
@@ -109,9 +111,15 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		}
 
 		if ( $format == 'text' ) {
-			$logo = $this->options['show_logo_in_caption'] == 'yes' ? '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link mistape-logo"></a></span>' : '';
+			$icon_id  = intval( $this->options['show_logo_in_caption'] );
+			$icon_svg = '';
+			if ( $icon_id ) {
+				$icon_svg = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
+
+				$icon_svg = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
+			}
 			// linebreak is necessary
-			$output = "\n" . '<div class="mistape_caption"><p>' . $logo . $this->get_caption_text() . '</p></div>';
+			$output = "\n" . '<div class="mistape_caption">' . $icon_svg . '<p>' . $this->get_caption_text() . '</p></div>';
 		} elseif ( $format == 'image' ) {
 			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $this->get_caption_text() ) . '"></div>';
 		}
@@ -120,6 +128,24 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 
 		return $content . $output;
 	}
+
+	/**
+	 * Mistape custom styles
+	 */
+	public function custom_styles() {
+		echo '
+		<style type="text/css">
+			.mistape-test, .mistape_mistake_inner {color: ' . $this->options['color_scheme'] . ' !important;}
+			#mistape_dialog h2::before, #mistape_dialog .mistape_action, .mistape-letter-back {background-color: ' . $this->options['color_scheme'] . ' !important; }
+			#mistape_reported_text:before, #mistape_reported_text:after {border-color: ' . $this->options['color_scheme'] . ' !important;}
+            .mistape-letter-front .front-left {border-left-color: ' . $this->options['color_scheme'] . ' !important;}
+            .mistape-letter-front .front-right {border-right-color: ' . $this->options['color_scheme'] . ' !important;}
+            .mistape-letter-front .front-bottom, .mistape-letter-back > .mistape-letter-back-top, .mistape-letter-top {border-bottom-color: ' . $this->options['color_scheme'] . ' !important;}
+            .mistape-logo svg {fill: ' . $this->options['color_scheme'] . ' !important;}
+		</style>
+		';
+	}
+
 
 	/**
 	 * Mistape dialog output
