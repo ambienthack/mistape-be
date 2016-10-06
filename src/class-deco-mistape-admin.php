@@ -25,7 +25,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		// if multisite inheritance is enabled, add corresponding action
 		if ( is_multisite() && $this->options['multisite_inheritance'] === 'yes' ) {
-			add_action( 'wpmu_new_blog', array( $this, 'activation' ) );
+			add_action( 'wpmu_new_blog', __CLASS__ . '::activation' );
 		}
 
 		// Mistape page-specific actions
@@ -37,11 +37,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		// filters
 		add_filter( 'plugin_action_links', array( $this, 'plugins_page_settings_link' ), 10, 2 );
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'deactivate'
-		     && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == plugin_basename( self::$plugin_path )
-		) {
-			add_filter( 'option_active_plugins', array( $this, 'deactivate_addons' ) );
-		}
 
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
@@ -116,13 +111,18 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		// show changelog only if less than one week passed since updating the plugin
 		$show_changelog = time() - (int) $this->options['plugin_updated_timestamp'] < WEEK_IN_SECONDS;
 
-		$active_tab    = isset( $_GET['tab'] ) ? $_GET['tab'] : 'configuration';
+		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'configuration';
+
+		$table_name    = $wpdb->prefix . Deco_Mistape_Abstract::DB_TABLE;
+		$reports_count = 0;
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+		}
 		$table_exists  = ! ! $wpdb->get_var(
 			"SELECT COUNT(*) FROM information_schema.tables
 			WHERE table_schema = '" . DB_NAME . "'
 			AND table_name = '{$wpdb->prefix}mistape_reports' LIMIT 1"
 		);
-		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}mistape_reports" ) : null;
+		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}mistape_reports where status = 'pending'" ) : null;
 		?>
 		<div class="wrap">
 			<h2>Mistape</h2>
@@ -162,7 +162,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 							<a class="deco_button decomments" href="http://decomments.com/" target="_blank">
 								<span>de:comments</span>
 							</a>
-							<a class="deco_button debranding" href="https://wordpress.org/plugins/debranding/" target="_blank">
+							<a class="deco_button debranding" href="https://wordpress.org/plugins/debranding/"
+							   target="_blank">
 								<span>de:branding</span>
 							</a>
 							<a class="deco_button deadblocker" href="http://deadblocker.com/" target="_blank">
@@ -178,35 +179,38 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 							<div class="inside">
 								<ul>
 									<li>New dialog box design (send action is now animated)</li>
-									<li>Introduce database table for saving reports. Used for checking for duplicates—you will not get multiple reports about the same error anymore.</li>
+									<li>Introduce database table for saving reports. Used for checking for
+										duplicates—you will not get multiple reports about the same error anymore.
+									</li>
 									<li>Introduce support for addons.</li>
-									<li>(for developers) arguments for "mistape_process_report" action were changed.</li>
+									<li>(for developers) arguments for "mistape_process_report" action were changed.
+									</li>
 									<li>lots of improvements under the hood.</li>
 								</ul>
 							</div>
 						</div>
-					<?php }
-					if ( $reports_count ) { ?>
-						<div id="mistape_statistics" class="postbox deco-right-sidebar-widget">
-							<h3 class="hndle">
-								<span><?php _e( 'Statistics', 'mistape' ); ?></span>
-							</h3>
-							<div class="inside">
-								<p>
-									<?php
-									_e( 'Reports received up to date:', 'mistape' );
-									echo ' <strong>' . $reports_count . '</strong>';
-									?>
-								</p>
-								<?php if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) { ?>
-									<p>
-										Detailed mistake statistics is available in Mistape PRO', 'mistape
-									</p>
-									<a href="#" class="paddle_button" data-allow-quantity="false" data-quantity="1" data-theme="light" data-product="508163">Buy PRO for just $15!</a>
-								<?php } ?>
-							</div>
-						</div>
 					<?php } ?>
+					<div id="mistape_statistics" class="postbox deco-right-sidebar-widget">
+						<h3 class="hndle">
+							<span><?php _e( 'Statistics', 'mistape' ); ?></span>
+						</h3>
+						<div class="inside">
+							<p>
+								<?php
+								$reports_count = empty( $reports_count ) ? 0 : $reports_count;
+								_e( 'Reports received up to date:', 'mistape' );
+								echo ' <strong>' . $reports_count . '</strong>';
+								?>
+							</p>
+							<?php if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) { ?>
+								<p>
+									Detailed mistake statistics is available in Mistape PRO
+								</p>
+								<a href="#!" class="button button-primary paddle_button" data-product="508163" data-quantity="1" data-allow-quantity="false">Buy PRO
+									for just <span class="cost-block">15</span>!</a>
+							<?php } ?>
+						</div>
+					</div>
 				</div>
 			</form>
 
@@ -461,9 +465,9 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		echo '
 		<fieldset>
 			<label>
-			    <input id="mistape_color_scheme" type="text" name="mistape_options[color_scheme]" value="' . $this->options['color_scheme'] . '" class="mistape_color_picker" />
+			    <input id="mistape_color_scheme" type="text" name="mistape_options[color_scheme]" value="' . ( $this->options['color_scheme'] != '' ? $this->options['color_scheme'] : '#E42029' ) . '" class="mistape_color_picker" />
 			</label>
-			<p class="description">' . __( 'default color', 'mistape' ) . ' #E42029</p>
+			<p class="description">' . __( 'default color', 'mistape' ) . '  <span style="color: #E42029;">#E42029</span></p>
 		</fieldset>';
 	}
 
@@ -632,52 +636,53 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 *
 	 * @param null $blog_id
 	 */
-	public function activation( $blog_id = null ) {
+	public static function activation( $blog_id = null ) {
 		$blog_id = (int) $blog_id;
 
 		if ( empty( $blog_id ) ) {
 			$blog_id = get_current_blog_id();
 		}
-
+		$options = self::get_options();
 		if ( get_current_blog_id() == $blog_id ) {
-			add_option( 'mistape_options', $this->options, '', 'yes' );
+			add_option( 'mistape_options', $options, '', 'yes' );
 			add_option( 'mistape_version', self::$version, '', 'no' );
 		} else {
 			switch_to_blog( $blog_id );
-			add_option( 'mistape_options', $this->options, '', 'yes' );
+			add_option( 'mistape_options', $options, '', 'yes' );
 			add_option( 'mistape_version', self::$version, '', 'no' );
 			restore_current_blog();
 		}
 
-		if ( ! empty( $this->options['addons_to_activate'] ) ) {
-			activate_plugins( $this->options['addons_to_activate'] );
-			unset( $this->options['addons_to_activate'] );
-			update_option( 'mistape_options', $this->options );
+		if ( ! empty( $options['addons_to_activate'] ) ) {
+			if ( function_exists( 'activate_plugins' ) ) {
+				activate_plugins( $options['addons_to_activate'] );
+				unset( $options['addons_to_activate'] );
+				update_option( 'mistape_options', $options );
+			}
 		}
 
 		self::create_db();
 	}
 
-	public function deactivate_addons( $value ) {
-
-		remove_filter( 'option_active_plugins', array( $this, 'deactivate_addons' ) );
-
-		foreach ( static::$supported_addons as $addon ) {
-			$plugin = $addon . '/' . $addon . '.php';
-			if ( ( $key = array_search( $plugin, $value ) ) !== false ) {
-				deactivate_plugins( $plugin, true );
-				unset( $value[ $key ] );
-				$deactivated[] = $plugin;
+	public static function deactivate_addons() {
+		if ( function_exists( 'deactivate_plugins' ) ) {
+			$active_and_valid_plugins = wp_get_active_and_valid_plugins();
+			$active_and_valid_plugins = implode( ',', $active_and_valid_plugins );
+			$deactivated              = array();
+			foreach ( static::$supported_addons as $addon ) {
+				$plugin = $addon . '/' . $addon . '.php';
+//				$plugin = $addon . '.php';
+				if ( false !== strpos( $active_and_valid_plugins, $plugin ) ) {
+					deactivate_plugins( $plugin, true );
+					$deactivated[] = $plugin;
+				}
+			}
+			if ( ! empty( $deactivated ) ) {
+				$options                       = self::get_options();
+				$options['addons_to_activate'] = $deactivated;
+				update_option( 'mistape_options', $options );
 			}
 		}
-
-		if ( ! empty( $deactivated ) ) {
-			$options                       = self::get_options();
-			$options['addons_to_activate'] = $deactivated;
-			update_option( 'mistape_options', $options );
-		}
-
-		return $value;
 	}
 
 	/**
@@ -901,11 +906,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 	public function mistape_paddle_payments_scripts() {
 		// Paddle system payment
-//		if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) {
-		echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
-		echo '<script async src="https://paddle.s3.amazonaws.com/checkout/checkout.js"></script>';
-
-//		}
+		echo '<script src="https://cdn.paddle.com/paddle/paddle.js"></script>';
+		echo '<script type="text/javascript">Paddle.Setup({ vendor: 15896 });</script>';
 	}
 
 

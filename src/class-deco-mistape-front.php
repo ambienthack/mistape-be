@@ -173,12 +173,12 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		}
 
 		// check for IE, save some resources avoiding regex
-		if ( false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE ' )
-		     || false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Trident/' )
-		     || false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Edge/' )
-		) {
-			return false;
-		}
+//		if ( false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE ' )
+//		     || false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Trident/' )
+//		     || false !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Edge/' )
+//		) {
+//			return false;
+//		}
 
 		return true;
 	}

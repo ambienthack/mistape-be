@@ -30,7 +30,7 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.2.0';
+	public static $version = '1.3.1';
 	public $plugin_url = 'http://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();
@@ -269,35 +269,48 @@ abstract class Deco_Mistape_Abstract {
 
 	public static function create_db() {
 		global $wpdb;
-		$charset_collate = $wpdb->get_charset_collate();
-		$table_name      = $wpdb->prefix . 'mistape_reports';
 
-		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-			ID mediumint(9) unsigned NOT NULL auto_increment,
-			post_id bigint(20) unsigned UNSIGNED,
-			post_author bigint(20) UNSIGNED,
-			reporter_user_id bigint(20) UNSIGNED,
-			reporter_IP varchar(100) NOT NULL,
-			date datetime NOT NULL default '0000-00-00 00:00:00',
-			date_gmt datetime NOT NULL default '0000-00-00 00:00:00',
-			selection varchar(255) NOT NULL,
-			selection_word varchar(255),
-			selection_replace_context varchar(2000),
-			selection_context varchar(2000),
-			comment varchar(2000),
-			url varchar(2083),
-			agent varchar(255),
-			language varchar(50),
-  			status varchar(20) NOT NULL default 'pending',
-  			token char(20),
-			PRIMARY KEY (id),
-			KEY post_id (post_id),
-			KEY post_author (post_author),
-			KEY reporter_user_id (reporter_user_id),
-			KEY date_gmt (date_gmt)
-		) $charset_collate;";
+		$table_name = $wpdb->prefix . Deco_Mistape_Abstract::DB_TABLE;
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+			return false;
+		}
+
+		$wpdb->hide_errors();
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+		$collate = '';
+
+		if ( $wpdb->has_cap( 'collation' ) ) {
+			$collate = $wpdb->get_charset_collate();
+		}
+
+		$sql = "
+CREATE TABLE {$wpdb->prefix}mistape_reports (
+  ID bigint(20) unsigned NOT NULL auto_increment,
+  post_id bigint(20) unsigned UNSIGNED,
+  post_author bigint(20) UNSIGNED,
+  reporter_user_id bigint(20) UNSIGNED,
+  reporter_IP varchar(100) NOT NULL,
+  date datetime NOT NULL default '0000-00-00 00:00:00',
+  date_gmt datetime NOT NULL default '0000-00-00 00:00:00',
+  selection varchar(255) NOT NULL,
+  selection_word varchar(255),
+  selection_replace_context varchar(2000),
+  selection_context varchar(2000),
+  comment varchar(2000),
+  url varchar(2083),
+  agent varchar(255),
+  language varchar(50),
+  status varchar(20) NOT NULL default 'pending',
+  token char(20),
+  PRIMARY KEY (ID),
+  KEY post_id (post_id),
+  KEY post_author (post_author),
+  KEY reporter_user_id (reporter_user_id),
+  KEY date_gmt (date_gmt)
+) $collate;";
+
 		dbDelta( $sql );
 	}
 
@@ -310,9 +323,8 @@ abstract class Deco_Mistape_Abstract {
 		}
 
 		$db_version = get_option( 'mistape_version', '1.0.0' );
-		if ( version_compare( '1.2.0', $db_version ) === 1 ) {
-			self::create_db();
-		}
+		self::create_db();
+
 		if ( version_compare( self::$version, $db_version ) === 1 ) {
 			update_option( 'mistape_version', self::$version, false );
 		}
