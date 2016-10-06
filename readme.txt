@@ -36,90 +36,90 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
-=1.3.1
-* set of icons and a color scheme.
-* support the IE & Edge.
-* ability to purchase add-on with statistics and  notifications in Admin panel.
+= 1.3.1 =
+* Set of icons and a color scheme.
+* Support the IE & Edge.
+* Ability to purchase add-on with statistics and  notifications in Admin panel.
 * Portuguese & French localization.
 
-= 1.3.0
+= 1.3.0 =
 * Link to purchase a PRO version with enhanced statistics and own section in an admin panel.
 * Option to choose your own color scheme for front-end.
 * Set of icons for front-end notice in the end of post.
 * Fixed an issue with post ID.
 * Portuguese localisation added.
 
-= 1.2.0
-* new dialog box design (send action is now animated).
-* introduce database table for saving reports. Used for checking for duplicates — you will not get multiple reports about the same error anymore.
+= 1.2.0 =
+* New dialog box design (send action is now animated).
+* Introduce database table for saving reports. Used for checking for duplicates — you will not get multiple reports about the same error anymore.
 * Introduce support for addons.
-* (for developers) arguments for "mistape_process_report" action were changed.
-* fixed textdomain plugin initialization.
-* lots of improvements under the hood.
+* (for developers) Arguments for "mistape_process_report" action were changed.
+* Fixed textdomain plugin initialization.
+* Lots of improvements under the hood.
 
 = 1.1.4 =
-* fix "if post ID is determined, notify post author instead" feature functionality
-* optimize AJAX calls handling
+* Fix "if post ID is determined, notify post author instead" feature functionality.
+* Optimize AJAX calls handling.
 
 = 1.1.3 =
-* remove unnecessary token check; fixes "A problem occurred while trying to deliver your report. That's all we know" issue with caching plugins enabled
-* fix custom post types support
-* multisite: add option for new blogs to inherit main site settings (shown only on multisite installations)
-* add an option to disable Mistape caption at the bottom of post
-* add hook to allow custom front end output logic (for example, disable Mistape for specific pages/categories/tags or other conditions)
-* javascript: remove Classie library
-* various internal code improvements
+* Remove unnecessary token check; fixes "A problem occurred while trying to deliver your report. That's all we know" issue with caching plugins enabled.
+* Fix custom post types support.
+* Multisite: add option for new blogs to inherit main site settings (shown only on multisite installations).
+* Add an option to disable Mistape caption at the bottom of post.
+* Add hook to allow custom front end output logic (for example, disable Mistape for specific pages/categories/tags or other conditions).
+* Javascript: remove Classie library.
+* Various internal code improvements.
 
 = 1.1.2 =
-* set maximum z-index for dialog to evade see-through effect on some themes
-* fix errors on multisite installation
-* password-protected posts don't get "Ctrl+Enter" caption appended anymore
-* some HTML layout fixes
+* Set maximum z-index for dialog to evade see-through effect on some themes.
+* Fix errors on multisite installation.
+* Password-protected posts don't get "Ctrl+Enter" caption appended anymore.
+* Some HTML layout fixes.
 
 = 1.1.1 =
 * added an indent in front of Mistape caption to separate it from previous content. This fixed embedded objects not being processed by WordPress if they were in the end of the post content with Mistape caption enabled.
 
 = 1.1.0 =
-* added dialog modes: 1) notification, 2) confirmation, 3) confirmation with comment field (second option is the default)
-* added option to override email recipient to post author if post ID is determined
-* significantly improved determination of selection context
-* improved email contents
-* now user gets error message if submission fails
-* improved specificity of css styles to avoid conflicts with themes
-* disabled execution if visitor's browser is IE until selection extraction logic is implemented for it
-* various fixes
+* Added dialog modes: 1) notification, 2) confirmation, 3) confirmation with comment field (second option is the default).
+* Added option to override email recipient to post author if post ID is determined.
+* Significantly improved determination of selection context.
+* Improved email contents.
+* Now user gets error message if submission fails.
+* Improved specificity of css styles to avoid conflicts with themes.
+* Disabled execution if visitor's browser is IE until selection extraction logic is implemented for it.
+* Various fixes.
 
 = 1.0.8 =
-* don't output scripts and styles when no caption displayed
-* various fixes
+* Don't output scripts and styles when no caption displayed.
+* Various fixes.
 
 = 1.0.7 =
-* changed post type check logic to minimize caption's chance to appear in post excerpts
+* Changed post type check logic to minimize caption's chance to appear in post excerpts.
 
 = 1.0.6 =
-* skip mobile browsers and Internet Explorer < 11
-* fixed enabled post types option behavior
-* fixed dialog HTML markup
+* Skip mobile browsers and Internet Explorer < 11.
+* Fixed enabled post types option behavior.
+* Fixed dialog HTML markup.
 
 = 1.0.5 =
-* fixed hide logo option saving
+* Fixed hide logo option saving.
 
 = 1.0.4 =
-* updated Russian translation
+* Updated Russian translation.
 
 = 1.0.3 =
-* custom caption text setting
-* ability to specify multiple email recipients
-* added an option to display a Mistape logo in caption (enabled by default)
-* shortcode fixes
-* performance improvements
+* Custom caption text setting.
+* Ability to specify multiple email recipients.
+* Added an option to display a Mistape logo in caption (enabled by default).
+* Shortcode fixes.
+* Performance improvements.
 
 = 1.0.2 =
-* fixed Russian translation.
-* email template improvements.
+* Fixed Russian translation.
+* Email template improvements.
 
 = 1.0.1 =
-* internal improvements.
+* Internal improvements.
 
 = 1.0.0 =
 * Initial release.
