@@ -22,7 +22,7 @@ abstract class Deco_Mistape_Abstract {
 		'custom_caption_text'      => '',
 		'dialog_mode'              => 'confirm',
 		'caption_image_url'        => '',
-		'show_logo_in_caption'     => 1,
+		'show_logo_in_caption'     => 0,
 		'first_run'                => 'yes',
 		'multisite_inheritance'    => 'no',
 		'plugin_updated_timestamp' => null,
@@ -30,7 +30,7 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.3.1';
+	public static $version = '1.3.2';
 	public $plugin_url = 'http://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();
@@ -90,8 +90,7 @@ abstract class Deco_Mistape_Abstract {
 
 	public function get_default_caption_text() {
 		if ( is_null( $this->default_caption_text ) ) {
-			$this->default_caption_text = __( 'If you have found a spelling error, please, notify us by selecting that text and pressing <em>Ctrl+Enter</em>.',
-				'mistape' );
+			$this->default_caption_text = __( 'If you have found a spelling error, please, notify us by selecting that text and pressing <em>Ctrl+Enter</em>.', 'mistape' );
 		}
 
 		return $this->default_caption_text;
@@ -184,9 +183,6 @@ abstract class Deco_Mistape_Abstract {
 			}
 			$output .=
 				'<div class="pos-relative">
-							 <div class="mistape_dialog_footer">
-								powered by <a href="' . $this->plugin_url . '" rel="nofollow" class="mistape-link" target="_blank">Mistape</a>
-							 </div>
 						</div>
 					</div>
 			    </div>
@@ -270,10 +266,10 @@ abstract class Deco_Mistape_Abstract {
 	public static function create_db() {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . Deco_Mistape_Abstract::DB_TABLE;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
-			return false;
-		}
+		$table_name = $wpdb->base_prefix . Deco_Mistape_Abstract::DB_TABLE;
+//		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+//			return false;
+//		}
 
 		$wpdb->hide_errors();
 
@@ -286,8 +282,9 @@ abstract class Deco_Mistape_Abstract {
 		}
 
 		$sql = "
-CREATE TABLE {$wpdb->prefix}mistape_reports (
+CREATE TABLE {$wpdb->base_prefix}mistape_reports (
   ID bigint(20) unsigned NOT NULL auto_increment,
+  blog_id int(11) DEFAULT '1',
   post_id bigint(20) unsigned UNSIGNED,
   post_author bigint(20) UNSIGNED,
   reporter_user_id bigint(20) UNSIGNED,
@@ -348,10 +345,8 @@ CREATE TABLE {$wpdb->prefix}mistape_reports (
 
 		$result  = array( 'icon' => '' );
 		$icon_id = isset( $args['icon_id'] ) ? intval( $args['icon_id'] ) : 0;
-		if ( $icon_id ) {
-			if ( isset( $array_icons[ $icon_id ] ) ) {
-				$result['icon'] = $array_icons[ $icon_id ];
-			}
+		if ( isset( $array_icons[ $icon_id ] ) ) {
+			$result['icon'] = $array_icons[ $icon_id ];
 		}
 
 		if ( isset( $args['icon_all'] ) && $args['icon_all'] == true ) {

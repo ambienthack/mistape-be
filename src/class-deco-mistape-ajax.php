@@ -69,7 +69,7 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 
 		if ( ! $this->validate_ip() ) {
 			wp_send_json_error( array(
-				'title'  => __( 'Report not sent', 'mistape' ),
+				'title'   => __( 'Report not sent', 'mistape' ),
 				'message' => __( 'Spam protection: too many reports from your IP address.', 'mistape' ),
 			) );
 		}
@@ -87,8 +87,7 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 		$db_data = $this->get_db_data();
 		if ( $this->is_report_unique( $db_data ) ) {
 			$this->record_report( $db_data );
-		}
-		else {
+		} else {
 			wp_send_json_error( array(
 				'title'   => __( 'Thanks!', 'mistape' ),
 				'message' => __( "Our editors already got notified about this error. Thanks for your care.", 'mistape' ),
@@ -146,7 +145,7 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 	/**
 	 * duplicate of original WP function excluding user capabilities check
 	 *
-	 * @param int $id
+	 * @param int    $id
 	 * @param string $context
 	 *
 	 * @return mixed|null|void
@@ -179,10 +178,10 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 
 	public function get_reported_text() {
 		if ( is_null( $this->reported_text ) ) {
-			$req = $this->request;
+			$req                 = $this->request;
 			$this->reported_text = self::get_formatted_reported_text( $req['selection'], $req['word'], $req['replace_context'], $req['context'] );
 		}
-		
+
 		return $this->reported_text;
 	}
 
@@ -223,39 +222,43 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 		$to      = apply_filters( 'mistape_mail_recipient', $this->recipient_email, $this->url, $this->user );
 		$subject = apply_filters( 'mistape_mail_subject', __( 'Spelling error reported', 'mistape' ), $this->url, $this->user );
 		$message = $this->get_email_body();
+
 		return wp_mail( $to, $subject, $message, $headers );
 	}
 
 	public function get_db_data() {
 		return array(
-			'post_id' => $this->post_id,
-			'post_author' => $this->post_author,
-			'reporter_user_id' => $this->user->ID ? $this->user->ID : null,
-			'reporter_IP' => $this->reporter_ip,
-			'date' => current_time( 'mysql' ),
-			'date_gmt' => current_time( 'mysql', true ),
-			'selection' => $this->request['selection'],
-			'selection_word' => $this->request['word'] != $this->request['selection'] ? $this->request['word'] : null,
+			'blog_id'                   => get_current_blog_id(),
+			'post_id'                   => $this->post_id,
+			'post_author'               => $this->post_author,
+			'reporter_user_id'          => $this->user->ID ? $this->user->ID : null,
+			'reporter_IP'               => $this->reporter_ip,
+			'date'                      => current_time( 'mysql' ),
+			'date_gmt'                  => current_time( 'mysql', true ),
+			'selection'                 => $this->request['selection'],
+			'selection_word'            => $this->request['word'] != $this->request['selection'] ? $this->request['word'] : null,
 			'selection_replace_context' => $this->request['replace_context'] != $this->request['word'] ? $this->request['replace_context'] : null,
-			'selection_context' => $this->request['context'] != $this->request['replace_context'] ? $this->request['context'] : null,
-			'comment' => $this->request['comment'],
-			'url' => $this->url,
-			'agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null,
+			'selection_context'         => $this->request['context'] != $this->request['replace_context'] ? $this->request['context'] : null,
+			'comment'                   => $this->request['comment'],
+			'url'                       => $this->url,
+			'agent'                     => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null,
 		);
 	}
 
 	public function record_report( $data ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'mistape_reports';
-		$result = $wpdb->insert( $table_name, $data );
+		$table_name = $wpdb->base_prefix . 'mistape_reports';
+		$result     = $wpdb->insert( $table_name, $data );
 		do_action( 'mistape_new_record', $data, $result );
 	}
 
 	public function is_report_unique( $data ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'mistape_reports';
+		$table_name = $wpdb->base_prefix . 'mistape_reports';
 
-		$existing = $wpdb->get_results( $wpdb->prepare( "SELECT selection, selection_word FROM $table_name WHERE url=%s AND date >= DATE_SUB(CURDATE(), INTERVAL 10 DAY)", $data['url'] ), ARRAY_A );
+		$blog_id = get_current_blog_id();
+
+		$existing = $wpdb->get_results( $wpdb->prepare( "SELECT selection, selection_word FROM $table_name WHERE url=%s AND blog_id = $blog_id AND date >= DATE_SUB(CURDATE(), INTERVAL 10 DAY)", $data['url'] ), ARRAY_A );
 
 		foreach ( $existing as $existing_record ) {
 			$existing_record['selection_word'] = $existing_record['selection_word'] ? $existing_record['selection_word'] : $existing_record['selection'];
@@ -291,6 +294,7 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
 			return $_SERVER['REMOTE_ADDR'];
 		}
+
 		return null;
 	}
 
@@ -301,9 +305,9 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 		if ( self::is_ip_in_banlist( $this->reporter_ip ) ) {
 			return false;
 		}
-
+		$blog_id = get_current_blog_id();
 		// check reporting frequency
-		$sql = $wpdb->prepare( "SELECT date  FROM `" . $wpdb->prefix . self::DB_TABLE . "` WHERE reporter_IP='%s' AND date >= DATE_ADD(CURDATE(), INTERVAL -1 DAY) ORDER BY date DESC", $this->reporter_ip );
+		$sql            = $wpdb->prepare( "SELECT date  FROM `" . $wpdb->base_prefix . self::DB_TABLE . "` WHERE reporter_IP='%s' and blog_id = $blog_id AND date >= DATE_ADD(CURDATE(), INTERVAL -1 DAY) ORDER BY date DESC", $this->reporter_ip );
 		$todays_reports = $wpdb->get_results( $sql, ARRAY_A );
 
 		// check total reports for past 24 hours
@@ -313,17 +317,15 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 
 		// check reports for past 30 and 5 minutes
 		$count_per_30_min = 0;
-		$count_per_5_min = 0;
+		$count_per_5_min  = 0;
 		foreach ( $todays_reports as $report ) {
 			$report_timestamp = strtotime( $report['date'] );
-			$seconds_passed = current_time('timestamp') - $report_timestamp;
+			$seconds_passed   = current_time( 'timestamp' ) - $report_timestamp;
 			if ( $seconds_passed < 5 * MINUTE_IN_SECONDS ) {
-				$count_per_5_min++;
-			}
-			elseif ( $seconds_passed < 30 * MINUTE_IN_SECONDS ) {
-				$count_per_30_min++;
-			}
-			else {
+				$count_per_5_min ++;
+			} elseif ( $seconds_passed < 30 * MINUTE_IN_SECONDS ) {
+				$count_per_30_min ++;
+			} else {
 				break;
 			}
 		}

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
 Tested up to: 4.6.1
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -36,6 +36,11 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.3.2 =
+* Fixed display set icon variant.
+* Default powered by deleted from the pop-up.
+* The link to mistape.com adds in a case user activate an icon.
+
 = 1.3.1 =
 * Set of icons and a color scheme.
 * Support the IE & Edge.

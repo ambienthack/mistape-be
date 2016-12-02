@@ -67,7 +67,13 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			$imagesrc = $atts['image'] ? $atts['image'] : $this->options['caption_image_url'];
 			$output   = '<div class="' . $atts['class'] . '"><img src="' . $imagesrc . '" alt="' . $atts['text'] . '"></div>';
 		} else {
-			$output = '<div class="' . $atts['class'] . '"><p>' . $atts['text'] . '</p></div>';
+			$icon_id      = intval( $this->options['show_logo_in_caption'] );
+			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
+			$icon_svg_str = '';
+			if ( ! empty( $icon_svg['icon'] ) ) {
+				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
+			}
+			$output = '<div class="' . $atts['class'] . '">' . $icon_svg_str . '<p>' . $atts['text'] . '</p></div>';
 		}
 
 		return $output;
@@ -111,15 +117,16 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		}
 
 		if ( $format == 'text' ) {
-			$icon_id  = intval( $this->options['show_logo_in_caption'] );
-			$icon_svg = '';
-			if ( $icon_id ) {
-				$icon_svg = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
-
-				$icon_svg = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
+			$icon_id      = intval( $this->options['show_logo_in_caption'] );
+			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
+			$icon_svg_str = ''; // For icon and link plugin site
+			// If not empty icon then show svg ion with link
+			if ( ! empty( $icon_svg['icon'] ) ) {
+				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
 			}
-			// linebreak is necessary
-			$output = "\n" . '<div class="mistape_caption">' . $icon_svg . '<p>' . $this->get_caption_text() . '</p></div>';
+			// else do not show icon,
+			// Only text withot link plugin site!!
+			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $this->get_caption_text() . '</p></div>';
 		} elseif ( $format == 'image' ) {
 			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $this->get_caption_text() ) . '"></div>';
 		}

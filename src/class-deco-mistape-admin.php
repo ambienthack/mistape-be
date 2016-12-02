@@ -19,10 +19,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		add_action( 'admin_notices', array( $this, 'plugin_activated_notice' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
-		// Add the color picker css file
-		wp_enqueue_style( 'wp-color-picker' );
-
-
 		// if multisite inheritance is enabled, add corresponding action
 		if ( is_multisite() && $this->options['multisite_inheritance'] === 'yes' ) {
 			add_action( 'wpmu_new_blog', __CLASS__ . '::activation' );
@@ -113,16 +109,17 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'configuration';
 
-		$table_name    = $wpdb->prefix . Deco_Mistape_Abstract::DB_TABLE;
+		$table_name    = $wpdb->base_prefix . Deco_Mistape_Abstract::DB_TABLE;
 		$reports_count = 0;
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
 		}
 		$table_exists  = ! ! $wpdb->get_var(
 			"SELECT COUNT(*) FROM information_schema.tables
 			WHERE table_schema = '" . DB_NAME . "'
-			AND table_name = '{$wpdb->prefix}mistape_reports' LIMIT 1"
+			AND table_name = '{$wpdb->base_prefix}mistape_reports' LIMIT 1"
 		);
-		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}mistape_reports where status = 'pending'" ) : null;
+		$blog_id       = get_current_blog_id();
+		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->base_prefix}mistape_reports where status = 'pending' && blog_id = $blog_id" ) : null;
 		?>
 		<div class="wrap">
 			<h2>Mistape</h2>
@@ -340,8 +337,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		}
 
 		echo '
-			<p class="description">' . __( '"Press Ctrl+Enter&hellip;" captions will be displayed at the bottom of selected post types.',
-				'mistape' ) . '</p>
+			<p class="description">' . __( '"Press Ctrl+Enter&hellip;" captions will be displayed at the bottom of selected post types.', 'mistape' ) . '</p>
 		</fieldset>';
 	}
 
@@ -385,12 +381,10 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 * Caption custom text field
 	 */
 	public function field_caption_text_mode() {
-		echo '
-		<fieldset>';
+		echo '<fieldset>';
 
 		foreach ( $this->caption_text_modes as $value => $label ) {
-			echo '<label><input id="mistape_caption_text_mode-' . $value . '" type="radio" name="mistape_options[caption_text_mode]" ' .
-			     'value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_text_mode'],
+			echo '<label><input id="mistape_caption_text_mode-' . $value . '" type="radio" name="mistape_options[caption_text_mode]" ' . 'value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_text_mode'],
 					false ) . ' />' . $label['name'];
 			echo empty( $label['description'] ) ? ':' : ' <span class="description">(' . $label['description'] . ')</span>';
 			echo '</label><br>';
@@ -408,11 +402,18 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 * Show Mistape logo in caption
 	 */
 	public function field_show_logo_in_caption() {
-		$custom_logo_icon = $this->options['show_logo_in_caption'];
+		$custom_logo_icon = intval( $this->options['show_logo_in_caption'] );
 		$mistape_icons    = apply_filters( 'mistape_get_icon', array( 'icon_all' => true ) );
 
 		echo '
 		<fieldset class="select-logo">
+			<label class="select-logo__item select-logo__item--no-img">
+			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="0" ' . checked( 0, $custom_logo_icon, false ) . '>
+			    <div class="select-logo__img">
+			        ' . __( 'no icon', 'mistape' ) . '
+			    </div>
+			</label>
+
 			<label class="select-logo__item">
 			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="1" ' . checked( 1, $custom_logo_icon, false ) . '>
 			    <div class="select-logo__img">
@@ -447,14 +448,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
                     ' . $mistape_icons[5] . '
 			    </div>
 			</label>
-
-			<label class="select-logo__item select-logo__item--no-img">
-			    <input type="radio" name="mistape_options[show_logo_in_caption]" value="0" ' . checked( 0, $custom_logo_icon, false ) . '>
-			    <div class="select-logo__img">
-			        no icon
-			    </div>
-			</label>
-
+			<p class="description">' . __( 'In a case you activate the icon, the link to mistape.com adds automatically.', 'mistape' ) . '</p>
 		</fieldset>';
 	}
 
@@ -462,12 +456,13 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 * Color scheme
 	 */
 	public function field_show_color_scheme() {
+		$str = __( 'default color', 'mistape' );
 		echo '
 		<fieldset>
 			<label>
 			    <input id="mistape_color_scheme" type="text" name="mistape_options[color_scheme]" value="' . ( $this->options['color_scheme'] != '' ? $this->options['color_scheme'] : '#E42029' ) . '" class="mistape_color_picker" />
 			</label>
-			<p class="description">' . __( 'default color', 'mistape' ) . '  <span style="color: #E42029;">#E42029</span></p>
+			<p class="description">' . $str . '  <span style="color: #E42029;">#E42029</span></p>
 		</fieldset>';
 	}
 
@@ -476,8 +471,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 * Dialog mode: ask for a comment or fire notification straight off
 	 */
 	public function field_dialog_mode() {
-		echo '
-		<fieldset>';
+		echo '<fieldset>';
 
 		foreach ( $this->dialog_modes as $value => $label ) {
 			echo '
@@ -708,6 +702,9 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		if ( strpos( $page, '_page_mistape_settings', true ) === false ) {
 			return;
 		}
+
+		// Add the color picker css file
+		wp_enqueue_style( 'wp-color-picker' );
 
 		$this->enqueue_dialog_assets();
 
