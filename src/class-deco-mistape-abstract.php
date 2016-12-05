@@ -22,7 +22,8 @@ abstract class Deco_Mistape_Abstract {
 		'custom_caption_text'      => '',
 		'dialog_mode'              => 'confirm',
 		'caption_image_url'        => '',
-		'show_logo_in_caption'     => 0,
+		'show_logo_in_caption'     => 1,
+		'enable_powered_by'        => 'no',
 		'first_run'                => 'yes',
 		'multisite_inheritance'    => 'no',
 		'plugin_updated_timestamp' => null,
@@ -30,7 +31,7 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.3.2';
+	public static $version = '1.3.3';
 	public $plugin_url = 'http://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();

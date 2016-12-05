@@ -70,9 +70,13 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			$icon_id      = intval( $this->options['show_logo_in_caption'] );
 			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
 			$icon_svg_str = '';
-			if ( ! empty( $icon_svg['icon'] ) ) {
+
+			if ( $this->options['enable_powered_by'] == 'yes' ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
+			} else if ( ! empty( $icon_svg['icon'] ) ) {
+				$icon_svg_str = '<span class="mistape-link-wrap"><span class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</span></span>';
 			}
+
 			$output = '<div class="' . $atts['class'] . '">' . $icon_svg_str . '<p>' . $atts['text'] . '</p></div>';
 		}
 
@@ -119,12 +123,12 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		if ( $format == 'text' ) {
 			$icon_id      = intval( $this->options['show_logo_in_caption'] );
 			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
-			$icon_svg_str = ''; // For icon and link plugin site
-			// If not empty icon then show svg ion with link
-			if ( ! empty( $icon_svg['icon'] ) ) {
+			$icon_svg_str = '';
+			if ( $this->options['enable_powered_by'] == 'yes' ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
+			} else if ( ! empty( $icon_svg['icon'] ) ) {
+				$icon_svg_str = '<span class="mistape-link-wrap"><span class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</span></span>';
 			}
-			// else do not show icon,
 			// Only text withot link plugin site!!
 			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $this->get_caption_text() . '</p></div>';
 		} elseif ( $format == 'image' ) {

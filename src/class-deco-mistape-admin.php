@@ -242,6 +242,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			array( $this, 'field_caption_text_mode' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_show_logo_in_caption', __( 'Icon before the caption text', 'mistape' ),
 			array( $this, 'field_show_logo_in_caption' ), 'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_powered_by', __( 'Powered by', 'mistape' ),
+			array( $this, 'field_powered_by' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_color_scheme', __( 'Color scheme', 'mistape' ),
 			array( $this, 'field_show_color_scheme' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_dialog_mode', __( 'Dialog mode', 'mistape' ), array( $this, 'field_dialog_mode' ),
@@ -357,6 +359,17 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	}
 
 	/**
+	 * Powered by option
+	 */
+	public function field_powered_by() {
+		echo '
+		<fieldset>
+			<label><input id="mistape_enable_powered_by" type="checkbox" name="mistape_options[enable_powered_by]" value="yes" ' . checked( 'yes', $this->options['enable_powered_by'], false ) . '/>' . __( 'Enable', 'mistape' ) . '</label>
+			<p class="description">' . __( 'Here you can enable Mistape.com link in an icon', 'mistape' ) . '</p>
+		</fieldset>';
+	}
+
+	/**
 	 * Caption format option
 	 */
 	public function field_caption_format() {
@@ -448,7 +461,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
                     ' . $mistape_icons[5] . '
 			    </div>
 			</label>
-			<p class="description">' . __( 'In a case you activate the icon, the link to mistape.com adds automatically.', 'mistape' ) . '</p>
 		</fieldset>';
 	}
 
