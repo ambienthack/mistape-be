@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.6.1
-Stable tag: 1.3.3
+Tested up to: 4.8
+Stable tag: 1.3.4
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -36,6 +36,9 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.3.4 =
+* German localization added
+
 = 1.3.3 =
 * Add an option to enable link to mistape.com
 
