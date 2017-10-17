@@ -1,3 +1,11 @@
+@font-face {
+    font-family: "iconFont";
+    src: url("../fonts/iconFont.eot");
+    src: url("../fonts/iconFont.eot?#iefix") format("embedded-opentype"), url("../fonts/iconFont.woff") format("woff"), url("../fonts/iconFont.ttf") format("truetype"), url("../fonts/iconFont.svg#iconFont") format("svg");
+    font-weight: normal;
+    font-style: normal
+}
+
 #mistape-configuration form {
     position: relative;
 }
@@ -8,15 +16,15 @@
 
 #mistape-sidebar {
     position: absolute;
-    top:      22px;
-    right:    20px;
+    top: 22px;
+    right: 20px;
 }
 
 .deco-right-sidebar-widget {
-    min-width:     235px;
+    min-width: 235px;
     margin-bottom: 15px;
-    padding:       0 15px;
-    width:         150px;
+    padding: 0 15px;
+    width: 150px;
     /*top: 50px;*/
 }
 
@@ -25,20 +33,20 @@
 }
 
 .deco-right-sidebar-widget .decoagency {
-    font-size:       16px;
+    font-size: 16px;
     text-decoration: none;
-    font-weight:     bold;
+    font-weight: bold;
 }
 
 .deco_button {
-    padding:         4px;
-    display:         block;
+    padding: 4px;
+    display: block;
     text-decoration: none;
-    border:          none;
+    border: none;
 }
 
 .deco_button span {
-    display:        inline-block;
+    display: inline-block;
     vertical-align: middle;
     padding-bottom: 1px;
 }
@@ -67,11 +75,11 @@
 
 .deco-right-sidebar-widget ul {
     list-style-type: disc;
-    padding-left:    15px;
+    padding-left: 15px;
 }
 
 #mistape_custom_caption_text {
-    width:     100%;
+    width: 100%;
     max-width: 600px;
 }
 
@@ -86,9 +94,9 @@
 
 @media screen and (max-width: 840px) {
     #mistape-sidebar {
-        position:   relative;
-        right:      initial;
-        top:        initial;
+        position: relative;
+        right: initial;
+        top: initial;
         margin-top: 20px;
     }
 
@@ -101,16 +109,15 @@
     }
 }
 
-
 [class^="mistape-var"] {
-    color:      #9876AA;
-    padding:    2px;
+    color: #9876AA;
+    padding: 2px;
     font-style: normal;
 }
 
 [class^="mistape-var-"]:before {
     font-style: italic;
-    color:      #aaa;
+    color: #aaa;
 }
 
 .mistape-var-arr:before {
@@ -140,10 +147,6 @@
 #mistape-configuration .spinner {
     float: none;
 }
-
-
-
-
 
 .select-logo {
 
@@ -200,4 +203,62 @@
     vertical-align: middle;
     margin-top: -2px;
     margin-right: -2px;
+}
+
+[class^="mistape-icon-after-"]:after, [class*=" mistape-icon-after-"]:after {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "iconFont";
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+}
+
+.mistape-icon-after-question:after {
+    content: '\EA01';
+}
+
+#mistape_statistics .inside .hover-image {
+    position: relative;
+    cursor: pointer;
+    -webkit-transition: .2s color ease-in-out;
+    transition: .2s color ease-in-out
+}
+
+#mistape_statistics .inside .hover-image:before {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    font-size: 15px
+}
+
+#mistape_statistics .inside .hover-image:hover {
+    color: #c3c3c3
+}
+
+#mistape_statistics .inside .hover-image:hover:before {
+    color: #3c286e
+}
+
+#mistape_statistics .inside .hover-image .tooltip-img {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -webkit-calc(100% + 20px);
+    right: calc(100% + 20px);
+    width: 800px;
+    height: auto;
+    z-index: 100;
+    -webkit-box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.3)
+}
+
+#mistape_statistics .inside .hover-image.tooltip-show .tooltip-img {
+    display: block
 }

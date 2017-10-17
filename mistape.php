@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'MISTAPE__VERSION', '1.3.3' );
 define( 'MISTAPE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MISTAPE__PLUGIN_FILE', __FILE__ );
+define( 'MISTAPE__PLUGIN_FOLDER', basename( MISTAPE__PLUGIN_DIR ) );
+define( 'MISTAPE__PLUGIN_URL', WP_PLUGIN_URL . '/' . MISTAPE__PLUGIN_FOLDER );
 
 require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-abstract.php' );
 require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-admin.php' );
