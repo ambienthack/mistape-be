@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mistape\n"
-"POT-Creation-Date: 2016-12-05 16:33+0200\n"
-"PO-Revision-Date: 2016-12-05 16:33+0200\n"
+"POT-Creation-Date: 2018-03-06 09:03+0200\n"
+"PO-Revision-Date: 2018-03-06 09:03+0200\n"
 "Last-Translator: deco.agency <hello@deco.agency>\n"
 "Language-Team: Antonio Andrade <antonio@imovel.es>\n"
 "Language: pt_BR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.7.7\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: mistape.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -142,82 +142,96 @@ msgstr "estatística"
 msgid "Reports received up to date:"
 msgstr "Relatórios recebidos até à data:"
 
-#: src/class-deco-mistape-admin.php:233
+#: src/class-deco-mistape-admin.php:205
+msgid "Detailed mistake statistics is available in Mistape PRO"
+msgstr ""
+
+#: src/class-deco-mistape-admin.php:208
+msgid ""
+"An option to mark notification as resolved, archive, delete from the table "
+"in one click"
+msgstr ""
+
+#: src/class-deco-mistape-admin.php:212
+msgid "Buy PRO for just"
+msgstr ""
+
+#: src/class-deco-mistape-admin.php:239
 msgid "Email recipient"
 msgstr "destinatário E-mail"
 
-#: src/class-deco-mistape-admin.php:235
+#: src/class-deco-mistape-admin.php:241
 msgid "Post types"
 msgstr "tipos de pós"
 
-#: src/class-deco-mistape-admin.php:237 src/class-deco-mistape-admin.php:799
+#: src/class-deco-mistape-admin.php:243 src/class-deco-mistape-admin.php:805
 msgid "Shortcodes"
 msgstr "Shortcodes"
 
-#: src/class-deco-mistape-admin.php:239
+#: src/class-deco-mistape-admin.php:245
 msgid "Caption format"
 msgstr "formato de legenda"
 
-#: src/class-deco-mistape-admin.php:241
+#: src/class-deco-mistape-admin.php:247
 msgid "Caption text mode"
 msgstr "modo de texto da legenda"
 
-#: src/class-deco-mistape-admin.php:243
+#: src/class-deco-mistape-admin.php:249
 msgid "Icon before the caption text"
 msgstr "Ícone antes do texto da legenda"
 
-#: src/class-deco-mistape-admin.php:245
+#: src/class-deco-mistape-admin.php:251
 msgid "Powered by"
 msgstr ""
 
-#: src/class-deco-mistape-admin.php:247
+#: src/class-deco-mistape-admin.php:253
 msgid "Color scheme"
 msgstr "Esquema de cores"
 
-#: src/class-deco-mistape-admin.php:249
+#: src/class-deco-mistape-admin.php:255
 msgid "Dialog mode"
 msgstr "modo de diálogo"
 
-#: src/class-deco-mistape-admin.php:253
+#: src/class-deco-mistape-admin.php:259
 msgid "Multisite inheritance"
 msgstr "herança multisite"
 
-#: src/class-deco-mistape-admin.php:311
+#: src/class-deco-mistape-admin.php:317
 msgctxt "select option, shown when no users with editor role are present"
 msgid "no editors found"
 msgstr "há editores encontrados"
 
-#: src/class-deco-mistape-admin.php:318
+#: src/class-deco-mistape-admin.php:324
 msgid "separate multiple recipients with commas"
 msgstr "vários destinatários separados por vírgulas"
 
-#: src/class-deco-mistape-admin.php:323
+#: src/class-deco-mistape-admin.php:329
 msgid "If post ID is determined, notify post author instead"
 msgstr "Se pós ID é determinado, notifique pós autor vez"
 
-#: src/class-deco-mistape-admin.php:342
+#: src/class-deco-mistape-admin.php:348
 msgid ""
 "\"Press Ctrl+Enter&hellip;\" captions will be displayed at the bottom of "
 "selected post types."
 msgstr ""
-"\\ \"Pressione Ctrl + Enter & hellip; \" legendas será exibida na parte "
+"\"Pressione Ctrl + Enter & hellip; \" legendas será exibida na parte "
 "inferior da tipos de pós selecionados."
 
-#: src/class-deco-mistape-admin.php:353
+#: src/class-deco-mistape-admin.php:359
 msgid "Register <code>[mistape]</code> shortcode."
 msgstr "Register <code> [mistape] </ code> shortcode."
 
-#: src/class-deco-mistape-admin.php:355
+#: src/class-deco-mistape-admin.php:361
 msgid "Enable if manual caption insertion via shortcodes is needed."
 msgstr ""
 "Habilite se é necessária a inserção de legenda do manual via códigos de "
 "acesso."
 
-#: src/class-deco-mistape-admin.php:356
+#: src/class-deco-mistape-admin.php:362
 msgid "Usage examples are in Help section."
 msgstr "exemplos de uso estão na seção de Ajuda."
 
-#: src/class-deco-mistape-admin.php:357
+#: src/class-deco-mistape-admin.php:363
 msgid ""
 "When enabled, Mistape Ctrl+Enter listener works on all pages, not only on "
 "enabled post types."
@@ -225,53 +239,53 @@ msgstr ""
 "Quando ativado, Mistape Ctrl + Enter ouvinte trabalha em todas as páginas, "
 "não só sobre os tipos de pós ativado."
 
-#: src/class-deco-mistape-admin.php:367
+#: src/class-deco-mistape-admin.php:373
 msgid "Enable"
 msgstr ""
 
-#: src/class-deco-mistape-admin.php:368
+#: src/class-deco-mistape-admin.php:374
 msgid "Here you can enable Mistape.com link in an icon"
 msgstr ""
 
-#: src/class-deco-mistape-admin.php:387
+#: src/class-deco-mistape-admin.php:393
 msgid "Enter the full image URL starting with http://"
 msgstr "Digite o URL da imagem completa começando com http: //"
 
-#: src/class-deco-mistape-admin.php:426
+#: src/class-deco-mistape-admin.php:432
 msgid "no icon"
 msgstr "nenhum ícone"
 
-#: src/class-deco-mistape-admin.php:471
+#: src/class-deco-mistape-admin.php:477
 msgid "default color"
 msgstr "cor padrão"
 
-#: src/class-deco-mistape-admin.php:495
+#: src/class-deco-mistape-admin.php:501
 msgid "Preview dialog"
 msgstr "Pré-Visualizar"
 
-#: src/class-deco-mistape-admin.php:507
+#: src/class-deco-mistape-admin.php:513
 msgid "Copy settings from main site when new blog is created"
 msgstr ""
 "Copie as configurações a partir do site principal quando novo blog é criado"
 
-#: src/class-deco-mistape-admin.php:557
+#: src/class-deco-mistape-admin.php:563
 #, php-format
 msgid "ERROR: You entered invalid email address: %s"
 msgstr "Você inseriu um endereço de e-mail inválido %s"
 
-#: src/class-deco-mistape-admin.php:568
+#: src/class-deco-mistape-admin.php:574
 msgid "ERROR: You didn't select valid email recipient."
 msgstr "ERRO: Você não selecionou destinatário de e-mail válido."
 
-#: src/class-deco-mistape-admin.php:592
+#: src/class-deco-mistape-admin.php:598
 msgid "ERROR: You didn't enter caption image URL."
 msgstr "ERRO: Você não entrou legenda da imagem URL."
 
-#: src/class-deco-mistape-admin.php:634
+#: src/class-deco-mistape-admin.php:640
 msgid "Settings"
 msgstr "Configurações"
 
-#: src/class-deco-mistape-admin.php:743
+#: src/class-deco-mistape-admin.php:749
 msgid ""
 "<strong>Mistape</strong> settings notice will be dismissed after saving "
 "changes."
@@ -279,7 +293,7 @@ msgstr ""
 "<Strong> Mistape </ strong> configurações de aviso será demitido depois de "
 "salvar as alterações."
 
-#: src/class-deco-mistape-admin.php:746
+#: src/class-deco-mistape-admin.php:752
 #, php-format
 msgid ""
 "<strong>Mistape</strong> must now be <a href=\"%s\">configured</a> before "
@@ -288,100 +302,100 @@ msgstr ""
 "<strong> Mistape </ strong> deve ser agora <a href=\" %s \"> configurado </"
 "a> antes do uso."
 
-#: src/class-deco-mistape-admin.php:800
+#: src/class-deco-mistape-admin.php:806
 msgid "Optional shortcode parameters are:"
 msgstr "parâmetros shortcode opcionais são:"
 
-#: src/class-deco-mistape-admin.php:802
+#: src/class-deco-mistape-admin.php:808
 msgid "can be 'text' or 'image'"
 msgstr "pode ser 'texto' ou 'imagem'"
 
-#: src/class-deco-mistape-admin.php:803
+#: src/class-deco-mistape-admin.php:809
 msgid "override default css class"
 msgstr "override classe css padrão"
 
-#: src/class-deco-mistape-admin.php:804
+#: src/class-deco-mistape-admin.php:810
 msgid "override caption text"
 msgstr "texto da legenda override"
 
-#: src/class-deco-mistape-admin.php:805
+#: src/class-deco-mistape-admin.php:811
 msgid "override image URL"
 msgstr "override URL da imagem"
 
-#: src/class-deco-mistape-admin.php:807
+#: src/class-deco-mistape-admin.php:813
 msgid "When no parameters specified, general configuration is used."
 msgstr "Quando nenhum parâmetro especificado, a configuração geral é usado."
 
-#: src/class-deco-mistape-admin.php:808
+#: src/class-deco-mistape-admin.php:814
 msgid "If image url is specified, format parameter can be omitted."
 msgstr "Se url imagem é especificado, o parâmetro formato pode ser omitida."
 
-#: src/class-deco-mistape-admin.php:809
+#: src/class-deco-mistape-admin.php:815
 msgid "Shortcode usage example:"
 msgstr "Shortcode exemplo de uso:"
 
-#: src/class-deco-mistape-admin.php:813
+#: src/class-deco-mistape-admin.php:819
 msgid "PHP code example:"
 msgstr "PHP exemplo de código:"
 
-#: src/class-deco-mistape-admin.php:821
+#: src/class-deco-mistape-admin.php:827
 msgid "Hooks"
 msgstr "Hooks"
 
-#: src/class-deco-mistape-admin.php:827
+#: src/class-deco-mistape-admin.php:833
 msgid "Allows to modify caption text globally (preferred over HTML filter)."
 msgstr ""
 "Permite modificar o texto da legenda globalmente (preferível ao filtro de "
 "HTML)."
 
-#: src/class-deco-mistape-admin.php:834
+#: src/class-deco-mistape-admin.php:840
 msgid "Allows to modify the caption HTML before output."
 msgstr "Permite modificar o HTML legenda antes da saída."
 
-#: src/class-deco-mistape-admin.php:840
+#: src/class-deco-mistape-admin.php:846
 msgid "Allows to modify modal dialog strings (preferred over HTML filter)."
 msgstr ""
 "Permite modificar cordas de diálogo modais (preferível ao filtro de HTML)."
 
-#: src/class-deco-mistape-admin.php:847
+#: src/class-deco-mistape-admin.php:853
 msgid "Allows to modify the modal dialog HTML before output."
 msgstr "Permite modificar o HTML de diálogo modal antes da saída."
 
-#: src/class-deco-mistape-admin.php:854
+#: src/class-deco-mistape-admin.php:860
 msgid "Allows to override email sending logic."
 msgstr "Permite substituir e-mail enviando lógica."
 
-#: src/class-deco-mistape-admin.php:860
+#: src/class-deco-mistape-admin.php:866
 msgid "Allows to change email recipient."
 msgstr "Permite a mudança de destinatário de e-mail."
 
-#: src/class-deco-mistape-admin.php:866
+#: src/class-deco-mistape-admin.php:873
 msgid "Allows to change email subject."
 msgstr "Permite a mudança de assunto do email."
 
-#: src/class-deco-mistape-admin.php:872
+#: src/class-deco-mistape-admin.php:880
 msgid "Allows to modify email message to send."
 msgstr "Permite modificar mensagem de e-mail para enviar."
 
-#: src/class-deco-mistape-admin.php:878
+#: src/class-deco-mistape-admin.php:886
 msgid ""
 "Allows for custom reports handling. Refer to code for implementation details."
 msgstr ""
 "Permite relatórios personalizados de manipulação. Consulte o código para os "
 "detalhes de implementação."
 
-#: src/class-deco-mistape-admin.php:884
+#: src/class-deco-mistape-admin.php:892
 msgid "Allows to modify global options array during initialization."
 msgstr "Permite modificar variedade de opções globais durante a inicialização."
 
-#: src/class-deco-mistape-admin.php:890
+#: src/class-deco-mistape-admin.php:898
 msgid ""
 "Allows to add custom logic for whether to output Mistape to front end or not."
 msgstr ""
 "Permite adicionar lógica personalizada para se para a saída Mistape a "
 "extremidade dianteira ou não."
 
-#: src/class-deco-mistape-admin.php:910
+#: src/class-deco-mistape-admin.php:918
 msgid "Vote!"
 msgstr "Voto!"
 

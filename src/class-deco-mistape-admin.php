@@ -121,9 +121,9 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		$blog_id       = get_current_blog_id();
 		$reports_count = $table_exists ? $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->base_prefix}mistape_reports where status = 'pending' && blog_id = $blog_id" ) : null;
 		?>
-        <div class="wrap">
-            <h2>Mistape</h2>
-            <h2 class="nav-tab-wrapper">
+		<div class="wrap">
+			<h2>Mistape</h2>
+			<h2 class="nav-tab-wrapper">
 				<?php
 				printf( '<a href="%s" class="nav-tab%s" data-bodyid="mistape-configuration" >%s</a>',
 					add_query_arg( 'tab', 'configuration' ),
@@ -132,100 +132,100 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 					add_query_arg( 'tab', 'help' ),
 					$active_tab == 'help' ? ' nav-tab-active' : '', __( 'Help', 'mistape' ) );
 				?>
-            </h2>
+			</h2>
 			<?php printf( '<div id="mistape-configuration" class="mistape-tab-contents" %s>',
 				$active_tab == 'configuration' ? '' : 'style="display: none;"' ); ?>
-            <form action="<?php echo admin_url( 'options.php' ); ?>" method="post">
+			<form action="<?php echo admin_url( 'options.php' ); ?>" method="post">
 				<?php
 				settings_fields( 'mistape_options' );
 				do_settings_sections( 'mistape_options' );
 				?>
-                <p class="submit">
+				<p class="submit">
 					<?php submit_button( '', 'primary', 'save_mistape_options', false ); ?>
-                    <span class="description alignright">
+					<span class="description alignright">
 						<?php printf(
 							_x( 'Please %s our plugin', '%s = rate', 'mistape' ),
 							'<a href="https://wordpress.org/support/view/plugin-reviews/mistape#postform" target="_blank" class="mistape-vote"><span class="dashicons dashicons-thumbs-up"></span>' .
 							_x( 'rate', 'please rate our plugin', 'mistape' ) . '</a>'
 						); ?>
 					</span>
-                </p>
-                <div id="mistape-sidebar">
-                    <div id="deco_products" class="postbox deco-right-sidebar-widget">
-                        <h3 class="hndle">
-                            <span><?php printf( _x( "%s's products", "deco.agency's products", 'mistape' ), '<a class="decoagency" href="https://deco.agency">deco.agency</a>' ) ?> </span>
-                        </h3>
-                        <div class="inside">
-                            <a class="deco_button decomments" href="http://decomments.com/" target="_blank">
-                                <span>de:comments</span>
-                            </a>
-                            <a class="deco_button debranding" href="https://wordpress.org/plugins/debranding/"
-                               target="_blank">
-                                <span>de:branding</span>
-                            </a>
-                            <a class="deco_button deadblocker" href="http://deadblocker.com/" target="_blank">
-                                <span>deAdblocker</span>
-                            </a>
-                        </div>
-                    </div>
+				</p>
+				<div id="mistape-sidebar">
+					<div id="deco_products" class="postbox deco-right-sidebar-widget">
+						<h3 class="hndle">
+							<span><?php printf( _x( "%s's products", "deco.agency's products", 'mistape' ), '<a class="decoagency" href="https://deco.agency">deco.agency</a>' ) ?> </span>
+						</h3>
+						<div class="inside">
+							<a class="deco_button decomments" href="http://decomments.com/" target="_blank">
+								<span>de:comments</span>
+							</a>
+							<a class="deco_button debranding" href="https://wordpress.org/plugins/debranding/"
+							   target="_blank">
+								<span>de:branding</span>
+							</a>
+							<a class="deco_button deadblocker" href="http://deadblocker.com/" target="_blank">
+								<span>deAdblocker</span>
+							</a>
+						</div>
+					</div>
 					<?php if ( $show_changelog ) { ?>
-                        <div id="mistape_info" class="postbox deco-right-sidebar-widget">
-                            <h3 class="hndle">
-                                <span>New in Mistape 1.2.0</span>
-                            </h3>
-                            <div class="inside">
-                                <ul>
-                                    <li>New dialog box design (send action is now animated)</li>
-                                    <li>Introduce database table for saving reports. Used for checking for
-                                        duplicates—you will not get multiple reports about the same error anymore.
-                                    </li>
-                                    <li>Introduce support for addons.</li>
-                                    <li>(for developers) arguments for "mistape_process_report" action were changed.
-                                    </li>
-                                    <li>lots of improvements under the hood.</li>
-                                </ul>
-                            </div>
-                        </div>
+						<div id="mistape_info" class="postbox deco-right-sidebar-widget">
+							<h3 class="hndle">
+								<span>New in Mistape 1.2.0</span>
+							</h3>
+							<div class="inside">
+								<ul>
+									<li>New dialog box design (send action is now animated)</li>
+									<li>Introduce database table for saving reports. Used for checking for
+										duplicates—you will not get multiple reports about the same error anymore.
+									</li>
+									<li>Introduce support for addons.</li>
+									<li>(for developers) arguments for "mistape_process_report" action were changed.
+									</li>
+									<li>lots of improvements under the hood.</li>
+								</ul>
+							</div>
+						</div>
 					<?php } ?>
-                    <div id="mistape_statistics" class="postbox deco-right-sidebar-widget">
-                        <h3 class="hndle">
-                            <span><?php _e( 'Statistics', 'mistape' ); ?></span>
-                        </h3>
-                        <div class="inside">
-                            <p>
+					<div id="mistape_statistics" class="postbox deco-right-sidebar-widget">
+						<h3 class="hndle">
+							<span><?php _e( 'Statistics', 'mistape' ); ?></span>
+						</h3>
+						<div class="inside">
+							<p>
 								<?php
 								$reports_count = empty( $reports_count ) ? 0 : $reports_count;
 								_e( 'Reports received up to date:', 'mistape' );
 								echo ' <strong>' . $reports_count . '</strong>';
 								?>
-                            </p>
+							</p>
 							<?php if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) { ?>
-                                <p class="hover-image mistape-icon-after-question"
-                                   data-img-url="<?php echo MISTAPE__PLUGIN_URL . '/assets/img/mistape-pro-table-list.png'; ?>">
-                                    Detailed mistake statistics is available in Mistape PRO
-                                </p>
-                                <p>
-                                    An option to mark notification as resolved, archive, delete from the table in one
-                                    click
-                                </p>
-                                <a href="#!" class="button button-primary paddle_button" data-product="508163"
-                                   data-quantity="1" data-allow-quantity="false">Buy PRO
-                                    for just <span class="cost-block">15</span>!</a>
+								<p class="hover-image mistape-icon-after-question"
+								   data-img-url="<?php echo MISTAPE__PLUGIN_URL . '/assets/img/mistape-pro-table-list.png'; ?>">
+									<?php _e( 'Detailed mistake statistics is available in Mistape PRO', 'mistape' ); ?>
+								</p>
+								<p>
+									<?php _e( 'An option to mark notification as resolved, archive, delete from the table in one click', 'mistape' ); ?>
+								</p>
+								<a href="#!" class="button button-primary paddle_button" data-product="508163"
+								   data-quantity="1" data-allow-quantity="false">
+									<?php _e( 'Buy PRO for just', 'mistape' ); ?>
+									<span class="cost-block">15</span>!</a>
 							<?php } ?>
-                        </div>
-                    </div>
-                </div>
-            </form>
+						</div>
+					</div>
+				</div>
+			</form>
 
-        </div>
+		</div>
 		<?php
 		printf( '<div id="mistape-help" class="mistape-tab-contents" %s>',
 			$active_tab == 'help' ? '' : 'style="display: none;" ' );
 		$this->print_help_page();
 		?>
-        </div>
-        <div class="clear"></div>
-        </div>
+		</div>
+		<div class="clear"></div>
+		</div>
 		<?php
 	}
 
@@ -801,106 +801,106 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 	 */
 	private static function print_help_page() {
 		?>
-        <div class="card">
-            <h3><?php _e( 'Shortcodes', 'mistape' ) ?></h3>
-            <h4><?php _e( 'Optional shortcode parameters are:', 'mistape' ) ?></h4>
-            <ul>
-                <li><code>'format', </code> — <?php _e( "can be 'text' or 'image'", 'mistape' ) ?></li>
-                <li><code>'class', </code> — <?php _e( 'override default css class', 'mistape' ) ?></li>
-                <li><code>'text', </code> — <?php _e( 'override caption text', 'mistape' ) ?></li>
-                <li><code>'image', </code> — <?php _e( 'override image URL', 'mistape' ) ?></li>
-            </ul>
-            <p><?php _e( 'When no parameters specified, general configuration is used.', 'mistape' ) ?><br>
+		<div class="card">
+			<h3><?php _e( 'Shortcodes', 'mistape' ) ?></h3>
+			<h4><?php _e( 'Optional shortcode parameters are:', 'mistape' ) ?></h4>
+			<ul>
+				<li><code>'format', </code> — <?php _e( "can be 'text' or 'image'", 'mistape' ) ?></li>
+				<li><code>'class', </code> — <?php _e( 'override default css class', 'mistape' ) ?></li>
+				<li><code>'text', </code> — <?php _e( 'override caption text', 'mistape' ) ?></li>
+				<li><code>'image', </code> — <?php _e( 'override image URL', 'mistape' ) ?></li>
+			</ul>
+			<p><?php _e( 'When no parameters specified, general configuration is used.', 'mistape' ) ?><br>
 				<?php _e( 'If image url is specified, format parameter can be omitted.', 'mistape' ) ?></p>
-            <h4><?php _e( 'Shortcode usage example:', 'mistape' ) ?></h4>
-            <ul>
-                <li><p><code>[mistape format="text" class="mistape_caption_sidebar"]</code></p></li>
-            </ul>
-            <h4><?php _e( 'PHP code example:', 'mistape' ) ?></h4>
-            <ul>
-                <li><p><code>&lt;?php do_shortcode( '[mistape format="image" class="mistape_caption_footer"
-                            image="/wp-admin/images/yes.png"]' ); ?&gt;</code></p></li>
-            </ul>
-        </div>
+			<h4><?php _e( 'Shortcode usage example:', 'mistape' ) ?></h4>
+			<ul>
+				<li><p><code>[mistape format="text" class="mistape_caption_sidebar"]</code></p></li>
+			</ul>
+			<h4><?php _e( 'PHP code example:', 'mistape' ) ?></h4>
+			<ul>
+				<li><p><code>&lt;?php do_shortcode( '[mistape format="image" class="mistape_caption_footer"
+							image="/wp-admin/images/yes.png"]' ); ?&gt;</code></p></li>
+			</ul>
+		</div>
 
-        <div class="card">
-            <h3><?php _e( 'Hooks', 'mistape' ) ?></h3>
+		<div class="card">
+			<h3><?php _e( 'Hooks', 'mistape' ) ?></h3>
 
-            <ul>
+			<ul>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_caption_text', <span class="mistape-var-str">$text</span></code>
-                    <p class="description"><?php _e( 'Allows to modify caption text globally (preferred over HTML filter).',
+				<li class="mistape-hook-block">
+					<code>'mistape_caption_text', <span class="mistape-var-str">$text</span></code>
+					<p class="description"><?php _e( 'Allows to modify caption text globally (preferred over HTML filter).',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_caption_output', <span class="mistape-var-str">$html</span>, <span
-                                class="mistape-var-arr">$options</span></code></code>
-                    <p class="description"><?php _e( 'Allows to modify the caption HTML before output.',
+				<li class="mistape-hook-block">
+					<code>'mistape_caption_output', <span class="mistape-var-str">$html</span>, <span
+							class="mistape-var-arr">$options</span></code></code>
+					<p class="description"><?php _e( 'Allows to modify the caption HTML before output.',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_dialog_args', <span class="mistape-var-arr">$args</span></code>
-                    <p class="description"><?php _e( 'Allows to modify modal dialog strings (preferred over HTML filter).',
+				<li class="mistape-hook-block">
+					<code>'mistape_dialog_args', <span class="mistape-var-arr">$args</span></code>
+					<p class="description"><?php _e( 'Allows to modify modal dialog strings (preferred over HTML filter).',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_dialog_output', <span class="mistape-var-str">$html</span>, <span
-                                class="mistape-var-arr">$options</span></code></code>
-                    <p class="description"><?php _e( 'Allows to modify the modal dialog HTML before output.',
+				<li class="mistape-hook-block">
+					<code>'mistape_dialog_output', <span class="mistape-var-str">$html</span>, <span
+							class="mistape-var-arr">$options</span></code></code>
+					<p class="description"><?php _e( 'Allows to modify the modal dialog HTML before output.',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>,
-                        <span class="mistape-var-obj">$mistape_object</span></code>
-                    <p class="description"><?php _e( 'Allows to override email sending logic.', 'mistape' ) ?></p>
-                </li>
+				<li class="mistape-hook-block">
+					<code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>,
+						<span class="mistape-var-obj">$mistape_object</span></code>
+					<p class="description"><?php _e( 'Allows to override email sending logic.', 'mistape' ) ?></p>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_mail_recipient', <span class="mistape-var-str">$recipient</span>, <span
-                                class="mistape-var-str">$url</span>, <span class="mistape-var-obj">$user</span></code>
-                    <p class="description"><?php _e( 'Allows to change email recipient.', 'mistape' ) ?></p>
-                </li>
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_recipient', <span class="mistape-var-str">$recipient</span>, <span
+							class="mistape-var-str">$url</span>, <span class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to change email recipient.', 'mistape' ) ?></p>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_mail_subject', <span class="mistape-var-str">$subject</span>, <span
-                                class="mistape-var-str">$referrer</span>, <span
-                                class="mistape-var-obj">$user</span></code>
-                    <p class="description"><?php _e( 'Allows to change email subject.', 'mistape' ) ?></p>
-                </li>
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_subject', <span class="mistape-var-str">$subject</span>, <span
+							class="mistape-var-str">$referrer</span>, <span
+							class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to change email subject.', 'mistape' ) ?></p>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_mail_message', <span class="mistape-var-str">$message</span>, <span
-                                class="mistape-var-str">$referrer</span>, <span
-                                class="mistape-var-obj">$user</span></code>
-                    <p class="description"><?php _e( 'Allows to modify email message to send.', 'mistape' ) ?></p>
-                </li>
+				<li class="mistape-hook-block">
+					<code>'mistape_mail_message', <span class="mistape-var-str">$message</span>, <span
+							class="mistape-var-str">$referrer</span>, <span
+							class="mistape-var-obj">$user</span></code>
+					<p class="description"><?php _e( 'Allows to modify email message to send.', 'mistape' ) ?></p>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>, <span
-                                class="mistape-var-obj">$ajax_obj</span></code>
-                    <p class="description"><?php _e( 'Allows for custom reports handling. Refer to code for implementation details.',
+				<li class="mistape-hook-block">
+					<code>'mistape_custom_email_handling', <span class="mistape-var-bool">$stop</span>, <span
+							class="mistape-var-obj">$ajax_obj</span></code>
+					<p class="description"><?php _e( 'Allows for custom reports handling. Refer to code for implementation details.',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_options', <span class="mistape-var-arr">$options</span></code>
-                    <p class="description"><?php _e( 'Allows to modify global options array during initialization.',
+				<li class="mistape-hook-block">
+					<code>'mistape_options', <span class="mistape-var-arr">$options</span></code>
+					<p class="description"><?php _e( 'Allows to modify global options array during initialization.',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-                <li class="mistape-hook-block">
-                    <code>'mistape_is_appropriate_post', <span class="mistape-var-bool">$result</span></code>
-                    <p class="description"><?php _e( 'Allows to add custom logic for whether to output Mistape to front end or not.',
+				<li class="mistape-hook-block">
+					<code>'mistape_is_appropriate_post', <span class="mistape-var-bool">$result</span></code>
+					<p class="description"><?php _e( 'Allows to add custom logic for whether to output Mistape to front end or not.',
 							'mistape' ) ?></p>
-                </li>
+				</li>
 
-            </ul>
-        </div>
+			</ul>
+		</div>
 		<?php
 	}
 
@@ -923,8 +923,10 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 	public function mistape_paddle_payments_scripts() {
 		// Paddle system payment
-		echo '<script src="https://cdn.paddle.com/paddle/paddle.js"></script>';
-		echo '<script type="text/javascript">Paddle.Setup({ vendor: 15896 });</script>';
+		if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) {
+			echo '<script src="https://cdn.paddle.com/paddle/paddle.js"></script>';
+			echo '<script type="text/javascript">Paddle.Setup({ vendor: 15896 }); </script>';
+		}
 	}
 
 

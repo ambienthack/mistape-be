@@ -107,6 +107,7 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			return $content;
 		}
 
+
 		if ( ! $this->is_appropriate_post() ) {
 			return $content;
 		}
@@ -132,10 +133,13 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			// Only text withot link plugin site!!
 			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $this->get_caption_text() . '</p></div>';
 		} elseif ( $format == 'image' ) {
-			$output = '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $this->get_caption_text() ) . '"></div>';
+			$img_alt = strip_tags( $this->get_caption_text() );
+			$img_alt = str_replace( "\r", '', $img_alt );
+			$img_alt = str_replace( "\n", '', $img_alt );
+			$output = "\n" . '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $img_alt ) . '"/></div>';
 		}
 
-		$output = apply_filters( 'mistape_caption_output', $output, $this->options );
+//		$output = apply_filters( 'mistape_caption_output', $output, $this->options );
 
 		return $content . $output;
 	}

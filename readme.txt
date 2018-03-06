@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.8.2
-Stable tag: 1.3.5
+Tested up to: 4.9.4
+Stable tag: 1.3.6
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -36,9 +36,14 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.3.6 =
+* Plugin tested on WordPress 4.9.4
+* Fixed rendering of video link if Caption format option chosen: Image and Caption text mode: Custom text:
+* Add some text to .po files
+
 = 1.3.5 =
-* plugin tested on WordPress 4.8.2
-* add the description and screenshot of Mistape Pro
+* Plugin tested on WordPress 4.8.2
+* Add the description and screenshot of Mistape Pro
 
 = 1.3.4 =
 * German localization added
