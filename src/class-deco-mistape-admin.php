@@ -25,7 +25,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		}
 
 		// Mistape page-specific actions
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'mistape_settings' ) {
+		if ( isset( $_GET['page'] ) && $_GET['page'] === 'mistape_settings' ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts_styles' ) );
 			add_action( 'admin_footer', array( $this, 'insert_dialog' ) );
 			add_action( 'admin_print_footer_scripts', array( $this, 'mistape_paddle_payments_scripts' ), 10 );

@@ -7,13 +7,18 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 
 	function __construct() {
 
+		parent::__construct();
+
+		// shortcode
+		if ( $this->options['register_shortcode'] === 'yes' ) {
+			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
+		}
+
 		if ( ! static::is_appropriate_useragent() ) {
 			return;
 		}
 
-		parent::__construct();
-
-		if ( $this->options['first_run'] == 'yes' ) {
+		if ( $this->options['first_run'] === 'yes' ) {
 			return;
 		}
 
@@ -27,10 +32,6 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		// filters
 		add_filter( 'the_content', array( $this, 'append_caption_to_content' ), 1 );
 
-		// shortcode
-		if ( $this->options['register_shortcode'] == 'yes' ) {
-			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
-		}
 
 		add_action( 'wp_print_styles', array( $this, 'custom_styles' ), 10 );
 	}
@@ -52,6 +53,10 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 */
 	public function render_shortcode( $atts ) {
 
+		if ( ! static::is_appropriate_useragent() ) {
+			return;
+		}
+
 		$atts = shortcode_atts(
 			array(
 				'format' => $this->options['caption_format'],
@@ -63,15 +68,15 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			'mistape'
 		);
 
-		if ( $atts['format'] == 'image' && ! empty( $this->options['caption_image_url'] ) || $atts['format'] != 'text' && ! empty( $atts['image'] ) ) {
+		if ( ( $atts['format'] === 'image' && ! empty( $this->options['caption_image_url'] ) ) || ( $atts['format'] !== 'text' && ! empty( $atts['image'] ) ) ) {
 			$imagesrc = $atts['image'] ? $atts['image'] : $this->options['caption_image_url'];
 			$output   = '<div class="' . $atts['class'] . '"><img src="' . $imagesrc . '" alt="' . $atts['text'] . '"></div>';
 		} else {
-			$icon_id      = intval( $this->options['show_logo_in_caption'] );
+			$icon_id      = (int) $this->options['show_logo_in_caption'];
 			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
 			$icon_svg_str = '';
 
-			if ( $this->options['enable_powered_by'] == 'yes' ) {
+			if ( $this->options['enable_powered_by'] === 'yes' ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
 			} else if ( ! empty( $icon_svg['icon'] ) ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><span class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</span></span>';
@@ -88,7 +93,7 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 */
 	public function front_load_scripts_styles() {
 
-		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] != 'yes' ) {
+		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] !== 'yes' ) {
 			return;
 		}
 
@@ -103,7 +108,14 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 * @return string
 	 */
 	public function append_caption_to_content( $content ) {
-		if ( ( $format = $this->options['caption_format'] ) == 'disabled' ) {
+
+		static $is_already_displayed_after_the_content = false;
+
+		if ( $is_already_displayed_after_the_content === true ) {
+			return $content;
+		}
+
+		if ( ( $format = $this->options['caption_format'] ) === 'disabled' ) {
 			return $content;
 		}
 
@@ -121,25 +133,27 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			return $content;
 		}
 
-		if ( $format == 'text' ) {
-			$icon_id      = intval( $this->options['show_logo_in_caption'] );
+		if ( $format === 'text' ) {
+			$icon_id      = (int) $this->options['show_logo_in_caption'];
 			$icon_svg     = apply_filters( 'mistape_get_icon', array( 'icon_id' => $icon_id ) );
 			$icon_svg_str = '';
-			if ( $this->options['enable_powered_by'] == 'yes' ) {
+			if ( $this->options['enable_powered_by'] = 'yes' ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><a href="' . $this->plugin_url . '" target="_blank" rel="nofollow" class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</a></span>';
 			} else if ( ! empty( $icon_svg['icon'] ) ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><span class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</span></span>';
 			}
 			// Only text withot link plugin site!!
 			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $this->get_caption_text() . '</p></div>';
-		} elseif ( $format == 'image' ) {
+		} elseif ( $format === 'image' ) {
 			$img_alt = strip_tags( $this->get_caption_text() );
-			$img_alt = str_replace( "\r", '', $img_alt );
-			$img_alt = str_replace( "\n", '', $img_alt );
-			$output = "\n" . '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $img_alt ) . '"/></div>';
+			$img_alt = str_replace( array( "\r", "\n" ), '', $img_alt );
+			$output  = "\n" . '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $img_alt ) . '"/></div>';
 		}
 
 //		$output = apply_filters( 'mistape_caption_output', $output, $this->options );
+
+		$is_already_displayed_after_the_content = true;
+
 
 		return $content . $output;
 	}
@@ -167,7 +181,7 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 */
 	public function insert_dialog() {
 
-		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] != 'yes' ) {
+		if ( ! $this->is_appropriate_post() && $this->options['register_shortcode'] !== 'yes' ) {
 			return;
 		}
 
@@ -200,7 +214,7 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 
 	public function is_appropriate_post() {
 
-		if ( is_null( $this->is_appropriate_post ) ) {
+		if ( $this->is_appropriate_post === null ) {
 			$result = false;
 
 			// a bit inefficient logic is necessary for some illogical themes and plugins
@@ -227,7 +241,12 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	public static function wp_is_mobile() {
 		static $is_mobile = null;
 
-		if ( isset( $is_mobile ) ) {
+		if ( \function_exists( 'wp_is_mobile' ) ) {
+			$is_mobile = wp_is_mobile();
+		}
+
+
+		if ( $is_mobile ) {
 			return $is_mobile;
 		}
 

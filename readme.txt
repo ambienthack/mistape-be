@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 4.9.4
-Stable tag: 1.3.6
+Tested up to: 4.9.8
+Stable tag: 1.3.7
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -36,6 +36,12 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.3.7 =
+* Plugin tested on WordPress 4.9.8
+* Fixed duplication caption when calling filter 'the_content' outside the content
+* Shortcode is rendered and displayed empty for mobile version
+* Fixed undefined index in php
+
 = 1.3.6 =
 * Plugin tested on WordPress 4.9.4
 * Fixed rendering of video link if Caption format option chosen: Image and Caption text mode: Custom text:

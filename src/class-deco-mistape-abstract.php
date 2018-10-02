@@ -31,7 +31,7 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.3.3';
+	public static $version = '1.3.7';
 	public $plugin_url = 'http://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();
@@ -260,7 +260,8 @@ abstract class Deco_Mistape_Abstract {
 		wp_enqueue_script( 'mistape-front', plugins_url( 'assets/js/mistape-front.js', self::$plugin_path ), array(
 			'jquery',
 			'modernizr'
-		), self::$version, true );
+		), filemtime( plugin_dir_path( self::$plugin_path ) . '/assets/js/mistape-front.js' )
+			, true );
 		wp_localize_script( 'mistape-front', 'decoMistape', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
@@ -312,11 +313,9 @@ CREATE TABLE {$wpdb->base_prefix}mistape_reports (
 		dbDelta( $sql );
 	}
 
-	public function version_upgrade(
-		/** @noinspection PhpUnusedParameterInspection */
-		$upgrader_object, $options
-	) {
-		if ( isset( $options['plugins'] ) || ! in_array( self::$plugin_path, $options['plugins'] ) ) {
+	/** @noinspection PhpUnusedParameterInspection */
+	public function version_upgrade( $upgrader_object, $options ) {
+		if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) && ! in_array( self::$plugin_path, $options['plugins'] ) ) {
 			return;
 		}
 
