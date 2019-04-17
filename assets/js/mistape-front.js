@@ -335,7 +335,7 @@
 	// 	cachedX = 0,
 	// 	cachedY = 0;
 	// var timeoutTouch = '';
-
+	//
 	// $touchArea.on('touchstart', function (e) {
 	// 	var pointer = getPointerEvent(e);
 	// 	cachedX = currX = pointer.pageX;
@@ -368,8 +368,9 @@
 	// 	}
 	//
 	// });
-	// // }
-	//
+
+	// }
+
 	window.decoMistape = $.extend(window.decoMistape, {
 
 		onReady: function () {

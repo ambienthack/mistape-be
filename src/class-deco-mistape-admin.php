@@ -301,7 +301,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			</div>';
 
 		echo '
-			<div id="mistape_email_recipient_list-editor"' . ( $this->options['email_recipient']['type'] == 'editor' ? '' : 'style="display: none;"' ) . '>';
+			<div id="mistape_email_recipient_list-editor"' . ( $this->options['email_recipient']['type'] === 'editor' ? '' : 'style="display: none;"' ) . '>';
 
 
 		$editors = $this->get_user_list_by_role( 'editor' );
@@ -319,7 +319,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		echo '
 			</div>
-			<div id="mistape_email_recipient_list-other" ' . ( $this->options['email_recipient']['type'] == 'other' ? '' : 'style="display: none;"' ) . '>
+			<div id="mistape_email_recipient_list-other" ' . ( $this->options['email_recipient']['type'] === 'other' ? '' : 'style="display: none;"' ) . '>
 				<input type="text" class="regular-text" name="mistape_options[email_recipient][email]" value="' . esc_attr( $this->options['email_recipient']['email'] ) . '" />
 				<p class="description">' . __( 'separate multiple recipients with commas', 'mistape' ) . '</p>
 			</div>

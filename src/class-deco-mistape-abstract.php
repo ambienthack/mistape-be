@@ -31,8 +31,8 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.3.7';
-	public $plugin_url = 'http://mistape.com';
+	public static $version = '1.3.8';
+	public $plugin_url = 'https://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();
 	public $caption_formats = array();
@@ -76,8 +76,8 @@ abstract class Deco_Mistape_Abstract {
 	}
 
 	public function get_caption_text() {
-		if ( is_null( $this->caption_text ) ) {
-			if ( $this->options['caption_text_mode'] == 'custom' && isset( $this->options['custom_caption_text'] ) ) {
+		if ( empty( $this->caption_text ) ) {
+			if ( $this->options['caption_text_mode'] === 'custom' && isset( $this->options['custom_caption_text'] ) ) {
 				$text = $this->options['custom_caption_text'];
 			} else {
 				$text = $this->get_default_caption_text();
@@ -120,7 +120,7 @@ abstract class Deco_Mistape_Abstract {
 			'dry_run' => is_admin() ? '1' : '0',
 		);
 
-		if ( $mode == 'notify' ) {
+		if ( $mode === 'notify' ) {
 			$defaults['title']   = __( 'Thanks!', 'mistape' );
 			$defaults['message'] = __( 'Our editors are notified.', 'mistape' );
 			$defaults['close']   = __( 'Close', 'mistape' );
@@ -134,7 +134,7 @@ abstract class Deco_Mistape_Abstract {
 			$defaults['send']                  = __( 'Send', 'mistape' );
 		}
 
-		if ( $mode == 'comment' ) {
+		if ( $mode === 'comment' ) {
 			$defaults['comment_label'] = __( 'Your comment (optional)', 'mistape' );
 		}
 
@@ -149,10 +149,10 @@ abstract class Deco_Mistape_Abstract {
 			$output .= '<div id="mistape_dialog" data-mode="' . esc_attr( $args['mode'] ) .
 			           '" data-dry-run="' . esc_attr( (string) $args['dry_run'] ) . '">
 			           <div class="dialog__overlay"></div><div class="dialog__content' .
-			           ( $args['mode'] != 'comment' ? ' without-comment' : '' ) . '">';
+			           ( $args['mode'] !== 'comment' ? ' without-comment' : '' ) . '">';
 		}
 
-		if ( $args['mode'] == 'notify' ) {
+		if ( $args['mode'] === 'notify' ) {
 			$output .=
 				'<div id="mistape_success_dialog" class="mistape_dialog_screen">
 					<div class="dialog-wrap">
@@ -175,7 +175,7 @@ abstract class Deco_Mistape_Abstract {
 							 </div>
 							 </div>
 						<div class="dialog-wrap-bottom">';
-			if ( $args['mode'] == 'comment' ) {
+			if ( $args['mode'] === 'comment' ) {
 				$output .=
 					'<div class="mistape_dialog_block comment">
 				        <h3><label for="mistape_comment">' . $args['comment_label'] . ':</label></h3>
@@ -242,7 +242,7 @@ abstract class Deco_Mistape_Abstract {
 	}
 
 	public function get_ip_banlist() {
-		if ( is_null( $this->ip_banlist ) ) {
+		if ( $this->ip_banlist === null ) {
 			$this->ip_banlist = get_option( self::IP_BANLIST_OPTION, array() );
 		}
 

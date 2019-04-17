@@ -43,7 +43,6 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 	 * Load plugin defaults
 	 */
 	public function init() {
-		$this->recipient_email = $this->get_recipient_email();
 
 		// sanitize $_POST
 		$this->request       = array(
@@ -59,6 +58,8 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 		$this->post_author   = $this->post_id ? (int) get_post_field( 'post_author', $this->post_id ) : null;
 		$this->user          = wp_get_current_user();
 		$this->reporter_ip   = self::get_ip_address();
+
+		$this->recipient_email = $this->get_recipient_email();
 	}
 
 	/**

@@ -14,9 +14,9 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			add_shortcode( 'mistape', array( $this, 'render_shortcode' ) );
 		}
 
-		if ( ! static::is_appropriate_useragent() ) {
-			return;
-		}
+//		if ( ! static::is_appropriate_useragent() ) {
+//			return;
+//		}
 
 		if ( $this->options['first_run'] === 'yes' ) {
 			return;
@@ -53,9 +53,9 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 */
 	public function render_shortcode( $atts ) {
 
-		if ( ! static::is_appropriate_useragent() ) {
-			return;
-		}
+//		if ( ! static::is_appropriate_useragent() ) {
+//			return;
+//		}
 
 		$atts = shortcode_atts(
 			array(
@@ -197,7 +197,7 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 	 * @return bool
 	 */
 	public static function is_appropriate_useragent() {
-		if ( static::wp_is_mobile() ) {
+		if ( self::wp_is_mobile() ) {
 			return false;
 		}
 
