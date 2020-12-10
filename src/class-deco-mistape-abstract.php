@@ -31,7 +31,7 @@ abstract class Deco_Mistape_Abstract {
 	protected static $abstract_constructed;
 	protected static $supported_addons = array( 'mistape-table-addon' );
 	protected static $plugin_path;
-	public static $version = '1.3.8';
+	public static $version = '1.3.9';
 	public $plugin_url = 'https://mistape.com';
 	public $recipient_email;
 	public $email_recipient_types = array();
