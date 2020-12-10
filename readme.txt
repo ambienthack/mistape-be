@@ -3,8 +3,8 @@ Contributors: decollete
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UGPDDUY26MCC
 Tags: mistake, mistype, spell, spelling error, report error
 Requires at least: 3.9.0
-Tested up to: 5.1.1
-Stable tag: 1.3.8
+Tested up to: 5.6
+Stable tag: 1.3.9
 License: GPLv2 or later
 
 Mistape allows readers to effortlessly notify site staff about found spelling errors.
@@ -36,6 +36,11 @@ All settings are stored in a single database entry and get wiped on plugin unins
 4. Mail notification.
 
 == Changelog ==
+= 1.3.9 =
+* Fixed issue js error
+* Plugin tested on WordPress 5.6
+* Plugin tested on IOS and macOS
+
 = 1.3.8 =
 * Fixed issue https://wordpress.org/support/topic/if-post-id-is-determined-notify-post-author-instead-not-working/
 

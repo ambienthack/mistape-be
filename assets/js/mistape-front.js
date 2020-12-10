@@ -144,26 +144,10 @@
 			}
 		}
 
-		var osVersion = unknown;
+
 
 		if (/Windows/.test(os)) {
-			osVersion = /Windows (.*)/.exec(os)[1];
 			os = 'Windows';
-		}
-
-		switch (os) {
-			case 'Mac OS X':
-				osVersion = /Mac OS X (10[\._\d]+)/.exec(nAgt)[1];
-				break;
-
-			case 'Android':
-				osVersion = /Android ([\._\d]+)/.exec(nAgt)[1];
-				break;
-
-			case 'iOS':
-				osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
-				osVersion = osVersion[1] + '.' + osVersion[2] + '.' + (osVersion[3] | 0);
-				break;
 		}
 
 		var flashVersion = 'no check';
@@ -171,8 +155,7 @@
 			var fv = swfobject.getFlashPlayerVersion();
 			if (fv.major > 0) {
 				flashVersion = fv.major + '.' + fv.minor + ' r' + fv.release;
-			}
-			else {
+			} else {
 				flashVersion = unknown;
 			}
 		}
@@ -185,7 +168,6 @@
 		browserMajorVersion: majorVersion,
 		mobile             : mobile,
 		os                 : os,
-		osVersion          : osVersion,
 		cookies            : cookieEnabled,
 		flashVersion       : flashVersion
 	};
@@ -226,8 +208,7 @@
 			};
 			if (support.animations) {
 				el.addEventListener(animEndEventName, onEndCallbackFn);
-			}
-			else {
+			} else {
 				onEndCallbackFn();
 			}
 		};
@@ -292,8 +273,7 @@
 
 			// callback on close
 			this.options.onCloseDialog(this);
-		}
-		else {
+		} else {
 			jQuery(this.el).addClass('dialog--open');
 
 			// callback on open
@@ -390,8 +370,7 @@
 						decoMistape.reportSpellError(data);
 					}
 					decoMistape.animateLetter();
-				}
-				else if ($(this).is('[data-dialog-close]')) {
+				} else if ($(this).is('[data-dialog-close]')) {
 					decoMistape.dlg.toggle();
 				}
 			});
@@ -473,8 +452,7 @@
 				if ($dialog.data('mode') === 'notify') {
 					decoMistape.reportSpellError(report);
 					decoMistape.dlg.toggle();
-				}
-				else {
+				} else {
 					$dialog.data('report', report);
 					$dialog.find('#mistape_reported_text').html(report.preview_text);
 					decoMistape.dlg.toggle();
@@ -576,21 +554,18 @@
 						// reset
 						if (backwards) {
 							sel.collapseToEnd();
-						}
-						else {
+						} else {
 							sel.collapseToStart();
 						}
 						sel.modify("move", direction[1], "character");
 						sel.extend(selEndNode, selEndOffset);
-					}
-					else if (sel.focusOffset < sel.focusNode.length || nodeExtensions.right.length && i < limit / 2) {
+					} else if (sel.focusOffset < sel.focusNode.length || nodeExtensions.right.length && i < limit / 2) {
 						sel.modify('extend', direction[0], 'character');
 						if (sel.focusOffset === 1) {
 							selEndNode = sel.focusNode;
 							selEndOffset = sel.focusOffset;
 						}
-					}
-					else if (i % 2 === 0) {
+					} else if (i % 2 === 0) {
 						break;
 					}
 
@@ -624,8 +599,7 @@
 					}
 					if ((contentAppend = stringifyContent(e[method]).trim()).length) {
 						context += contentAppend;
-					}
-					else if (context.slice(-1) !== ' ') {
+					} else if (context.slice(-1) !== ' ') {
 						context += ' ';
 					}
 				}
@@ -766,8 +740,7 @@
 					endNode = sel.anchorNode;
 					startOffset = sel.focusOffset;
 					endOffset = sel.anchorOffset;
-				}
-				else {
+				} else {
 					startNode = sel.anchorNode;
 					endNode = sel.focusNode;
 					startOffset = sel.anchorOffset;
@@ -878,8 +851,7 @@
 						textToHighlight = selWord;
 						scope.selection = 'word';
 						scope.context = 'extended';
-					}
-					else {
+					} else {
 						context = selWord;
 						selWithContext = selChars.trim();
 						textToHighlight = selChars.trim();
@@ -891,14 +863,11 @@
 
 					if (selPos !== -1) {
 						selToFindInContext = selWithContext;
-					}
-					else if ((selPos = context.indexOf(selWord)) !== -1) {
+					} else if ((selPos = context.indexOf(selWord)) !== -1) {
 						selToFindInContext = selWord;
-					}
-					else if ((selPos = context.indexOf(selChars)) !== -1) {
+					} else if ((selPos = context.indexOf(selChars)) !== -1) {
 						selToFindInContext = selChars;
-					}
-					else {
+					} else {
 						continue;
 					}
 					break;
@@ -907,8 +876,7 @@
 
 			if (selToFindInContext) {
 				sel.removeAllRanges();
-			}
-			else {
+			} else {
 				decoMistape.restoreInitSelection(sel, initialSel);
 				return;
 			}
@@ -928,13 +896,11 @@
 					selPosInContext = 'beginning';
 					contExcerptStartPos = 0;
 					contExcerptEndPos = Math.max(selPos + selToFindInContext.length, context.indexOf(' ', maxContextLength - 10));
-				}
-				else if (selPos + selToFindInContext.length / 2 > context.length - maxContextLength / 2) {
+				} else if (selPos + selToFindInContext.length / 2 > context.length - maxContextLength / 2) {
 					selPosInContext = 'end';
 					contExcerptStartPos = Math.min(selPos, context.indexOf(' ', context.length - maxContextLength + 10));
 					contExcerptEndPos = context.length;
-				}
-				else {
+				} else {
 					selPosInContext = 'middle';
 					var centerPos = selPos + Math.round(selToFindInContext.length / 2);
 					contExcerptStartPos = Math.min(selPos, context.indexOf(' ', centerPos - maxContextLength / 2 - 10));
@@ -953,8 +919,7 @@
 
 			if (isSubstrUnique(selChars, textToHighlight)) {
 				highlightedChars = textToHighlight.replace(selChars, '<span class="mistape_mistake_inner">' + selChars + '</span>')
-			}
-			else {
+			} else {
 				highlightedChars = '<strong class="mistape_mistake_inner">' + textToHighlight + '</strong>';
 			}
 
@@ -962,8 +927,7 @@
 
 			if (selExactMatch && truncatedContext === context) {
 				previewText = truncatedContext.substring(0, selPos) + selWithContextHighlighted + truncatedContext.substring(selPos + selWithContext.length) || selWithContextHighlighted;
-			}
-			else {
+			} else {
 				previewText = truncatedContext.replace(selWithContext, selWithContextHighlighted) || selWithContextHighlighted;
 			}
 
