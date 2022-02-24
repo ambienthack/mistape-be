@@ -2,7 +2,7 @@
 /*
 Plugin Name: Mistape
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
-Version: 1.3.9
+Version: 1.4.0
 Author URI: https://deco.agency
 Author: deco.agency
 License: MIT License
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MISTAPE__VERSION', '1.3.9' );
+define( 'MISTAPE__VERSION', '1.4.0' );
 define( 'MISTAPE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MISTAPE__PLUGIN_FILE', __FILE__ );
 define( 'MISTAPE__PLUGIN_FOLDER', basename( MISTAPE__PLUGIN_DIR ) );
@@ -25,11 +25,14 @@ define( 'MISTAPE__PLUGIN_URL', WP_PLUGIN_URL . '/' . MISTAPE__PLUGIN_FOLDER );
 require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-abstract.php' );
 require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-admin.php' );
 require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-ajax.php' );
+require_once( MISTAPE__PLUGIN_DIR . 'src/class-deco-mistape-table.php' );
 
 register_activation_hook( __FILE__, 'Deco_Mistape_Admin::activation' );
 register_deactivation_hook( __FILE__, 'Deco_Mistape_Admin::deactivate_addons' );
 
 add_action( 'plugins_loaded', 'deco_mistape_init' );
+add_action( 'mistape_init_addons', 'Deco_Mistape_Table_Addon::init', 10 );
+
 function deco_mistape_init() {
 	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		// load ajax-related class
@@ -43,3 +46,5 @@ function deco_mistape_init() {
 		Deco_Mistape::get_instance();
 	}
 }
+
+

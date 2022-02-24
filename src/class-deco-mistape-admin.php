@@ -28,7 +28,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		if ( isset( $_GET['page'] ) && $_GET['page'] === 'mistape_settings' ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts_styles' ) );
 			add_action( 'admin_footer', array( $this, 'insert_dialog' ) );
-			add_action( 'admin_print_footer_scripts', array( $this, 'mistape_paddle_payments_scripts' ), 10 );
 		}
 
 		// filters
@@ -151,31 +150,15 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 					</span>
 				</p>
 				<div id="mistape-sidebar">
-					<div id="deco_products" class="postbox deco-right-sidebar-widget">
-						<h3 class="hndle">
-							<span><?php printf( _x( "%s's products", "deco.agency's products", 'mistape' ), '<a class="decoagency" href="https://deco.agency">deco.agency</a>' ) ?> </span>
-						</h3>
-						<div class="inside">
-							<a class="deco_button decomments" href="http://decomments.com/" target="_blank">
-								<span>de:comments</span>
-							</a>
-							<a class="deco_button debranding" href="https://wordpress.org/plugins/debranding/"
-							   target="_blank">
-								<span>de:branding</span>
-							</a>
-							<a class="deco_button deadblocker" href="http://deadblocker.com/" target="_blank">
-								<span>deAdblocker</span>
-							</a>
-						</div>
-					</div>
 					<?php if ( $show_changelog ) { ?>
 						<div id="mistape_info" class="postbox deco-right-sidebar-widget">
 							<h3 class="hndle">
-								<span>New in Mistape 1.2.0</span>
+								<span>New in Mistape 1.4.0</span>
 							</h3>
 							<div class="inside">
 								<ul>
-									<li>New dialog box design (send action is now animated)</li>
+									<li>Included PRO version</li>
+									<li>Introduce support for mobile version</li>
 									<li>Introduce database table for saving reports. Used for checking for
 										duplicates—you will not get multiple reports about the same error anymore.
 									</li>
@@ -246,6 +229,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			array( $this, 'field_caption_format' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_caption_text_mode', __( 'Caption text mode', 'mistape' ),
 			array( $this, 'field_caption_text_mode' ), 'mistape_options', 'mistape_configuration' );
+		add_settings_field( 'mistape_caption_text_mode_for_mobile', __( 'Caption text mode for Mobile', 'mistape' ),
+			array( $this, 'field_caption_text_mode_for_mobile' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_show_logo_in_caption', __( 'Icon before the caption text', 'mistape' ),
 			array( $this, 'field_show_logo_in_caption' ), 'mistape_options', 'mistape_configuration' );
 		add_settings_field( 'mistape_powered_by', __( 'Powered by', 'mistape' ),
@@ -410,10 +395,31 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		}
 
 		$textarea_contents = $this->get_caption_text();
-		$textarea_state    = $this->options['caption_text_mode'] == 'default' ? ' disabled="disabled"' : '';
+		$textarea_state    = $this->options['caption_text_mode'] === 'default' ? ' disabled="disabled"' : '';
 
 		echo '<textarea id="mistape_custom_caption_text" name="mistape_options[custom_caption_text]" cols="70" rows="4"
 			data-default="' . esc_attr( $this->get_default_caption_text() ) . '"' . $textarea_state . ' />' . esc_textarea( $textarea_contents ) . '</textarea><br>
+		</fieldset>';
+	}
+
+	/**
+	 * Caption custom text for Mobile field
+	 */
+	public function field_caption_text_mode_for_mobile() {
+		echo '<fieldset>';
+
+		foreach ( $this->caption_text_modes as $value => $label ) {
+			echo '<label><input id="mistape_caption_text_mode_for_mobile-' . $value . '" type="radio" name="mistape_options[caption_text_mode_for_mobile]" ' . 'value="' . esc_attr( $value ) . '" ' . checked( $value, $this->options['caption_text_mode_for_mobile'],
+					false ) . ' />' . $label['name'];
+			echo empty( $label['description'] ) ? ':' : ' <span class="description">(' . $label['description'] . ')</span>';
+			echo '</label><br>';
+		}
+
+		$textarea_contents = $this->get_caption_text_for_mobile();
+		$textarea_state    = $this->options['caption_text_mode_for_mobile'] === 'default' ? ' disabled="disabled"' : '';
+
+		echo '<textarea id="mistape_custom_caption_text_for_mobile" name="mistape_options[custom_caption_text_for_mobile]" cols="70" rows="4"
+			data-default="' . esc_attr( $this->get_default_caption_text_for_mobile() ) . '"' . $textarea_state . ' />' . esc_textarea( $textarea_contents ) . '</textarea><br>
 		</fieldset>';
 	}
 
@@ -616,6 +622,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			$input['color_scheme'] = isset( $input['color_scheme'] ) ? $input['color_scheme'] : '#E42029';
 		}
 
+		self::statistics( 1 );
+
 		return $input;
 	}
 
@@ -634,9 +642,9 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		$plugin = plugin_basename( self::$plugin_path );
 
-		if ( $file == $plugin ) {
+		if ( $file === $plugin ) {
 			array_unshift( $links,
-				sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=mistape_settings' ),
+				sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=mistape_settings' ),
 					__( 'Settings', 'mistape' ) ) );
 		}
 
@@ -674,6 +682,8 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		}
 
 		self::create_db();
+
+		self::statistics( 1 );
 	}
 
 	public static function deactivate_addons() {
@@ -694,6 +704,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 				$options['addons_to_activate'] = $deactivated;
 				update_option( 'mistape_options', $options );
 			}
+			self::statistics( 0 );
 		}
 	}
 
@@ -920,14 +931,5 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 
 		return $links;
 	}
-
-	public function mistape_paddle_payments_scripts() {
-		// Paddle system payment
-		if ( ! class_exists( 'Deco_Mistape_Table_Addon' ) ) {
-			echo '<script src="https://cdn.paddle.com/paddle/paddle.js"></script>';
-			echo '<script type="text/javascript">Paddle.Setup({ vendor: 15896 }); </script>';
-		}
-	}
-
 
 }

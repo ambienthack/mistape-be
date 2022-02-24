@@ -142,10 +142,21 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 			} else if ( ! empty( $icon_svg['icon'] ) ) {
 				$icon_svg_str = '<span class="mistape-link-wrap"><span class="mistape-link mistape-logo">' . $icon_svg['icon'] . '</span></span>';
 			}
-			// Only text withot link plugin site!!
-			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $this->get_caption_text() . '</p></div>';
+			// Only text without link plugin site!!
+			$caption_text = '';
+			if ( self::wp_is_mobile() ) {
+				$caption_text = $this->get_caption_text_for_mobile();
+			} else {
+				$caption_text = $this->get_caption_text();
+			}
+			$output = "\n" . '<div class="mistape_caption">' . $icon_svg_str . '<p>' . $caption_text . '</p></div>';
 		} elseif ( $format === 'image' ) {
-			$img_alt = strip_tags( $this->get_caption_text() );
+			if ( self::wp_is_mobile() ) {
+				$img_alt = strip_tags( $this->get_caption_text_for_mobile() );
+			} else {
+				$img_alt = strip_tags( $this->get_caption_text() );
+			}
+
 			$img_alt = str_replace( array( "\r", "\n" ), '', $img_alt );
 			$output  = "\n" . '<div class="mistape_caption"><img src="' . $this->options['caption_image_url'] . '" alt="' . esc_attr( $img_alt ) . '"/></div>';
 		}

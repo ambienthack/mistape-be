@@ -50,6 +50,20 @@
                 }
             });
 
+            $('input[id^="mistape_caption_text_mode_for_mobile-"]').change(function () {
+                var $textarea = $('#mistape_custom_caption_text_for_mobile');
+                if ($(this).val() == 'default') {
+                    $textarea.data('custom', $textarea.val());
+                    $textarea.val($textarea.data('default'));
+                    $textarea.attr('disabled', true);
+                } else {
+                    if ($textarea.data('custom')) {
+                        $textarea.val($textarea.data('custom'));
+                    }
+                    $textarea.attr('disabled', false);
+                }
+            });
+
             // dialog preview
 
             $('#preview-dialog-btn').on('click', function (e) {

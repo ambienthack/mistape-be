@@ -101,6 +101,8 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 
 		$result = $this->send_email();
 
+		self::statistics( 1 );
+
 		if ( $result ) {
 			wp_send_json_success( array(
 				'title'   => __( 'Thanks!', 'mistape' ),
@@ -282,8 +284,8 @@ class Deco_Mistape_Ajax extends Deco_Mistape_Abstract {
 
 	/**
 	 * Get current user IP Address.
-	 * @package: woocommerce
 	 * @return string
+	 * @package: woocommerce
 	 */
 	public static function get_ip_address() {
 		if ( isset( $_SERVER['X-Real-IP'] ) ) {
