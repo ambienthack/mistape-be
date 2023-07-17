@@ -757,7 +757,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 					'mistape' );
 			} else {
 				$html .= sprintf( __( '<strong>Mistape</strong> must now be <a href="%s">configured</a> before use.',
-					'mistape' ), admin_url( 'options-general.php?page=mistape_settings' ) );
+					'mistape' ), admin_url( 'admin.php?page=mistape_settings' ) );
 			}
 			$html .= '</p>';
 			$html .= '</div>';
