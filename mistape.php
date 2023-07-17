@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Mistape
+Plugin Name: Mistape Blue Edition
 Description: Mistape allows visitors to effortlessly notify site staff about found spelling errors.
 Version: 1.4.0
 Author URI: https://deco.agency
