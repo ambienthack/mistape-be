@@ -622,8 +622,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 			$input['color_scheme'] = isset( $input['color_scheme'] ) ? $input['color_scheme'] : '#E42029';
 		}
 
-		self::statistics( 1 );
-
 		return $input;
 	}
 
@@ -682,8 +680,6 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 		}
 
 		self::create_db();
-
-		self::statistics( 1 );
 	}
 
 	public static function deactivate_addons() {
@@ -704,7 +700,7 @@ class Deco_Mistape_Admin extends Deco_Mistape_Abstract {
 				$options['addons_to_activate'] = $deactivated;
 				update_option( 'mistape_options', $options );
 			}
-			self::statistics( 0 );
+			
 		}
 	}
 

