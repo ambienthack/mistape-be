@@ -176,11 +176,8 @@ class Deco_Mistape extends Deco_Mistape_Abstract {
 		echo '
 		<style type="text/css">
 			.mistape-test, .mistape_mistake_inner {color: ' . $this->options['color_scheme'] . ' !important;}
-			#mistape_dialog h2::before, #mistape_dialog .mistape_action, .mistape-letter-back {background-color: ' . $this->options['color_scheme'] . ' !important; }
+			#mistape_dialog h2::before, #mistape_dialog .mistape_action {background-color: ' . $this->options['color_scheme'] . ' !important; }
 			#mistape_reported_text:before, #mistape_reported_text:after {border-color: ' . $this->options['color_scheme'] . ' !important;}
-            .mistape-letter-front .front-left {border-left-color: ' . $this->options['color_scheme'] . ' !important;}
-            .mistape-letter-front .front-right {border-right-color: ' . $this->options['color_scheme'] . ' !important;}
-            .mistape-letter-front .front-bottom, .mistape-letter-back > .mistape-letter-back-top, .mistape-letter-top {border-bottom-color: ' . $this->options['color_scheme'] . ' !important;}
             .mistape-logo svg {fill: ' . $this->options['color_scheme'] . ' !important;}
 		</style>
 		';

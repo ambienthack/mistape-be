@@ -148,30 +148,9 @@
         },
 
         colorScheme: function (color) {
-            //var styleBox = $('.mistape-styles');
-            //var output = '<style type="text/css">' +
-            //                '.mistape-test, .mistape_mistake_inner {color: ' + color + ' !important;}' +
-            //               '#mistape_dialog h2::before, #mistape_dialog .mistape_action, .mistape-letter-back {background-color: ' + color + ' !important; }' +
-            //               '#mistape_reported_text:before, #mistape_reported_text:after {border-color: ' + color + ' !important;}' +
-            //                '.mistape-letter-front .front-left {border-left-color: ' + color + ' !important;}' +
-            //                '.mistape-letter-front .front-right {border-right-color: ' + color + ' !important;}' +
-            //                '.mistape-letter-front .front-bottom, .mistape-letter-back > .mistape-letter-back-top, .mistape-letter-top {border-bottom-color: ' + color + ' !important;}' +
-            //                '.mistape-logo svg, .select-logo__img svg {fill: ' + color + ' !important;}' +
-            //            '</style>';
-
-            //if (!styleBox.length) {
-            //    $('body').prepend('<div class="mistape-styles"></div>');
-            //    styleBox = $('.mistape-styles');
-            //}
-
-            //styleBox.html(output);
-
             var css = '.mistape-test, .mistape_mistake_inner {color: ' + color + ' !important;}' +
-                '#mistape_dialog h2::before, #mistape_dialog .mistape_action, .mistape-letter-back {background-color: ' + color + ' !important; }' +
+                '#mistape_dialog h2::before, #mistape_dialog .mistape_action {background-color: ' + color + ' !important; }' +
                 '#mistape_reported_text:before, #mistape_reported_text:after {border-color: ' + color + ' !important;}' +
-                '.mistape-letter-front .front-left {border-left-color: ' + color + ' !important;}' +
-                '.mistape-letter-front .front-right {border-right-color: ' + color + ' !important;}' +
-                '.mistape-letter-front .front-bottom, .mistape-letter-back > .mistape-letter-back-top, .mistape-letter-top {border-bottom-color: ' + color + ' !important;}' +
                 '.mistape-logo svg, .select-logo__img svg {fill: ' + color + ' !important;}',
                 head = document.head || document.getElementsByTagName('head')[0],
                 style = document.createElement('style');

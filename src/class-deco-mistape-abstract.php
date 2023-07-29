@@ -218,15 +218,6 @@ abstract class Deco_Mistape_Abstract {
 					<a class="mistape_action" data-action="send" data-id="' . $post_id . '" role="button">' . $args['send'] . '</a>
 					<a class="mistape_action" data-dialog-close role="button" style="display:none">' . $args['cancel'] . '</a>
 				</div>
-				<div class="mistape-letter-front letter-part">
-				    <div class="front-left"></div>
-				    <div class="front-right"></div>
-				    <div class="front-bottom"></div>
-				</div>
-				<div class="mistape-letter-back letter-part">
-					<div class="mistape-letter-back-top"></div>
-				</div>
-				<div class="mistape-letter-top letter-part"></div>
 			</div>';
 		}
 

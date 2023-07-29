@@ -399,51 +399,9 @@
 		},
 
 		animateLetter: function () {
-			var dialog = $(decoMistape.dlg.el),
-				content = dialog.find('.dialog__content'),
-				letterTop = dialog.find('.mistape-letter-top'),
-				letterFront = dialog.find('.mistape-letter-front'),
-				letterBack = dialog.find('.mistape-letter-back'),
-				dialogWrap = dialog.find('.dialog-wrap');
-
-			content.addClass('show-letter');
-
 			setTimeout(function () {
-				var y = (letterTop.offset().top - letterFront.offset().top) + letterTop.outerHeight();
-				letterTop.css({
-					'bottom' : Math.floor(y),
-					'opacity': 1
-				});
-				jQuery('.mistape-letter-back-top').hide();
-				if (content.hasClass('with-comment')) {
-					dialogWrap.css('transform', 'scaleY(0.5) scaleX(0.28)');
-				} else {
-					dialogWrap.css('transform', 'scaleY(0.5) scaleX(0.4)');
-				}
-				setTimeout(function () {
-					if (content.hasClass('with-comment')) {
-						dialogWrap.css('transform', 'translateY(12%) scaleY(0.5) scaleX(0.4)');
-					} else {
-						dialogWrap.css('transform', 'translateY(28%) scaleY(0.5) scaleX(0.45)');
-					}
-					setTimeout(function () {
-						letterTop.css('z-index', '9');
-						letterTop.addClass('close');
-						setTimeout(function () {
-							dialogWrap.css({
-								'visibility': 'hidden',
-								'opacity'   : '0'
-							});
-							letterFront.css('animation', 'send-letter1 0.7s');
-							letterBack.css('animation', 'send-letter1 0.7s');
-							letterTop.css('animation', 'send-letter2 0.7s');
-							setTimeout(function () {
-								decoMistape.dlg.toggle();
-							}, 400)
-						}, 400)
-					}, 400)
-				}, 300)
-			}, 400);
+				decoMistape.dlg.toggle();
+			}, 300)
 		},
 
 		showDialog: function (report) {
@@ -468,11 +426,6 @@
 				$dialog.find('#mistape_confirm_dialog').css('display', '');
 				$dialog.find('#mistape_success_dialog').remove();
 			}
-
-			// letter
-			$dialog.find('.dialog__content').removeClass('show-letter');
-			$dialog.find('.mistape-letter-top, .mistape-letter-front, .mistape-letter-back, .dialog-wrap, .mistape-letter-back-top').removeAttr('style');
-			$dialog.find('.mistape-letter-top').removeClass('close');
 		},
 
 		reportSpellError: function (data) {
