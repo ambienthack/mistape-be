@@ -358,9 +358,10 @@
 			decoMistape.initDialogFx();
 
 			var $dialog = $(decoMistape.dlg.el);
+			var autoCloseTimeout = null;
 
-			$(document).on('click', '.mistape_action', function () {
-				if ($(this).is('[data-action=send]')) {
+			$(document).on('click', '[data-mistape-action]', function () {
+				if ($(this).is('[data-mistape-action=send]')) {
 					var data;
 					if (!$dialog.data('dry-run') && (data = $dialog.data('report'))) {
 						if ($dialog.data('mode') === 'comment') {
@@ -370,8 +371,13 @@
 						data.post_id = $(this).data('id');
 						decoMistape.reportSpellError(data);
 					}
-					decoMistape.animateLetter();
-				} else if ($(this).is('[data-dialog-close]')) {
+					$dialog.addClass('mistape_dialog--success');
+
+					autoCloseTimeout = setTimeout(function () {
+						decoMistape.dlg.toggle();
+					}, 3000);
+				} else if ($(this).is('[data-mistape-action=close]')) {
+					clearTimeout( autoCloseTimeout );
 					decoMistape.dlg.toggle();
 				}
 			});
@@ -398,12 +404,6 @@
 			});
 		},
 
-		animateLetter: function () {
-			setTimeout(function () {
-				decoMistape.dlg.toggle();
-			}, 300)
-		},
-
 		showDialog: function (report) {
 			if (report.hasOwnProperty('selection') && report.hasOwnProperty('context')) {
 				var $dialog = $(decoMistape.dlg.el);
@@ -426,6 +426,8 @@
 				$dialog.find('#mistape_confirm_dialog').css('display', '');
 				$dialog.find('#mistape_success_dialog').remove();
 			}
+
+			$dialog.removeClass('mistape_dialog--success');
 		},
 
 		reportSpellError: function (data) {

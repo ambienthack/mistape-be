@@ -159,6 +159,7 @@ abstract class Deco_Mistape_Abstract {
 			$defaults['reported_text_preview'] = '';
 			$defaults['cancel']                = __( 'Cancel', 'mistape' );
 			$defaults['send']                  = __( 'Send', 'mistape' );
+			$defaults['success_message']       = __( 'Thank you, you message has been sent.', 'mistape' );
 		}
 
 		if ( $mode === 'comment' ) {
@@ -187,12 +188,13 @@ abstract class Deco_Mistape_Abstract {
 						 <h3>' . $args['message'] . '</h3>
 					</div>
 					<div class="mistape_dialog_block">
-					   <a class="mistape_action" data-dialog-close role="button">' . $args['close'] . '</a>
+					   <a class="mistape_action" data-mistape-action="close" role="button">' . $args['close'] . '</a>
 					</div>
 				</div>';
 		} else {
 			$output .=
 				'<div id="mistape_confirm_dialog" class="mistape_dialog_screen">
+					<button class="mistape_dialog_close_btn" data-mistape-action="close"></button>
 					<div class="dialog-wrap">
 						<div class="dialog-wrap-top">
 							<h2>' . $args['title'] . '</h2>
@@ -215,9 +217,10 @@ abstract class Deco_Mistape_Abstract {
 					</div>
 			    </div>
 			    <div class="mistape_dialog_block">
-					<a class="mistape_action" data-action="send" data-id="' . $post_id . '" role="button">' . $args['send'] . '</a>
-					<a class="mistape_action" data-dialog-close role="button" style="display:none">' . $args['cancel'] . '</a>
+					<a class="mistape_action" data-mistape-action="send" data-id="' . $post_id . '" role="button">' . $args['send'] . '</a>
+					<a class="mistape_action" data-mistape-action="close" role="button" style="display:none">' . $args['cancel'] . '</a>
 				</div>
+				<div class="mistape_dialog_success">' . $args['success_message'] . '</div>
 			</div>';
 		}
 
