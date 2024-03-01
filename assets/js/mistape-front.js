@@ -303,55 +303,6 @@
 		return;
 	}
 
-	var getPointerEvent = function (event) {
-		return event.originalEvent.targetTouches ? event.originalEvent.targetTouches[0] : event;
-	};
-
-	var $touchArea = $('body'),
-		touchStarted = false, // detect if a touch event is sarted
-		touchPopupShow = false, // detect if a touch event is sarted
-		currX = 0,
-		currY = 0,
-		cachedX = 0,
-		cachedY = 0;
-	var timeoutTouch = '';
-
-	$touchArea.on('touchstart', function (e) {
-		var pointer = getPointerEvent(e);
-		cachedX = currX = pointer.pageX;
-		cachedY = currY = pointer.pageY;
-
-		if (touchPopupShow === true) {
-			touchPopupShow = false;
-			var report = decoMistape.getSelectionData();
-			if (report) {
-				decoMistape.showDialog(report);
-			}
-		}
-
-		// }, 1000);
-	});
-	$touchArea.on('touchend touchcancel', function (e) {
-		var pointer = getPointerEvent(e);
-		touchPopupShow = true;
-		currX = pointer?.pageX;
-		currY = pointer?.pageY;
-	});
-
-	$touchArea.on('touchmove', function (e) {
-		// e.preventDefault();
-		var pointer = getPointerEvent(e);
-		currX = pointer?.pageX;
-		currY = pointer?.pageY;
-		if (touchStarted) {
-			// here you are swiping
-			// alert('Swiping');
-		}
-
-	});
-
-
-
 	window.decoMistape = $.extend(window.decoMistape, {
 
 		onReady: function () {
